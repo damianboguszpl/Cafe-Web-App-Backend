@@ -11,5 +11,11 @@ module.exports = {
         const id = req.params.id
         const schedule = await Schedule.findByPk(id);
         res.json(schedule);
-    }
+    },
+    // get Schedule by UserId
+    getByUserId: async (req, res) => {
+        const userid = req.params.userid
+        const schedule = await Reservation.findOne({ where: { UserId: userid } });
+        res.json(schedule);
+    },
 }

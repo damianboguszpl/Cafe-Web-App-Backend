@@ -11,5 +11,17 @@ module.exports = {
         const id = req.params.id
         const reservation = await Reservation.findByPk(id);
         res.json(reservation);
-    }
+    },
+    // get Reservations by ClientId
+    getByClientId: async (req, res) => {
+        const clientid = req.params.clientid
+        const reservations = await Reservation.findAll({ where: { UserId: clientid } });
+        res.json(reservations);
+    },
+    // get Reservations by TableId
+    getByTableId: async (req, res) => {
+        const tableid = req.params.tableid
+        const reservations = await Reservation.findAll({ where: { TableId: tableid } });
+        res.json(reservations);
+    },
 }

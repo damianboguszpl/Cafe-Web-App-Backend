@@ -8,4 +8,7 @@ router.get("/", controller.getAll)
 // Get Payment by id
 router.get("/:id", controller.getById)
 
+// Get Payment by name
+router.get("/name/:name", controller.getByName)
+
 module.exports = router

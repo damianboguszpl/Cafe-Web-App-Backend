@@ -8,4 +8,7 @@ router.get("/", controller.getAll)
 // Get Role by id
 router.get("/:id", controller.getById)
 
+// Get Role by name
+router.get("/name/:name", controller.getByName)
+
 module.exports = router

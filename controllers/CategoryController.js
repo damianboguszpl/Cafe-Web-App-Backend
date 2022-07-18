@@ -11,5 +11,11 @@ module.exports = {
         const id = req.params.id
         const category = await Category.findByPk(id);
         res.json(category);
-    }
+    },
+    // get Category by name
+    getByName: async (req, res) => {
+        const name = req.params.name
+        const category = await Category.findOne({ where: { name: name } });
+        res.json(category);
+    },
 }

@@ -8,4 +8,7 @@ router.get("/", controller.getAll)
 // Get ProductStatus by id
 router.get("/:id", controller.getById)
 
+// Get ProductStatus by name
+router.get("/name/:name", controller.getByName)
+
 module.exports = router

@@ -11,5 +11,11 @@ module.exports = {
         const id = req.params.id
         const role = await Role.findByPk(id);
         res.json(role);
-    }
+    },
+    // get Role by name
+    getByName: async (req, res) => {
+        const name = req.params.name
+        const role = await Role.findOne({ where: { name: name } });
+        res.json(role);
+    },
 }

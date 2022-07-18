@@ -8,4 +8,10 @@ router.get("/", controller.getAll)
 // Get Reservation by id
 router.get("/:id", controller.getById)
 
+// Get Reservation by ClientId
+router.get("/client/:id", controller.getByClientId)
+
+// Get Reservation by TableId
+router.get("/table/:id", controller.getByTableId)
+
 module.exports = router

@@ -11,5 +11,11 @@ module.exports = {
         const id = req.params.id
         const table = await Table.findByPk(id);
         res.json(table);
-    }
+    },
+    // get Tables by TableStatusId
+    getByTableStatusId: async (req, res) => {
+        const tablestatusid = req.params.tablestatusid
+        const tables = await Product.findAll({ where: { TableStatusId: tablestatusid } });
+        res.json(tables);
+    },
 }
