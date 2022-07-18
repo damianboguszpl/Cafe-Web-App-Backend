@@ -11,5 +11,11 @@ module.exports = {
         const id = req.params.id
         const payment = await Payment.findByPk(id);
         res.json(payment);
-    }
+    },
+    // get Payment by name
+    getByName: async (req, res) => {
+        const name = req.params.name
+        const payment = await Payment.findOne({ where: { name: name } });
+        res.json(payment);
+    },
 }

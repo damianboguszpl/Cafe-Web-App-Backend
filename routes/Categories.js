@@ -8,4 +8,7 @@ router.get("/", controller.getAll)
 // Get Category by id
 router.get("/:id", controller.getById)
 
+// Get Category by name
+router.get("/name/:name", controller.getByName)
+
 module.exports = router

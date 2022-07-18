@@ -11,5 +11,17 @@ module.exports = {
         const id = req.params.id
         const orderDetails = await OrderDetails.findByPk(id);
         res.json(orderDetails);
-    }
+    },
+    // get OrderDetails by ProductId
+    getByProductId: async (req, res) => {
+        const productid = req.params.productid
+        const orderDetails = await OrderDetails.findAll({ where: { ProductId: productid } });
+        res.json(orderDetails);
+    },
+    // get OrderDetails by OrderHeaderId
+    getByOrderHeaderId: async (req, res) => {
+        const orderheaderid = req.params.orderheaderid
+        const orderDetails = await OrderDetails.findAll({ where: { OrderHeaderId: orderheaderid } });
+        res.json(orderDetails);
+    },
 }

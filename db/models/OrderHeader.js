@@ -1,18 +1,22 @@
 module.exports = (sequelize, DataTypes) => {
     const OrderHeader = sequelize.define("OrderHeader", {
-        // name: {
-        //     type: DataTypes.STRING,
-        //     allowNull: false,
-        // }
+        ClientId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        EmployeeId: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        }
     }, {
         tableName: 'order_headers'
     })
 
     OrderHeader.associate = (models) => {
-        OrderHeader.hasOne(models.Review)
-        OrderHeader.hasOne(models.Payment)
-        OrderHeader.hasOne(models.OrderStatus)
-        OrderHeader.hasMany(models.OrderDetails)
+        OrderHeader.belongsTo(models.Review)
+        OrderHeader.belongsTo(models.Payment)
+        OrderHeader.belongsTo(models.OrderStatus)
+        OrderHeader.belongsTo(models.OrderDetails)
     }
 
     return OrderHeader

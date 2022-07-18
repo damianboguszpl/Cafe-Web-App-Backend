@@ -11,5 +11,11 @@ module.exports = {
         const id = req.params.id
         const productStatus = await ProductStatus.findByPk(id);
         res.json(productStatus);
-    }
+    },
+    // get ProductStatus by name
+    getByName: async (req, res) => {
+        const name = req.params.name
+        const productStatus = await ProductStatus.findOne({ where: { name: name } });
+        res.json(productStatus);
+    },
 }

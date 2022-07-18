@@ -11,5 +11,17 @@ module.exports = {
         const id = req.params.id
         const userCoupon = await UserCoupon.findByPk(id);
         res.json(userCoupon);
-    }
+    },
+    // get UserCoupons by UserId
+    getByUserId: async (req, res) => {
+        const userid = req.params.userid
+        const usercoupons = await Reservation.findOne({ where: { UserId: userid } });
+        res.json(usercoupons);
+    },
+    // get UserCoupons by CouponId
+    getByCouponId: async (req, res) => {
+        const couponid = req.params.couponid
+        const usercoupons = await Reservation.findOne({ where: { CouponId: couponid } });
+        res.json(usercoupons);
+    },
 }

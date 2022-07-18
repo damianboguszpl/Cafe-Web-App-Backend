@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
 
     OrderDetails.associate = (models) => {
         OrderDetails.belongsTo(models.OrderHeader)
-        OrderDetails.hasOne(models.Product)
+        OrderDetails.belongsTo(models.Product)
     }
 
     return OrderDetails

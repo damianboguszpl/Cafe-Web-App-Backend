@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     Product.associate = (models) => {
         Product.belongsTo(models.Category)
         Product.belongsTo(models.ProductStatus)
-        Product.belongsTo(models.OrderDetails)
+        // Product.belongsTo(models.OrderDetails)
         Product.hasMany(models.Coupon)
     }
 
