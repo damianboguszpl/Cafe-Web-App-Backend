@@ -8,29 +8,57 @@ app.use(express.json());
 app.use(cors());
 
 // Routers
-// const usersRouter = require('./routes/Users');
-// app.use("/users", usersRouter);
 
-// const rolesRouter = require('./routes/Roles');
-// app.use("/roles", rolesRouter);
+const categoriesRouter = require('./routes/Categories');
+app.use("/categories", categoriesRouter);
 
-// const userRolesRouter = require('./routes/UserRoles');
-// app.use("/userroles", userRolesRouter);
+const couponsRouter = require('./routes/Coupons');
+app.use("/coupons", couponsRouter);
 
-// const regionsRouter = require('./routes/Regions');
-// app.use("/regions", regionsRouter);
+const orderDetailsRouter = require('./routes/OrderDetails');
+app.use("/orderdetails", orderDetailsRouter);
 
-// const populationsRouter = require('./routes/Populations');
-// app.use("/populations", populationsRouter);
+const orderHeadersRouter = require('./routes/OrderHeaders');
+app.use("/orderheaders", orderHeadersRouter);
 
-// const deathsRouter = require('./routes/Deaths');
-// app.use("/deaths", deathsRouter);
+const orderStatusesRouter = require('./routes/OrderStatuses');
+app.use("/orderstatuses", orderStatusesRouter);
 
-// const deathscausesRouter = require('./routes/DeathCauses');
-// app.use("/deathcauses", deathscausesRouter);
+const paymentsRouter = require('./routes/Payments');
+app.use("/payments", paymentsRouter);
 
-// const filesRouter = require('./routes/Files')
-// app.use("/files", filesRouter);
+const productsRouter = require('./routes/Products');
+app.use("/products", productsRouter);
+
+const productStatusesRouter = require('./routes/ProdutStatuses');
+app.use("/productstatuses", productStatusesRouter);
+
+const reservationsRouter = require('./routes/Reservations');
+app.use("/reservations", reservationsRouter);
+
+const reviewsRouter = require('./routes/Reviews');
+app.use("/reviews", reviewsRouter);
+
+const rolesRouter = require('./routes/Roles');
+app.use("/roles", rolesRouter);
+
+const schedulesRouter = require('./routes/Schedules');
+app.use("/schedules", schedulesRouter);
+
+const specialOffersRouter = require('./routes/SpecialOffers');
+app.use("/specialoffers", specialOffersRouter);
+
+const tablesRouter = require('./routes/Tables');
+app.use("/tables", tablesRouter);
+
+const tableStatusesRouter = require('./routes/TableStatuses');
+app.use("/tablestatuses", tableStatusesRouter);
+
+const userCouponsRouter = require('./routes/UserCoupons');
+app.use("/usercoupons", userCouponsRouter);
+
+const usersRouter = require('./routes/Users');
+app.use("/users", usersRouter);
 
 db.sequelize.sync().then(() => {
     app.listen(port, () => console.log(`Server listening on port ${port}!`))
