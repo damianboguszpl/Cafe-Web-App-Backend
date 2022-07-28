@@ -2,6 +2,15 @@ const express = require('express')
 const router = express.Router()
 const controller = require('../controllers/OrderHeaderController')
 
+// Create new OrderHeader
+router.post("/", controller.create)
+
+// Update OrderHeader
+router.put("/update/:id", controller.update)
+
+// Delete OrderHeader 
+router.delete(`/:id`, controller.delete)
+
 // Get all OrderHeaders
 router.get("/", controller.getAll)
 

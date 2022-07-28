@@ -1,6 +1,39 @@
 const { Reservation } = require("../db/models")
 
 module.exports = {
+    // create new Reservation
+    create: async (req,res) => {
+        const reservation = req.body;
+        await Reservation.create(reservation);
+        res.json(reservation);
+    },
+    // update Reservation
+    update: async (req,res) => {
+        const id = req.params.id;
+        const updated = await Reservation.update(
+            { 
+                date: req.body.date,
+                TableId: req.body.TableId,
+                UserId: req.body.UserId
+            }, 
+            {
+            where: {
+                id: id
+            }
+            });
+
+        res.json("Updated successfully.");
+    },
+    // delete Reservation
+    delete: async (req,res) => {
+        const id = req.params.id;
+        await Reservation.destroy({
+            where: {
+                id: id
+            }
+        })
+        res.json("Deleted successfully.");
+    },
     // get all Reservations
     getAll: async (req, res) => {
         const reservations = await Reservation.findAll();

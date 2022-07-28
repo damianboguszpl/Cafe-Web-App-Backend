@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     })
 
     Payment.associate = (models) => {
-        Payment.belongsTo(models.OrderHeader)
+        // Payment.belongsTo(models.OrderHeader)
     }
 
     return Payment

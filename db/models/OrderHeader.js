@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         OrderHeader.belongsTo(models.Review)
         OrderHeader.belongsTo(models.Payment)
         OrderHeader.belongsTo(models.OrderStatus)
-        OrderHeader.belongsTo(models.OrderDetails)
+        // OrderHeader.belongsTo(models.OrderDetails)
     }
 
     return OrderHeader
