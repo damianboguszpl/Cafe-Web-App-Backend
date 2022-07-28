@@ -2,6 +2,15 @@ const express = require('express')
 const router = express.Router()
 const controller = require('../controllers/CouponController')
 
+// Create new Coupon
+router.post("/", controller.create)
+
+// Update Coupon
+router.put("/update/:id", controller.update)
+
+// Delete Coupon 
+router.delete(`/:id`, controller.delete)
+
 // Get all Coupons
 router.get("/", controller.getAll)
 

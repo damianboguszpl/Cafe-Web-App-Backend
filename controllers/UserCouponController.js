@@ -1,6 +1,40 @@
 const { UserCoupon } = require("../db/models")
 
 module.exports = {
+    // create new UserCoupon
+    create: async (req,res) => {
+        const userCoupon = req.body;
+        await UserCoupon.create(userCoupon);
+        res.json(userCoupon);
+    },
+    // update UserCoupon
+    update: async (req,res) => {
+        const id = req.params.id;
+        const updated = await UserCoupon.update(
+            { 
+                is_available: req.body.is_available,
+                expiration_date: req.body.expiration_date,
+                CouponId: req.body.CouponId,
+                UserId: req.body.UserId
+            }, 
+            {
+            where: {
+                id: id
+            }
+            });
+
+        res.json("Updated successfully.");
+    },
+    // delete UserCoupon
+    delete: async (req,res) => {
+        const id = req.params.id;
+        await UserCoupon.destroy({
+            where: {
+                id: id
+            }
+        })
+        res.json("Deleted successfully.");
+    },
     // get all UserCoupons
     getAll: async (req, res) => {
         const userCoupons = await UserCoupon.findAll();

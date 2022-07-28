@@ -1,6 +1,37 @@
 const { OrderStatus } = require("../db/models")
 
 module.exports = {
+    // create new OrderStatus
+    create: async (req,res) => {
+        const orderStatus = req.body;
+        await OrderStatus.create(orderStatus);
+        res.json(orderStatus);
+    },
+    // update OrderStatus
+    update: async (req,res) => {
+        const id = req.params.id;
+        const updated = await OrderStatus.update(
+            { 
+                name: req.body.name
+            }, 
+            {
+            where: {
+                id: id
+            }
+            });
+
+        res.json("Updated successfully.");
+    },
+    // delete OrderStatus
+    delete: async (req,res) => {
+        const id = req.params.id;
+        await OrderStatus.destroy({
+            where: {
+                id: id
+            }
+        })
+        res.json("Deleted successfully.");
+    },
     // get all OrderStatuses
     getAll: async (req, res) => {
         const orderStatuses = await OrderStatus.findAll();

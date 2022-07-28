@@ -2,6 +2,15 @@ const express = require('express')
 const router = express.Router()
 const controller = require('../controllers/ProductController')
 
+// Create new Product
+router.post("/", controller.create)
+
+// Update Product
+router.put("/update/:id", controller.update)
+
+// Delete Product 
+router.delete(`/:id`, controller.delete)
+
 // Get all Products
 router.get("/", controller.getAll)
 

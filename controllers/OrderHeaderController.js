@@ -1,6 +1,41 @@
 const { OrderHeader } = require("../db/models")
 
 module.exports = {
+    // create new OrderHeader
+    create: async (req,res) => {
+        const orderHeader = req.body;
+        await OrderHeader.create(orderHeader);
+        res.json(orderHeader);
+    },
+    // update OrderHeader
+    update: async (req,res) => {
+        const id = req.params.id;
+        const updated = await OrderHeader.update(
+            { 
+                ClientId: req.body.ClientId,
+                EmployeeId: req.body.EmployeeId,
+                ReviewId: req.body.ReviewId,
+                PaymentId: req.body.PaymentId,
+                OrderStatusId: req.body.OrderStatusId
+            }, 
+            {
+            where: {
+                id: id
+            }
+            });
+
+        res.json("Updated successfully.");
+    },
+    // delete OrderHeader
+    delete: async (req,res) => {
+        const id = req.params.id;
+        await OrderHeader.destroy({
+            where: {
+                id: id
+            }
+        })
+        res.json("Deleted successfully.");
+    },
     // get all OrderHeaders
     getAll: async (req, res) => {
         const orderHeaders = await OrderHeader.findAll();

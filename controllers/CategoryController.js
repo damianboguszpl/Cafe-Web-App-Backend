@@ -1,6 +1,37 @@
 const { Category } = require("../db/models")
 
 module.exports = {
+    // create new Category
+    create: async (req,res) => {
+        const category = req.body;
+        await Category.create(category);
+        res.json(category);
+    },
+    // update Category
+    update: async (req,res) => {
+        const id = req.params.id;
+        const updated = await Category.update(
+            { 
+                name: req.body.name
+            }, 
+            {
+            where: {
+                id: id
+            }
+            });
+
+        res.json("Updated successfully.");
+    },
+    // delete Category
+    delete: async (req,res) => {
+        const id = req.params.id;
+        await Category.destroy({
+            where: {
+                id: id
+            }
+        })
+        res.json("Deleted successfully.");
+    },
     // get all Categories
     getAll: async (req, res) => {
         const categories = await Category.findAll();

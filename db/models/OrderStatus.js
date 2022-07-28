@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     })
 
     OrderStatus.associate = (models) => {
-        OrderStatus.belongsTo(models.OrderHeader)
+        // OrderStatus.belongsTo(models.OrderHeader)
     }
 
     return OrderStatus
