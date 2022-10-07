@@ -1,10 +1,15 @@
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define("User", {
-        first_name: {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
+        firstname: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        last_name: {
+        lastname: {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -32,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         hourly_rate: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         }
     }, {
         tableName: 'users'

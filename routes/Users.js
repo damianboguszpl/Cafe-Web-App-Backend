@@ -10,13 +10,14 @@ router.get('/', controller.getAll)
 router.get('/:id', controller.getById)
 
 // // register
-// router.post('/register', controller.register)
+router.post('/register', controller.register)
 
 // // login
-// router.post('/login', controller.login)
+router.post('/login', controller.login)
 
 // // validate login
 // router.get('/auth', validateToken, controller.validateToken)
+router.post('/auth', controller.auth)
 
 // get Users by email
 router.get('/email/:email', controller.getByEmail)
