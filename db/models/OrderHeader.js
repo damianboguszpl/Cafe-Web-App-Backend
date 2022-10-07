@@ -1,5 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
     const OrderHeader = sequelize.define("OrderHeader", {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
         ClientId: {
             type: DataTypes.INTEGER,
             allowNull: false,

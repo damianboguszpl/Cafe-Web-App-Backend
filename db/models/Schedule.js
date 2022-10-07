@@ -1,5 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
     const Schedule = sequelize.define("Schedule", {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true
+        },
         monday: {
             type: DataTypes.STRING,
             allowNull: false,
