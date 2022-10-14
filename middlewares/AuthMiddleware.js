@@ -1,5 +1,5 @@
-// const { verify } = require("jsonwebtoken")
-// const { User_Role, Role  } = require('../db/models')
+const { verify } = require("jsonwebtoken")
+const { Role  } = require('../db/models')
 
 // const validateToken = (req, res, next) => {
 //     const accessToken = req.header("accessToken")

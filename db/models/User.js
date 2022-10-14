@@ -38,6 +38,10 @@ module.exports = (sequelize, DataTypes) => {
         hourly_rate: {
             type: DataTypes.STRING,
             allowNull: true
+        },
+        refreshToken: {
+            type: DataTypes.STRING,
+            allowNull: true
         }
     }, {
         tableName: 'users'
