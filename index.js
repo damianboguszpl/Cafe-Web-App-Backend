@@ -4,6 +4,8 @@ const app = express()
 const port = 3001
 const db = require('./db/models')
 
+require('dotenv').config();
+
 const bodyParser = require("body-parser")
 const cookieParser = require("cookie-parser")
 const session = require("express-session")
@@ -18,15 +20,15 @@ app.use(cors({
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.use(session({
-    key: "userId",
-    secret: "nb294fg294bg2nfmD#@d32d@#D32d",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        expires: 60*60*24 // 24hours,
-    },
-}));
+// app.use(session({
+//     key: "userId",
+//     secret: "nb294fg294bg2nfmD#@d32d@#D32d",
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: {
+//         expires: 60*60*24 // 24hours,
+//     },
+// }));
 
 
 // Routers
@@ -81,6 +83,9 @@ app.use("/usercoupons", userCouponsRouter);
 
 const usersRouter = require('./routes/Users');
 app.use("/users", usersRouter);
+
+app.use("/refresh", require('./routes/refresh')); // krótsza postać
+app.use("/logout", require('./routes/logout'));
 
 db.sequelize.sync().then(() => {
     app.listen(port, () => console.log(`Server listening on port ${port}!`))
