@@ -1,15 +1,17 @@
 const express = require('express')
 const router = express.Router()
 const controller = require('../controllers/CategoryController')
+const verifyRole = require("../middlewares/verifyRole")
+const ROLE_LIST = require('../config/role_list')
 
 // Create new Category
-router.post("/", controller.create)
+router.post("/",verifyRole(ROLE_LIST.admin), controller.create)
 
 // Update Category
-router.put("/update/:id", controller.update)
+router.put("/update/:id",verifyRole(ROLE_LIST.admin), controller.update)
 
 // Delete Category 
-router.delete(`/:id`, controller.delete)
+router.delete(`/:id`,verifyRole(ROLE_LIST.admin), controller.delete)
 
 // Get all Categories
 router.get("/", controller.getAll)
