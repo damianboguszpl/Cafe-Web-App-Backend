@@ -2,11 +2,11 @@ const Table = require("./Table")
 
 module.exports = (sequelize, DataTypes) => {
     const TableStatus = sequelize.define("TableStatus", {
-        id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
-            primaryKey: true
-        },
+        // id: {
+        //     type: DataTypes.INTEGER,
+        //     autoIncrement: true,
+        //     primaryKey: true
+        // },
         name: {
             type: DataTypes.STRING,
             allowNull: false,

@@ -23,3 +23,4 @@ yarn-error.log*
 
 # DB
 #/db/config/config.json
+db\config\config.json
