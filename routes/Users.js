@@ -10,6 +10,9 @@ router.get('/', controller.getAll)
 // get User by id
 router.get('/:id', controller.getById)
 
+// update
+// router.put("/update/:id", controller.update)  // TO DO
+
 // // register
 router.post('/register', controller.register)
 
@@ -27,6 +30,6 @@ router.get('/email/:email', controller.getByEmail)
 router.get('/phone/:phone', controller.getByPhone)
 
 // get Users by RoleId
-router.get('/role/:id', controller.getByRoleId)
+router.get('/role/:roleid', controller.getByRoleId)
 
 module.exports = router

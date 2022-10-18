@@ -25,14 +25,15 @@ const verifyJWT = (req, res, next) => {
         return res.sendStatus(401);
 
     const token = authHeader.split(' ')[1];
-    console.log(token)
+    // console.log(token)
     jwt.verify(
         token,
         process.env.ACCESS_TOKEN_SECRET,
         (err, decoded) => {
-            if (err) return res.sendStatus(403); //invalid token
-            req.user = decoded.email;
-            req.role = decoded.role;
+            if (err) return
+                res.sendStatus(403); //invalid token
+            req.user = decoded.user.email;
+            req.RoleId = decoded.user.RoleId;
             next();
         }
     );
