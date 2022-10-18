@@ -31,35 +31,42 @@ module.exports = {
             res.json({ error: "User with given email already exists." });
         }
         else {
-            // console.log(firstname)
-            // console.log(lastname)
-            // console.log(email)
-            // console.log(phoneNumber)
-            // console.log(sex)
-            // console.log(password)
-            // console.log(user_role.id )
-            bcrypt.hash(password, saltRounds).then((hash) => {
-                User.create({
-                    firstname: firstname,
-                    lastname: lastname,
-                    email: email,
-                    phone: phoneNumber,
-                    sex: sex,
-                    points: 0,
-                    // hourly_rate: 0,
-                    password: hash,
-                    RoleId: user_role.id // give user 'user' privileges by assigning 'user' role of an id = 1
+            var user2 = await User.findOne({ where: { phone: phoneNumber } });
+            if (user2)
+            {
+                res.json({ error: "User with given phone number already exists." });
+            }
+            else {
+                // console.log(firstname)
+                // console.log(lastname)
+                // console.log(email)
+                // console.log(phoneNumber)
+                // console.log(sex)
+                // console.log(password)
+                // console.log(user_role.id )
+                bcrypt.hash(password, saltRounds).then((hash) => {
+                    User.create({
+                        firstname: firstname,
+                        lastname: lastname,
+                        email: email,
+                        phone: phoneNumber,
+                        sex: sex,
+                        points: 0,
+                        // hourly_rate: 0,
+                        password: hash,
+                        RoleId: user_role.id // give user 'user' privileges by assigning 'user' role of an id = 1
+                    })
                 })
-            })
-            // setTimeout(async function () {
-            //     user = await User.findOne({ where: { email: email } });
-            //     // give user 'user' privileges by assigning 'user' role
-            //     User_Role.create({
-            //         RoleId: user_role.id,
-            //         UserId: user.id
-            //     })
-            // }, 1000)
-            res.json("success");
+                // setTimeout(async function () {
+                //     user = await User.findOne({ where: { email: email } });
+                //     // give user 'user' privileges by assigning 'user' role
+                //     User_Role.create({
+                //         RoleId: user_role.id,
+                //         UserId: user.id
+                //     })
+                // }, 1000)
+                res.json("A new user account has been created.");
+            }
         }
     },
 
@@ -112,9 +119,12 @@ module.exports = {
 
                     // Creates Secure Cookie with refresh token
                     // secure na true jeśli będzie https
-                    res.cookie('jwt', refreshToken, { httpOnly: true, secure: false, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
-                        
-                    res.json({ token: accessToken, email: user.email, RoleId: user.RoleId  });
+                    res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
+                    
+                    // res.json({ token: accessToken, email: user.email, RoleId: user.RoleId  });
+                    res.json({ RoleId:user.RoleId, accessToken});
+                    
+                    
                     // res.send(user)
                 }
 
@@ -157,7 +167,7 @@ module.exports = {
     // get user by RoleId
     getByRoleId: async (req, res) => {
         const roleid = req.params.roleid
-        const user = await User.findOne({ where: { RoleId: roleid }, attributes: { exclude: ['password'] } });
-        res.json(user);
+        const users = await User.findAll({ where: { RoleId: roleid }, attributes: { exclude: ['password'] } });
+        res.json(users);
     }
 }
