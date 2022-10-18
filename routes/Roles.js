@@ -13,7 +13,7 @@ router.put("/update/:id", controller.update)
 router.delete(`/:id`, controller.delete)
 
 // Get all Roles
-router.get("/",verifyJWT, controller.getAll)
+router.get("/",/*verifyJWT,*/ controller.getAll)
 
 // Get Role by id
 router.get("/:id", controller.getById)

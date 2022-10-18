@@ -10,6 +10,7 @@ module.exports = {
     // update Category
     update: async (req,res) => {
         const id = req.params.id;
+        // console.log(id + " -> " + req.body.name)
         const updated = await Category.update(
             { 
                 name: req.body.name
