@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 const controller = require('../controllers/RoleController')
 const { verifyJWT } = require("../middlewares/verifyJWT")
+const verifyRole = require("../middlewares/verifyRole")
+const ROLE_LIST = require('../config/role_list')
 
 // Create new Role
 router.post("/", controller.create)
