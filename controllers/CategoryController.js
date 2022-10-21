@@ -1,53 +1,72 @@
 const { Category } = require("../db/models")
 
 module.exports = {
-    // create new Category
     create: async (req,res) => {
+        if (!req?.body?.name) {
+            return res.status(400).json({ 'message': 'Name parameter not specified.' });
+        }
         const category = req.body;
-        await Category.create(category);
+        await Category.create(req.body);
         res.json(category);
     },
-    // update Category
-    update: async (req,res) => {
-        const id = req.params.id;
-        // console.log(id + " -> " + req.body.name)
-        const updated = await Category.update(
-            { 
-                name: req.body.name
-            }, 
-            {
-            where: {
-                id: id
-            }
-            });
 
-        res.json("Updated successfully.");
+    update: async (req,res) => {
+        if (!req?.body?.name) {
+            return res.status(400).json({ 'message': 'Name parameter not specified.' });
+        }
+        const category = await Category.findOne({ where: { id: req.params.id } });
+        if(!category)
+        {
+            return res.status(404).json({ 'message': `No category matching ID ${req.params.id} has been found.` });
+        }
+        const result = await Category.update(
+            { name: req.body.name }, 
+            { where: { id: req.params.id} }
+        );
+        res.json({ 'message': "Updated successfully." });
     },
-    // delete Category
+
     delete: async (req,res) => {
-        const id = req.params.id;
-        await Category.destroy({
+        const category = await Category.findOne({ where: { id: req.params.id } });
+        if(!category)
+        {
+            return res.status(404).json({ 'message': `No category matching ID ${req.params.id} has been found.` });
+        }
+        const result = await Category.destroy({
             where: {
-                id: id
+                id: req.params.id
             }
         })
-        res.json("Deleted successfully.");
+        res.json({ 'message': "Deleted successfully." });
     },
-    // get all Categories
+
     getAll: async (req, res) => {
         const categories = await Category.findAll();
+        if (!categories) 
+            return res.status(204).json({ 'message': 'No categories found.' });
         res.json(categories);
     },
-    // get Category /w specific id
+    
     getById: async (req, res) => {
-        const id = req.params.id
-        const category = await Category.findByPk(id);
+        if (!req?.params?.id)
+            return res.status(400).json({ 'message': 'Category ID required.' });
+        const category = await Category.findOne({ where: { id: req.params.id } });
+        if(!category)
+        {
+            return res.status(400).json({ 'message': `No category matching ID ${req.params.id} has been found.` });
+        }
         res.json(category);
     },
-    // get Category by name
+
     getByName: async (req, res) => {
-        const name = req.params.name
-        const category = await Category.findOne({ where: { name: name } });
+        if (!req?.params?.name) {
+            return res.status(400).json({ 'message': 'Name parameter not specified.' });
+        }
+        const category = await Category.findOne({ where: { name: req.params.name } });
+        if(!category)
+        {
+            return res.status(400).json({ 'message': `No category matching name '${req.params.name}' has been found.` });
+        }
         res.json(category);
     },
 }

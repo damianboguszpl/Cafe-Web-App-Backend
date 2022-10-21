@@ -9,16 +9,16 @@ const ROLE_LIST = require('../config/role_list')
 router.post("/", verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
 
 // Update Category
-router.put("/update/:id", verifyRole(ROLE_LIST.admin), controller.update)
+router.put("/update/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.update)
 
 // Delete Category 
 router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin), controller.delete)
 
 // Get all Categories
-router.get("/", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getAll)
+router.get("/", controller.getAll)
 
 // Get Category by id
-router.get("/:id",  verifyJWT, controller.getById)
+router.get("/:id", controller.getById)
 
 // Get Category by name
 router.get("/name/:name", controller.getByName)
