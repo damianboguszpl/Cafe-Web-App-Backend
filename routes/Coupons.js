@@ -1,15 +1,18 @@
 const express = require('express')
 const router = express.Router()
 const controller = require('../controllers/CouponController')
+const { verifyJWT } = require("../middlewares/verifyJWT")
+const verifyRole = require("../middlewares/verifyRole")
+const ROLE_LIST = require('../config/role_list')
 
 // Create new Coupon
-router.post("/", controller.create)
+router.post("/", verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
 
 // Update Coupon
-router.put("/update/:id", controller.update)
+router.put("/update/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.update)
 
 // Delete Coupon 
-router.delete(`/:id`, controller.delete)
+router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin), controller.delete)
 
 // Get all Coupons
 router.get("/", controller.getAll)
