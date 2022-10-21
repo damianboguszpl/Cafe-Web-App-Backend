@@ -1,31 +1,24 @@
 const { User, Role } = require("../db/models")
-const bcrypt = require("bcrypt")
-// const { validateToken } = require('../middlewares/AuthMiddleware')
 const { sign } = require('jsonwebtoken')
+const bcrypt = require("bcrypt")
 const saltRounds = 10
 
-// const jwt = require('jsonwebtoken')
-
-
 module.exports = {
-    // get all Users
     getAll: async (req, res) => {
         const users = await User.findAll();
         res.json(users);
     },
 
-    // get User /w specific id
     getById: async (req, res) => {
         const id = req.params.id
         const user = await User.findByPk(id);
         res.json(user);
     },
 
-    // register
     register: async (req, res) => {
         const { email, password, firstname, lastname, phoneNumber, sex } = req.body;
         
-        const user_role = await Role.findOne({ where: { name: "client" } });
+        const client_role = await Role.findOne({ where: { name: "client" } });
         var user = await User.findOne({ where: { email: email } });
         if (user) {
             res.json({ error: "User with given email already exists." });
@@ -54,7 +47,7 @@ module.exports = {
                         points: 0,
                         // hourly_rate: 0,
                         password: hash,
-                        RoleId: user_role.id // give user 'user' privileges by assigning 'user' role of an id = 1
+                        RoleId: client_role.id // give user 'user' privileges by assigning 'user' role of an id = 1
                     })
                 })
                 // setTimeout(async function () {
@@ -70,7 +63,6 @@ module.exports = {
         }
     },
 
-    // login
     login: async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ where: { email: email } });
@@ -108,10 +100,10 @@ module.exports = {
                             { where: { id: user.id } }
                         )
                         // handleResult(result)
-                        console.log("dodano Ref Tok")
+                        // console.log("dodano Ref Tok")
                         } catch (err) {
                             // handleError(err)
-                            console.log("Nie dodano ref tok")
+                            // console.log("Nie dodano ref tok")
                         }
 
                     // const result = await user.save();
