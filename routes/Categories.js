@@ -6,7 +6,7 @@ const verifyRole = require("../middlewares/verifyRole")
 const ROLE_LIST = require('../config/role_list')
 
 // Create new Category
-router.post("/", verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
+router.post("/", verifyJWT, controller.create)
 
 // Update Category
 router.put("/update/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.update)
