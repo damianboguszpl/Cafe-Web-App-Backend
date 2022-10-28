@@ -15,7 +15,7 @@ router.put("/update/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.emplo
 router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin), controller.delete)
 
 // Get all Products
-router.get("/", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getAll)
+router.get("/", controller.getAll)
 
 // Get Product by id
 router.get("/:id", controller.getById)
