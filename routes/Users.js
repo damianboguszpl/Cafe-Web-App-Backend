@@ -17,6 +17,7 @@ router.get('/:id', controller.getById)
 
 // // validate login
 // router.get('/auth', validateToken, controller.validateToken)
+// router.post('/auth',verifyJWT, controller.validateToken)
 
 // get Users by email
 router.get('/email/:email', controller.getByEmail)
