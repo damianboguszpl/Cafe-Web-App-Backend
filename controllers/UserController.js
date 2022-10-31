@@ -142,12 +142,10 @@ module.exports = {
     // validateToken: async (req, res) => {
     //     res.json(req.user)
     // },
-=======
     // validate login
-    validateToken: async (req, res) => {
-        res.json(req.user)
-    },
->>>>>>> Stashed changes
+    // validateToken: async (req, res) => {
+    //     res.json(req.user)
+    // },
 
     // get user by email
     getByEmail: async (req, res) => {
