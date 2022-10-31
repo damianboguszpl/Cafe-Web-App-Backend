@@ -17,10 +17,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DOUBLE,
             allowNull: false,
         },
-        is_available: {
-            type: DataTypes.TINYINT,
-            allowNull: false,
-        },
         allergen: {
             type: DataTypes.STRING,
             allowNull: false,

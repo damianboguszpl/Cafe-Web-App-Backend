@@ -88,7 +88,8 @@ module.exports = {
                         { expiresIn: '300s'}
                     );
                     const refreshToken = sign(
-                        { "email": user.email  }, 
+                        { "email": user.email,
+                        "RoleId": user.RoleId  }, 
                         process.env.REFRESH_TOKEN_SECRET, 
                         { expiresIn: '1d'}
                     );
