@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const handleRefreshToken = async (req, res) => {
     const cookies = req.cookies;
-    console.log(cookies.jwt)
+    // console.log(cookies.jwt)
     if (!cookies?.jwt)
         return res.sendStatus(401);
 
@@ -20,6 +20,7 @@ const handleRefreshToken = async (req, res) => {
         (err, decoded) => {
             if (err || user.email !== decoded.email) return res.sendStatus(403);
             // const role = user.RoleId;
+            // console.log("decoded R T :"+ JSON.stringify(decoded));
             const accessToken = jwt.sign(
                 {
                     "user": {

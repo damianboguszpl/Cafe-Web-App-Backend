@@ -54,7 +54,7 @@ app.use("/payments", paymentsRouter);
 const productsRouter = require('./routes/Products');
 app.use("/products", productsRouter);
 
-const productStatusesRouter = require('./routes/ProdutStatuses');
+const productStatusesRouter = require('./routes/ProductStatuses');
 app.use("/productstatuses", productStatusesRouter);
 
 const reservationsRouter = require('./routes/Reservations');
