@@ -1,9 +1,12 @@
 const express = require('express')
 const router = express.Router()
 const controller = require('../controllers/ReviewController')
+const { verifyJWT } = require("../middlewares/verifyJWT")
+const verifyRole = require("../middlewares/verifyRole")
+const ROLE_LIST = require('../config/role_list')
 
 // Create new Review
-router.post("/", controller.create)
+router.post("/", verifyJWT, controller.create)
 
 // Update Review
 router.put("/update/:id", controller.update)

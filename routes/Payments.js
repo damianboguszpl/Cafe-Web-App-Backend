@@ -1,23 +1,26 @@
 const express = require('express')
 const router = express.Router()
 const controller = require('../controllers/PaymentController')
+const { verifyJWT } = require("../middlewares/verifyJWT")
+const verifyRole = require("../middlewares/verifyRole")
+const ROLE_LIST = require('../config/role_list')
 
 // Create new Payment
-router.post("/", controller.create)
+router.post("/", verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
 
 // Update Payment
-router.put("/update/:id", controller.update)
+router.put("/update/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.update)
 
 // Delete Payment 
-router.delete(`/:id`, controller.delete)
+router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin), controller.delete)
 
 // Get all Payments
-router.get("/", controller.getAll)
+router.get("/", verifyJWT, controller.getAll)
 
 // Get Payment by id
-router.get("/:id", controller.getById)
+router.get("/:id", verifyJWT, controller.getById)
 
 // Get Payment by name
-router.get("/name/:name", controller.getByName)
+router.get("/name/:name", verifyJWT, controller.getByName)
 
 module.exports = router

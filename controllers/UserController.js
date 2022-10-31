@@ -124,18 +124,18 @@ module.exports = {
         }
     },
 
-    // validateLogin
-    auth: async (req, res) => {
-        // console.log(req)
-        if(req.session.user) {
-            // console.log("logged in")
-            // res.send({loggedIn: true, user: req.session.user})
-        }
-        else {
-            // console.log("not logged in")
-            res.send({loggedIn: false})
-        }
-    },
+    // // validateLogin
+    // auth: async (req, res) => {
+    //     // console.log(req)
+    //     if(req.session.user) {
+    //         // console.log("logged in")
+    //         // res.send({loggedIn: true, user: req.session.user})
+    //     }
+    //     else {
+    //         // console.log("not logged in")
+    //         res.send({loggedIn: false})
+    //     }
+    // },
 
     // // validate login
     // validateToken: async (req, res) => {

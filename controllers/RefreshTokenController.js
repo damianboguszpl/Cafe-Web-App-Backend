@@ -4,13 +4,13 @@ const jwt = require('jsonwebtoken');
 const handleRefreshToken = async (req, res) => {
     const cookies = req.cookies;
     console.log(cookies.jwt)
-    if (!cookies?.jwt) 
+    if (!cookies?.jwt)
         return res.sendStatus(401);
-        
+
     const refreshToken = cookies.jwt;
 
     const user = await User.findOne({ where: { refreshToken: refreshToken } });
-    if (!user) 
+    if (!user)
         return res.sendStatus(403); //Forbidden
 
     // evaluate jwt 
@@ -19,7 +19,7 @@ const handleRefreshToken = async (req, res) => {
         process.env.REFRESH_TOKEN_SECRET,
         (err, decoded) => {
             if (err || user.email !== decoded.email) return res.sendStatus(403);
-            const role = user.RoleId;
+            // const role = user.RoleId;
             const accessToken = jwt.sign(
                 {
                     "user": {
@@ -30,7 +30,7 @@ const handleRefreshToken = async (req, res) => {
                 process.env.ACCESS_TOKEN_SECRET,
                 { expiresIn: '300s' }
             );
-            res.json({ role, accessToken })
+            res.json({ user, accessToken, "isLogged": true })
         }
     );
 }
