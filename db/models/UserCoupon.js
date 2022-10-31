@@ -1,5 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
     const UserCoupon = sequelize.define("UserCoupon", {
+        // id: {
+        //     type: DataTypes.INTEGER,
+        //     autoIncrement: true,
+        //     primaryKey: true
+        // },
         is_available: {
             type: DataTypes.TINYINT,
             allowNull: false,

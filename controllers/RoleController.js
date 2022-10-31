@@ -25,7 +25,7 @@ module.exports = {
     // delete Role
     delete: async (req,res) => {
         const id = req.params.id;
-        await Category.destroy({
+        await Role.destroy({
             where: {
                 id: id
             }
