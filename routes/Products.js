@@ -1,15 +1,18 @@
 const express = require('express')
 const router = express.Router()
 const controller = require('../controllers/ProductController')
+const { verifyJWT } = require("../middlewares/verifyJWT")
+const verifyRole = require("../middlewares/verifyRole")
+const ROLE_LIST = require('../config/role_list')
 
 // Create new Product
-router.post("/", controller.create)
+router.post("/", verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
 
 // Update Product
-router.put("/update/:id", controller.update)
+router.put("/update/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.update)
 
 // Delete Product 
-router.delete(`/:id`, controller.delete)
+router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin), controller.delete)
 
 // Get all Products
 router.get("/", controller.getAll)
@@ -24,12 +27,12 @@ router.get("/name/:name", controller.getByName)
 router.get("/available", controller.getAvailable)
 
 // Get unavailable Products
-router.get("/unavailable", controller.getUnavailable)
+router.get("/unavailable", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getUnavailable)
 
 // Get Products by ProductStatusId
-router.get("/status/:id", controller.getByProductStatusId)
+router.get("/status/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.getByProductStatusId)
 
 // Get Products by CategoryId
-router.get("/category/:id", controller.getByCategoryId)
+router.get("/category/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.getByCategoryId)
 
 module.exports = router

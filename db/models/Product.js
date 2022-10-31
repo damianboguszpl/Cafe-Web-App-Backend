@@ -1,5 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
     const Product = sequelize.define("Product", {
+        // id: {
+        //     type: DataTypes.INTEGER,
+        //     autoIncrement: true,
+        //     primaryKey: true
+        // },
         name: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -10,10 +15,6 @@ module.exports = (sequelize, DataTypes) => {
         },
         price: {
             type: DataTypes.DOUBLE,
-            allowNull: false,
-        },
-        is_available: {
-            type: DataTypes.TINYINT,
             allowNull: false,
         },
         allergen: {

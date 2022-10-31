@@ -1,5 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
     const Coupon = sequelize.define("Coupon", {
+        // id: {
+        //     type: DataTypes.INTEGER,
+        //     autoIncrement: true,
+        //     primaryKey: true
+        // },
         name: {
             type: DataTypes.STRING,
             allowNull: false,

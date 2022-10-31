@@ -1,6 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const controller = require('../controllers/TableController')
+const { verifyJWT } = require("../middlewares/verifyJWT")
+const verifyRole = require("../middlewares/verifyRole")
+const ROLE_LIST = require('../config/role_list')
 
 // Create new Table
 router.post("/", controller.create)

@@ -1,6 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const controller = require('../controllers/SpecialOfferController')
+const { verifyJWT } = require("../middlewares/verifyJWT")
+const verifyRole = require("../middlewares/verifyRole")
+const ROLE_LIST = require('../config/role_list')
 
 // Create new SpecialOffer
 router.post("/", controller.create)

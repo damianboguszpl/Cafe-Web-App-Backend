@@ -1,30 +1,20 @@
-const { User } = require("../db/models")
-// const bcrypt = require("bcrypt")
-// const { validateToken } = require('../middlewares/AuthMiddleware')
-// const { sign } = require('jsonwebtoken')
+const { User, Role } = require("../db/models")
+const { sign } = require('jsonwebtoken')
+const bcrypt = require("bcrypt")
+const saltRounds = 10
 
 module.exports = {
-    // get all Users
     getAll: async (req, res) => {
         const users = await User.findAll();
         res.json(users);
     },
-    // get User /w specific id
+
     getById: async (req, res) => {
         const id = req.params.id
         const user = await User.findByPk(id);
         res.json(user);
     },
-    // // register
-    // register: async (req, res) => {
-    //     const { email, password, firstname, lastname } = req.body;
 
-<<<<<<< Updated upstream
-    //     const user_role = await Role.findOne({ where: { name: "user" } });
-    //     var user = await User.findOne({ where: { email: email } });
-    //     if (user) {
-    //         res.json({ error: "User with given email already exists." });
-=======
     register: async (req, res) => {
         const { email, password, firstname, lastname, phoneNumber, sex } = req.body;
         
@@ -99,8 +89,7 @@ module.exports = {
                     );
                     const refreshToken = sign(
                         { "email": user.email,
-                            "RoleId": user.RoleId 
-                        }, 
+                        "RoleId": user.RoleId  }, 
                         process.env.REFRESH_TOKEN_SECRET, 
                         { expiresIn: '1d'}
                     );
@@ -126,7 +115,7 @@ module.exports = {
                     res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
                     
                     // res.json({ token: accessToken, email: user.email, RoleId: user.RoleId  });
-                    res.json({ RoleId:user.RoleId, email:user.email, accessToken});
+                    res.json({ RoleId:user.RoleId, accessToken});
                     
                     
                     // res.send(user)
@@ -142,50 +131,13 @@ module.exports = {
     //     if(req.session.user) {
     //         // console.log("logged in")
     //         // res.send({loggedIn: true, user: req.session.user})
->>>>>>> Stashed changes
     //     }
     //     else {
-    //         bcrypt.hash(password, 10).then((hash) => {
-    //             User.create({
-    //                 firstname: firstname,
-    //                 lastname: lastname,
-    //                 email: email,
-    //                 password: hash
-    //             })
-    //         })
-    //         setTimeout(async function () {
-    //             user = await User.findOne({ where: { email: email } });
-    //             // give user 'user' privileges by assigning 'user' role
-    //             User_Role.create({
-    //                 RoleId: user_role.id,
-    //                 UserId: user.id
-    //             })
-    //         }, 1000)
-    //         res.json("success");
+    //         // console.log("not logged in")
+    //         res.send({loggedIn: false})
     //     }
     // },
-    // // login
-    // login: async (req, res) => {
-    //     const { email, password } = req.body;
-    //     const user = await User.findOne({ where: { email: email } });
 
-    //     if (!user) {
-    //         res.json({ error: "Użytkownik nie istnieje" });
-    //     }
-    //     else {
-    //         bcrypt.compare(password, user.password).then((match) => {
-    //             if (!match) {
-    //                 res.json({ error: "Hasło jest niepoprawne" });
-    //             }
-    //             else {
-    //                 const accessToken = sign({ email: user.email, id: user.id }, "34qwereawdq4we3w3eqf7y6uhesecerttoken");
-    //                 res.json({ token: accessToken, email: email, id: user.id });
-    //             }
-
-<<<<<<< Updated upstream
-    //         });
-    //     }
-    // },
     // // validate login
     // validateToken: async (req, res) => {
     //     res.json(req.user)
@@ -214,7 +166,7 @@ module.exports = {
     // get user by RoleId
     getByRoleId: async (req, res) => {
         const roleid = req.params.roleid
-        const user = await User.findOne({ where: { RoleId: roleid }, attributes: { exclude: ['password'] } });
-        res.json(user);
+        const users = await User.findAll({ where: { RoleId: roleid }, attributes: { exclude: ['password'] } });
+        res.json(users);
     }
 }

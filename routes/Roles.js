@@ -1,6 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const controller = require('../controllers/RoleController')
+const { verifyJWT } = require("../middlewares/verifyJWT")
+const verifyRole = require("../middlewares/verifyRole")
+const ROLE_LIST = require('../config/role_list')
 
 // Create new Role
 router.post("/", controller.create)
@@ -12,7 +15,7 @@ router.put("/update/:id", controller.update)
 router.delete(`/:id`, controller.delete)
 
 // Get all Roles
-router.get("/", controller.getAll)
+router.get("/",/*verifyJWT,*/ controller.getAll)
 
 // Get Role by id
 router.get("/:id", controller.getById)
