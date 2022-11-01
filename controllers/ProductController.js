@@ -6,7 +6,6 @@ module.exports = {
         if (!req?.body?.name) { return res.status(400).json({ 'message': 'Name parameter not specified.' }); }
         if (!req?.body?.size) { return res.status(400).json({ 'message': 'Size parameter not specified.' }); }
         if (!req?.body?.price) { return res.status(400).json({ 'message': 'Price parameter not specified.' }); }
-        if (!req?.body?.allergen) { return res.status(400).json({ 'message': 'Allergen parameter not specified.' }); }
         if (!req?.body?.CategoryId) { return res.status(400).json({ 'message': 'CategoryId parameter not specified.' }); }
         if (!req?.body?.ProductStatusId) { return res.status(400).json({ 'message': 'ProductStatusId parameter not specified.' }); }
 
