@@ -5,13 +5,17 @@ module.exports = (sequelize, DataTypes) => {
         //     autoIncrement: true,
         //     primaryKey: true
         // },
-        ClientId: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-        EmployeeId: {
-            type: DataTypes.INTEGER,
-            allowNull: false
+        // ClientId: {
+        //     type: DataTypes.INTEGER,
+        //     allowNull: false,
+        // },
+        // EmployeeId: {
+        //     type: DataTypes.INTEGER,
+        //     allowNull: false
+        // }
+        finalPrice: {
+            type: DataTypes.DOUBLE,
+            allowNull: true
         }
     }, {
         tableName: 'order_headers'
@@ -21,6 +25,9 @@ module.exports = (sequelize, DataTypes) => {
         OrderHeader.belongsTo(models.Review)
         OrderHeader.belongsTo(models.Payment)
         OrderHeader.belongsTo(models.OrderStatus)
+        OrderHeader.belongsTo(models.Table)
+        OrderHeader.belongsTo(models.User, { as: 'Client' })
+        OrderHeader.belongsTo(models.User, { as: 'Employee' })
         // OrderHeader.belongsTo(models.OrderDetails)
     }
 
