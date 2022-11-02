@@ -2,30 +2,30 @@ const { Table } = require("../db/models")
 
 module.exports = {
     // create new Table
-    create: async (req,res) => {
+    create: async (req, res) => {
         const table = req.body;
         await Table.create(table);
         res.json(table);
     },
     // update Table
-    update: async (req,res) => {
+    update: async (req, res) => {
         const id = req.params.id;
         const updated = await Table.update(
-            { 
+            {
                 number_of_seats: req.body.number_of_seats,
                 number: req.body.number,
                 TableStatusId: req.body.TableStatusId
-            }, 
+            },
             {
-            where: {
-                id: id
-            }
+                where: {
+                    id: id
+                }
             });
 
         res.json("Updated successfully.");
     },
     // delete Table
-    delete: async (req,res) => {
+    delete: async (req, res) => {
         const id = req.params.id;
         await Table.destroy({
             where: {
@@ -47,8 +47,8 @@ module.exports = {
     },
     // get Tables by TableStatusId
     getByTableStatusId: async (req, res) => {
-        const tablestatusid = req.params.tablestatusid
-        const tables = await Product.findAll({ where: { TableStatusId: tablestatusid } });
+        const tablestatusid = req.params.id
+        const tables = await Table.findAll({ where: { TableStatusId: tablestatusid } });
         res.json(tables);
     },
 }
