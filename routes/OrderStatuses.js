@@ -15,12 +15,12 @@ router.put("/update/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.upd
 router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin), controller.delete)
 
 // Get all OrderStatuses
-router.get("/", verifyJWT, controller.getAll)
+router.get("/", controller.getAll)
 
 // Get OrderStatus by id
-router.get("/:id", verifyJWT, controller.getById)
+router.get("/:id", controller.getById)
 
 // Get OrderStatus by name
-router.get("/name/:name", verifyJWT, controller.getByName)
+router.get("/name/:name", controller.getByName)
 
 module.exports = router
