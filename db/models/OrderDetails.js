@@ -1,10 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
     const OrderDetails = sequelize.define("OrderDetails", {
-        // id: {
-        //     type: DataTypes.INTEGER,
-        //     autoIncrement: true,
-        //     primaryKey: true
-        // },
         transaction_price: {
             type: DataTypes.DOUBLE,
             allowNull: false,
