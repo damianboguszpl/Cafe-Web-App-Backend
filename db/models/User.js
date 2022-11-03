@@ -1,10 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define("User", {
-        // id: {
-        //     type: DataTypes.INTEGER,
-        //     autoIncrement: true,
-        //     primaryKey: true
-        // },
         firstname: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -53,12 +48,6 @@ module.exports = (sequelize, DataTypes) => {
         User.hasOne(models.Schedule)
         User.belongsToMany(models.Coupon, { through: "UserCoupon" })
     }
-
-    // User.associate = (models) => {
-    //     User.belongsToMany(models.Role, {
-    //         through: "User_Role",
-    //     })
-    // }
 
     return User
 }

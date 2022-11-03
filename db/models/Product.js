@@ -1,10 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
     const Product = sequelize.define("Product", {
-        // id: {
-        //     type: DataTypes.INTEGER,
-        //     autoIncrement: true,
-        //     primaryKey: true
-        // },
         name: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -28,7 +23,6 @@ module.exports = (sequelize, DataTypes) => {
     Product.associate = (models) => {
         Product.belongsTo(models.Category)
         Product.belongsTo(models.ProductStatus)
-        // Product.belongsTo(models.OrderDetails)
         Product.hasMany(models.Coupon)
     }
 
