@@ -1,11 +1,35 @@
-const { OrderDetails, Product } = require("../db/models")
+const { OrderDetails, OrderHeader, Product } = require("../db/models")
 
 module.exports = {
     // create new OrderDetails
     create: async (req, res) => {
-        const orderDetails = req.body;
-        await OrderDetails.create(orderDetails);
-        res.json(orderDetails);
+        if (!req?.body?.transaction_price) {
+            return res.status(400).json({ 'message': 'transaction_price parameter not specified.' });
+        }
+        if (!req?.body?.quantity) {
+            return res.status(400).json({ 'message': 'quantity parameter not specified.' });
+        }
+        if (!req?.body?.OrderHeaderId) {
+            return res.status(400).json({ 'message': 'OrderHeaderId parameter not specified.' });
+        }
+        if (!req?.body?.ProductId) {
+            return res.status(400).json({ 'message': 'ProductId parameter not specified.' });
+        }
+
+        const orderDetail = req.body;
+        await OrderDetails.create(orderDetail);
+
+        const orderDetails = await OrderDetails.findAll({ where: { OrderHeaderId: req.body.OrderHeaderId } });
+        var orderPrice = 0;
+        orderDetails.forEach(item => {
+            orderPrice += item.quantity * item.transaction_price;
+        });
+        const updatedOH = await OrderHeader.update(
+            { finalPrice: orderPrice },
+            { where: { id: req.body.OrderHeaderId } }
+        )
+
+        res.json(orderDetail);
     },
     // update OrderDetails
     update: async (req, res) => {
@@ -21,9 +45,10 @@ module.exports = {
         if (!req?.body?.ProductId) {
             return res.status(400).json({ 'message': 'ProductId parameter not specified.' });
         }
-
+        const orderHeader = await OrderHeader.findByPk(req.body.OrderHeaderId);
+        
         const id = req.params.id;
-        const updated = await OrderDetails.update(
+        const updatedOD = await OrderDetails.update(
             {
                 transaction_price: req.body.transaction_price,
                 quantity: req.body.quantity,
@@ -34,18 +59,40 @@ module.exports = {
                 where: {
                     id: id
                 }
-            });
+        });
 
+        const orderDetails = await OrderDetails.findAll({ where: { OrderHeaderId: req.body.OrderHeaderId } });
+        var orderPrice = 0;
+        orderDetails.forEach(item => {
+            orderPrice += item.quantity * item.transaction_price;
+        });
+        const updatedOH = await OrderHeader.update(
+            { finalPrice: orderPrice },
+            { where: { id: req.body.OrderHeaderId } }
+        )
         res.json("Updated successfully.");
     },
     // delete OrderDetails
     delete: async (req, res) => {
         const id = req.params.id;
+        const orderDetail = await OrderDetails.findByPk(id);
+        const orderHeaderId = orderDetail.OrderHeaderId;
         await OrderDetails.destroy({
             where: {
                 id: id
             }
         })
+
+        const orderDetails = await OrderDetails.findAll({ where: { OrderHeaderId: orderHeaderId } });
+        var orderPrice = 0;
+        orderDetails.forEach(item => {
+            orderPrice += item.quantity * item.transaction_price;
+        });
+        const updatedOH = await OrderHeader.update(
+            { finalPrice: orderPrice },
+            { where: { id: orderHeaderId } }
+        )
+
         res.json("Deleted successfully.");
     },
     // get all OrderDetails
