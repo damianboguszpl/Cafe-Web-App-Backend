@@ -2,31 +2,31 @@ const { OrderDetails } = require("../db/models")
 
 module.exports = {
     // create new OrderDetails
-    create: async (req,res) => {
+    create: async (req, res) => {
         const orderDetails = req.body;
         await OrderDetails.create(orderDetails);
         res.json(orderDetails);
     },
     // update OrderDetails
-    update: async (req,res) => {
+    update: async (req, res) => {
         const id = req.params.id;
         const updated = await OrderDetails.update(
-            { 
+            {
                 transaction_price: req.body.transaction_price,
                 quantity: req.body.quantity,
                 OrderHeaderId: req.body.OrderHeaderId,
                 ProductId: req.body.ProductId
-            }, 
+            },
             {
-            where: {
-                id: id
-            }
+                where: {
+                    id: id
+                }
             });
 
         res.json("Updated successfully.");
     },
     // delete OrderDetails
-    delete: async (req,res) => {
+    delete: async (req, res) => {
         const id = req.params.id;
         await OrderDetails.destroy({
             where: {
@@ -54,7 +54,7 @@ module.exports = {
     },
     // get OrderDetails by OrderHeaderId
     getByOrderHeaderId: async (req, res) => {
-        const orderheaderid = req.params.orderheaderid
+        const orderheaderid = req.params.id
         const orderDetails = await OrderDetails.findAll({ where: { OrderHeaderId: orderheaderid } });
         res.json(orderDetails);
     },
