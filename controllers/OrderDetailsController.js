@@ -1,4 +1,4 @@
-const { OrderDetails } = require("../db/models")
+const { OrderDetails, Product } = require("../db/models")
 
 module.exports = {
     // create new OrderDetails
@@ -9,6 +9,19 @@ module.exports = {
     },
     // update OrderDetails
     update: async (req, res) => {
+        if (!req?.body?.transaction_price) {
+            return res.status(400).json({ 'message': 'transaction_price parameter not specified.' });
+        }
+        if (!req?.body?.quantity) {
+            return res.status(400).json({ 'message': 'quantity parameter not specified.' });
+        }
+        if (!req?.body?.OrderHeaderId) {
+            return res.status(400).json({ 'message': 'OrderHeaderId parameter not specified.' });
+        }
+        if (!req?.body?.ProductId) {
+            return res.status(400).json({ 'message': 'ProductId parameter not specified.' });
+        }
+
         const id = req.params.id;
         const updated = await OrderDetails.update(
             {
@@ -48,14 +61,19 @@ module.exports = {
     },
     // get OrderDetails by ProductId
     getByProductId: async (req, res) => {
-        const productid = req.params.productid
-        const orderDetails = await OrderDetails.findAll({ where: { ProductId: productid } });
+        const id = req.params.id
+        const orderDetails = await OrderDetails.findAll({ where: { ProductId: id } });
         res.json(orderDetails);
     },
     // get OrderDetails by OrderHeaderId
     getByOrderHeaderId: async (req, res) => {
         const orderheaderid = req.params.id
-        const orderDetails = await OrderDetails.findAll({ where: { OrderHeaderId: orderheaderid } });
+        const orderDetails = await OrderDetails.findAll({ 
+            include: [{
+                model: Product,
+                attributes: [['name', 'name']]
+              }],
+            where: { OrderHeaderId: orderheaderid } });
         res.json(orderDetails);
     },
 }
