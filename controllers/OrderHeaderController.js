@@ -4,8 +4,11 @@ module.exports = {
     // create new OrderHeader
     create: async (req,res) => {
         const orderHeader = req.body;
-        await OrderHeader.create(orderHeader);
-        res.json(orderHeader);
+        // await OrderHeader.create(orderHeader);
+        // res.json(orderHeader);
+        await OrderHeader.create(orderHeader).then(result => {
+            res.json(result)
+        });
     },
     // update OrderHeader
     update: async (req,res) => {
@@ -17,11 +20,11 @@ module.exports = {
                 ReviewId: req.body.ReviewId,
                 PaymentId: req.body.PaymentId,
                 OrderStatusId: req.body.OrderStatusId
-            }, 
+            },
             {
-            where: {
-                id: id
-            }
+                where: {
+                    id: id
+                }
             });
 
         res.json("Updated successfully.");
