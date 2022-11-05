@@ -13,6 +13,14 @@ module.exports = {
         if (!req?.body?.ProductId)
             return res.status(400).json({ 'message': 'ProductId parameter not specified.' });
 
+        const orderHeader = await OrderHeader.findByPk(req?.body?.OrderHeaderId);
+        if(!orderHeader)
+            return res.status(404).json({ 'message': `No OrderHeader matching ID ${req?.body?.OrderHeaderId} has been found.` });
+        const product = await Product.findByPk(req?.body?.ProductId);
+        if(!product)
+            return res.status(404).json({ 'message': `No Product matching ID ${req?.body?.ProductId} has been found.` });
+            
+
         const orderDetail = req.body;
         const existstingItem = await OrderDetails.findOne({ 
             where: { OrderHeaderId: orderDetail.OrderHeaderId, ProductId: orderDetail.ProductId } });
@@ -43,7 +51,7 @@ module.exports = {
             return res.status(404).json({ 'message': `No OrderDetails matching ID ${req.params.id} has been found.` });
         
         if (!req?.body?.transaction_price && !req?.body?.quantity && !req?.body?.OrderHeaderId && !req?.body?.ProductId) 
-            return res.status(400).json({ 'message': 'None of required parameters passed.' });
+            return res.status(400).json({ 'message': 'None of the required parameters were passed.' });
         else {
             await OrderDetails.update(
                 {   transaction_price: req?.body?.transaction_price ? req.body.transaction_price : this.transaction_price,
@@ -59,7 +67,7 @@ module.exports = {
     },
     // delete OrderDetails
     delete: async (req, res) => {
-        const orderDetail = await OrderDetails.findByPk(id);
+        const orderDetail = await OrderDetails.findByPk(req.params.id);
         if(!orderDetail)
             return res.status(404).json({ 'message': `No OrderDetails matching ID ${req.params.id} has been found.` });
         else {
@@ -80,11 +88,7 @@ module.exports = {
     },
     // get OrderDetails /w specific id
     getById: async (req, res) => {
-        const id = req.params.id
-        // const orderDetails = await OrderDetails.findByPk(id);
-        const orderDetails = await OrderDetails.findOne({ where: { id: id } });
-        // if(!orderDetails)
-        //     return res.status(404).json({ 'message': `No OrderDetails matching ID ${req.params.id} has been found.` });
+        const orderDetails = await OrderDetails.findOne({ where: { id: req.params.id } });
         res.json(orderDetails);
     },
     // get OrderDetails by ProductId
