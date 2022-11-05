@@ -1,4 +1,4 @@
-const { OrderHeader, Review, Payment, User, OrderStatus, Table } = require("../db/models")
+const { OrderHeader, OrderDetails, Review, Payment, User, OrderStatus, Table } = require("../db/models")
 
 module.exports = {
     // create new OrderHeader
@@ -105,11 +105,20 @@ module.exports = {
         if(!orderHeader)
             return res.status(404).json({ 'message': `No OrderHeader matching ID ${req.params.id} has been found.` });
         else {
+            const orderDetails = await OrderDetails.findAll({ where: { OrderHeaderId: req.params.id } });
+            
+            await OrderDetails.destroy({
+                where: {
+                    OrderHeaderId: req.params.id
+                }
+            })
+
             await OrderHeader.destroy({
                 where: {
                     id: req.params.id
                 }
             })
+            
             res.json("Deleted successfully.");
         }
     },
