@@ -17,7 +17,25 @@ module.exports = {
         }
 
         const orderDetail = req.body;
-        await OrderDetails.create(orderDetail);
+        const existstingItem = await OrderDetails.findAll({ 
+            where: { OrderHeaderId: orderDetail.OrderHeaderId, ProductId: orderDetail.ProductId } });
+        if (!existstingItem) {
+            await OrderDetails.create(orderDetail);
+        }
+        else {
+            const updatedOD = await OrderDetails.update(
+                {
+                    transaction_price: req.body.transaction_price,
+                    quantity: existstingItem.quantity + req.body.quantity,
+                    OrderHeaderId: req.body.OrderHeaderId,
+                    ProductId: req.body.ProductId
+                },
+                {
+                    where: {
+                        id: orderDetail.id
+                    }
+            });
+        }
 
         const orderDetails = await OrderDetails.findAll({ where: { OrderHeaderId: req.body.OrderHeaderId } });
         var orderPrice = 0;
