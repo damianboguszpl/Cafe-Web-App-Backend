@@ -27,7 +27,7 @@ router.get("/product/:id", verifyJWT, controller.getByPaymentId)
 router.get("/client/:id", verifyJWT, controller.getByClientId)
 
 // Get OrderHeader by EmployeeId
-router.get("/employee/:id", verifyJWT, controller.getByEmployeeId)
+router.get("/employee/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByEmployeeId)
 
 // Get OrderHeader by OrderStatusId
 router.get("/orderstatus/:id", verifyJWT, controller.getByOrderStatusId)
