@@ -5,8 +5,8 @@ module.exports = {
     create: async (req, res) => {
         if (!req?.body?.EmployeeId)
             return res.status(400).json({ 'message': 'EmployeeId parameter not specified.' });
-        if (!req?.body?.PaymentId)
-            return res.status(400).json({ 'message': 'PaymentId parameter not specified.' });
+        // if (!req?.body?.PaymentId)
+        //     return res.status(400).json({ 'message': 'PaymentId parameter not specified.' });
         if (!req?.body?.OrderStatusId)
             return res.status(400).json({ 'message': 'OrderStatusId parameter not specified.' });
         
@@ -48,8 +48,9 @@ module.exports = {
         const orderHeader = await OrderHeader.findByPk(req.params.id);
         if(!orderHeader)
             return res.status(404).json({ 'message': `No OrderHeader matching ID ${req.params.id} has been found.` });
-        if (!req?.body?.ClientId && !req?.body?.ReviewId && !req?.body?.TableId) 
-            return res.status(400).json({ 'message': 'None of the required parameters were passed.' });
+        // if (!req?.body?.ClientId && !req?.body?.ReviewId && !req?.body?.TableId) 
+        // if (!req?.body?.ClientId && !req?.body?.ReviewId && !req?.body?.TableId) 
+        //     return res.status(400).json({ 'message': 'None of the required parameters were passed.' });
         
         if(req?.body?.ClientId && req?.body?.ClientId != null) {
             const client = await User.findByPk(req?.body?.ClientId);
