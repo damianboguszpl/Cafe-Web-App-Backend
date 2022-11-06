@@ -26,9 +26,9 @@ module.exports = {
                 return res.status(404).json({ 'message': `No Review matching ID ${req?.body?.ReviewId} has been found.` });
         }
 
-        const payment = await Payment.findByPk(req?.body?.PaymentId);
-        if(!payment)
-            return res.status(404).json({ 'message': `No Payment matching ID ${req?.body?.PaymentId} has been found.` });
+        // const payment = await Payment.findByPk(req?.body?.PaymentId);
+        // if(!payment)
+        //     return res.status(404).json({ 'message': `No Payment matching ID ${req?.body?.PaymentId} has been found.` });
         
         const orderStatus = await OrderStatus.findByPk(req?.body?.OrderStatusId);
         if(!orderStatus)
