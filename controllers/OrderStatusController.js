@@ -1,52 +1,61 @@
-const { OrderStatus } = require("../db/models")
+const { OrderStatus, OrderHeader } = require("../db/models")
 
 module.exports = {
-    // create new OrderStatus
     create: async (req,res) => {
-        const orderStatus = req.body;
-        await OrderStatus.create(orderStatus);
-        res.json(orderStatus);
+        if (!req?.body?.name)
+            return res.status(400).json({ 'message': 'Name parameter not specified.' });
+        const orderStatus = await OrderStatus.findOne({ where: { name: req.body.name } });
+        if(orderStatus)
+            return res.status(204).json({ 'message': 'OrderStatus with same Name already exists.' });
+        const newOrderStatus = req.body;
+        await OrderStatus.create(newOrderStatus);
+        res.json(newOrderStatus);
     },
-    // update OrderStatus
+    
     update: async (req,res) => {
-        const id = req.params.id;
-        const updated = await OrderStatus.update(
-            { 
-                name: req.body.name
-            }, 
-            {
-            where: {
-                id: id
-            }
-            });
-
+        if (!req?.body?.name)
+            return res.status(400).json({ 'message': 'Name parameter not specified.' });
+        const orderStatus = await OrderStatus.findOne({ where: { id: req.params.id } });
+        if(!orderStatus)
+            return res.status(204).json({ 'message': `No OrderStatus matching Id ${req.params.id} has been found.` });
+        await OrderStatus.update(
+            { name: req.body.name }, 
+            { where: { id: req.params.id } }
+            );
         res.json("Updated successfully.");
     },
-    // delete OrderStatus
+    
     delete: async (req,res) => {
-        const id = req.params.id;
+        const orderStatus = await OrderStatus.findOne({ where: { id: req.params.id } });
+        if(!orderStatus)
+            return res.status(204).json({ 'message': `No OrderStatus matching Id ${req.params.id} has been found.` });
+        const anyOrderHeader = await OrderHeader.findOne({ where: { OrderStatusId: req.params.id } });
+        if(anyOrderHeader)
+            return res.status(204).json({ 'message': 'OrderStatus you tried to delete is used by at least 1 OrderHeader.' });
         await OrderStatus.destroy({
-            where: {
-                id: id
-            }
-        })
+            where: { id: req.params.id } }
+        );
         res.json("Deleted successfully.");
     },
-    // get all OrderStatuses
+    
     getAll: async (req, res) => {
         const orderStatuses = await OrderStatus.findAll();
+        if (!orderStatuses.length) 
+            return res.status(204).json({ 'message': 'No OrderStatuses found.' });
         res.json(orderStatuses);
     },
-    // get OrderStatus /w specific id
+    
     getById: async (req, res) => {
-        const id = req.params.id
-        const orderStatus = await OrderStatus.findByPk(id);
+        const orderStatus = await OrderStatus.findOne({ where: { id: req.params.id } });
+        if(!orderStatus)
+            return res.status(204).json({ 'message': `No OrderStatus matching Id ${req.params.id} has been found.` });
         res.json(orderStatus);
     },
-    // get OrderStatus by name
+    
     getByName: async (req, res) => {
-        const name = req.params.name
-        const orderStatus = await OrderStatus.findOne({ where: { name: name } });
+        const orderStatus = await OrderStatus.findOne({ where: { name: req.params.name } });
+        if(!orderStatus)
+            return res.status(204).json({ 'message': `No OrderStatus matching Name '${req.params.name}' has been found.` });
         res.json(orderStatus);
     },
 }

@@ -2,7 +2,6 @@ const { OrderDetails, OrderHeader, Product } = require("../db/models")
 const { updateOrderFinalPrice } = require("./utils/updateOrderFinalPrice")
 
 module.exports = {
-    // create new OrderDetails
     create: async (req, res) => {
         if (!req?.body?.transaction_price)
             return res.status(400).json({ 'message': 'transaction_price parameter not specified.' });
@@ -20,7 +19,6 @@ module.exports = {
         if(!product)
             return res.status(404).json({ 'message': `No Product matching ID ${req?.body?.ProductId} has been found.` });
             
-
         const orderDetail = req.body;
         const existstingItem = await OrderDetails.findOne({ 
             where: { OrderHeaderId: orderDetail.OrderHeaderId, ProductId: orderDetail.ProductId } });
@@ -35,16 +33,13 @@ module.exports = {
                     OrderHeaderId: req.body.OrderHeaderId,
                     ProductId: req.body.ProductId
                 },
-                {
-                    where: {
-                        id: existstingItem.id
-                    }
-            });
+                {  where: { id: existstingItem.id } }
+            );
         }
         updateOrderFinalPrice(req.body.OrderHeaderId);
         res.json(orderDetail);
     },
-    // update OrderDetails
+    
     update: async (req, res) => {
         const orderDetail = await OrderDetails.findByPk(req.params.id);
         if(!orderDetail)
@@ -65,7 +60,7 @@ module.exports = {
             res.json("Updated successfully.");
         }
     },
-    // delete OrderDetails
+    
     delete: async (req, res) => {
         const orderDetail = await OrderDetails.findByPk(req.params.id);
         if(!orderDetail)
@@ -73,31 +68,35 @@ module.exports = {
         else {
             const orderHeaderId = orderDetail.OrderHeaderId;
             await OrderDetails.destroy({
-                where: {
-                    id: req.params.id
-                }
-            })
+                where: { id: req.params.id } }
+            );
             updateOrderFinalPrice(orderHeaderId);
             res.json("Deleted successfully.");
         }
     },
-    // get all OrderDetails
+    
     getAll: async (req, res) => {
         const orderDetails = await OrderDetails.findAll();
+        if (!orderDetails.length) 
+            return res.status(204).json({ 'message': 'No OrderDetails found.' });
         res.json(orderDetails);
     },
-    // get OrderDetails /w specific id
+    
     getById: async (req, res) => {
         const orderDetails = await OrderDetails.findOne({ where: { id: req.params.id } });
+        if(!orderDetails)
+            return res.status(204).json({ 'message': `No OrderDetails matching Id ${req.params.id} have been found.` });
         res.json(orderDetails);
     },
-    // get OrderDetails by ProductId
+    
     getByProductId: async (req, res) => {
         const id = req.params.id
         const orderDetails = await OrderDetails.findAll({ where: { ProductId: id } });
+        if(!orderDetails.length)
+            return res.status(204).json({ 'message': `No OrderDetails matching ProductId ${req.params.id} have been found.` });
         res.json(orderDetails);
     },
-    // get OrderDetails by OrderHeaderId
+    
     getByOrderHeaderId: async (req, res) => {
         const orderheaderid = req.params.id
         const orderDetails = await OrderDetails.findAll({ 
@@ -105,7 +104,10 @@ module.exports = {
                 model: Product,
                 attributes: [['name', 'name']]
               }],
-            where: { OrderHeaderId: orderheaderid } });
+            where: { OrderHeaderId: orderheaderid } }
+        );
+        if(!orderDetails.length)
+            return res.status(204).json({ 'message': `No OrderDetails matching OrderHeaderId ${req.params.id} have been found.` });
         res.json(orderDetails);
     },
 }

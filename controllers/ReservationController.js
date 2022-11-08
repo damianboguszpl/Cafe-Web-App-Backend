@@ -1,60 +1,57 @@
 const { Reservation } = require("../db/models")
 
 module.exports = {
-    // create new Reservation
     create: async (req,res) => {
-        const reservation = req.body;
-        await Reservation.create(reservation);
-        res.json(reservation);
+        const newReservation = req.body;
+        await Reservation.create(newReservation);
+        res.json(newReservation);
     },
-    // update Reservation
+    
     update: async (req,res) => {
-        const id = req.params.id;
-        const updated = await Reservation.update(
+        await Reservation.update(
             { 
                 date: req.body.date,
                 TableId: req.body.TableId,
                 UserId: req.body.UserId
             }, 
-            {
-            where: {
-                id: id
-            }
-            });
-
+            { where: { id: req.params.id } }
+        );
         res.json("Updated successfully.");
     },
-    // delete Reservation
+    
     delete: async (req,res) => {
-        const id = req.params.id;
         await Reservation.destroy({
-            where: {
-                id: id
-            }
-        })
+            where: { id: req.params.id } }
+        );
         res.json("Deleted successfully.");
     },
-    // get all Reservations
+    
     getAll: async (req, res) => {
         const reservations = await Reservation.findAll();
+        if (!reservations.length) 
+            return res.status(204).json({ 'message': 'No Reservations found.' });
         res.json(reservations);
     },
-    // get Reservation /w specific id
+    
     getById: async (req, res) => {
-        const id = req.params.id
-        const reservation = await Reservation.findByPk(id);
+        const reservation = await Reservation.findOne({ where: { id: req.params.id } });
+        if(!reservation)
+            return res.status(204).json({ 'message': `No Reservation matching Id ${req.params.id} has been found.` });
+        
         res.json(reservation);
     },
-    // get Reservations by ClientId
+    
     getByClientId: async (req, res) => {
-        const clientid = req.params.clientid
-        const reservations = await Reservation.findAll({ where: { UserId: clientid } });
+        const reservations = await Reservation.findAll({ where: { UserId: req.params.id } });
+        if(!reservations.length)
+            return res.status(204).json({ 'message': `No Reservations matching ClientId ${req.params.id} have been found.` });
         res.json(reservations);
     },
-    // get Reservations by TableId
+    
     getByTableId: async (req, res) => {
-        const tableid = req.params.tableid
-        const reservations = await Reservation.findAll({ where: { TableId: tableid } });
+        const reservations = await Reservation.findAll({ where: { TableId: req.params.id } });
+        if(!reservations.length)
+            return res.status(204).json({ 'message': `No Reservations matching TableId ${req.params.id} have been found.` });
         res.json(reservations);
     },
 }

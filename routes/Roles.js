@@ -6,16 +6,16 @@ const verifyRole = require("../middlewares/verifyRole")
 const ROLE_LIST = require('../config/role_list')
 
 // Create new Role
-router.post("/", controller.create)
+router.post("/", verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
 
 // Update Role
-router.put("/update/:id", controller.update)
+router.put("/update/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.update)
 
 // Delete Role 
-router.delete(`/:id`, controller.delete)
+router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin), controller.delete)
 
 // Get all Roles
-router.get("/",/*verifyJWT,*/ controller.getAll)
+router.get("/", controller.getAll)
 
 // Get Role by id
 router.get("/:id", controller.getById)

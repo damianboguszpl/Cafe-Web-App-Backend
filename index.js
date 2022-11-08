@@ -73,7 +73,7 @@ const usersRouter = require('./routes/Users');
 app.use("/users", usersRouter);
 
 app.use("/refresh", require('./routes/refresh')); // krótsza postać
-app.use("/logout", require('./routes/logout'));
+app.use("/logout", require('./routes/Logout'));
 
 db.sequelize.sync().then(() => {
     app.listen(port, () => console.log(`Server listening on port ${port}!`))
