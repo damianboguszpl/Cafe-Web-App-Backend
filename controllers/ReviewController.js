@@ -1,48 +1,57 @@
 const { Review } = require("../db/models")
 
 module.exports = {
-    // create new Review
     create: async (req,res) => {
+        if (!req?.body?.title)
+            return res.status(400).json({ 'message': 'Title parameter not specified.' });
+        if (!req?.body?.body)
+            return res.status(400).json({ 'message': 'Body parameter not specified.' });
         const review = req.body;
-        await Review.create(review);
-        res.json(review);
+        await Review.create(review).then(result => res.json(result));
     },
-    // update Review
+    
     update: async (req,res) => {
+        const review = await Review.findOne({ where: { id: req.params.id } });
+        if(!review)
+            return res.status(204).json({ 'message': `No Review matching ID ${req.params.id} has been found.` });
+        
+        if (!req?.body?.title || !req?.body?.body) // both parameters are required
+            return res.status(400).json({ 'message': 'Required parameters Title and Body were not passed.' });
+        
         const id = req.params.id;
-        const updated = await Review.update(
+        await Review.update(
             { 
                 title: req.body.title,
                 body: req.body.body,
                 OrderHeaderId: req.body.OrderHeaderId
             }, 
-            {
-            where: {
-                id: id
-            }
-            });
-
+            { where: { id: id } }
+        );
         res.json("Updated successfully.");
     },
-    // delete Review
+    
     delete: async (req,res) => {
+        const review = await Review.findOne({ where: { id: req.params.id } });
+        if(!review)
+            return res.status(204).json({ 'message': `No Review matching Id ${req.params.id} has been found.` });
         const id = req.params.id;
         await Review.destroy({
-            where: {
-                id: id
-            }
-        })
+            where: { id: id } }
+        )
         res.json("Deleted successfully.");
     },
-    // get all Reviews
+    
     getAll: async (req, res) => {
         const reviews = await Review.findAll();
+        if (!reviews.length) 
+            return res.status(204).json({ 'message': 'No Reviews found.' });
         res.json(reviews);
     },
-    // get Review /w specific id
+    
     getById: async (req, res) => {
-        const id = req.params.id
-        const review = await Review.findByPk(id);
+        const review = await Review.findOne({ where: { id: req.params.id } });
+        if(!review)
+            return res.status(204).json({ 'message': `No Review matching Id ${req.params.id} has been found.` });
         res.json(review);
     }
 }
