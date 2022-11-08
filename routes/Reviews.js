@@ -9,10 +9,10 @@ const ROLE_LIST = require('../config/role_list')
 router.post("/", verifyJWT, controller.create)
 
 // Update Review
-router.put("/update/:id", controller.update)
+router.put("/update/:id", verifyJWT, controller.update)
 
 // Delete Review 
-router.delete(`/:id`, controller.delete)
+router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin), controller.delete)
 
 // Get all Reviews
 router.get("/", controller.getAll)
