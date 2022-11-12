@@ -62,25 +62,23 @@ module.exports = {
         res.json(product);
     },
     // get available Products
-    getAvailable: async (req, res) => {
-        const products = await Product.findAll({where: { is_available: true }})
-        res.json(products)
-    },
+    // getAvailable: async (req, res) => {
+    //     const products = await Product.findAll({where: { is_available: true }})
+    //     res.json(products)
+    // },
     // get unavailable Products
-    getUnavailable: async (req, res) => {
-        const products = await Product.findAll({where: { is_available: false }})
-        res.json(products)
-    },
+    // getUnavailable: async (req, res) => {
+    //     const products = await Product.findAll({where: { is_available: false }})
+    //     res.json(products)
+    // },
     // get Products by StatusId
     getByProductStatusId: async (req, res) => {
-        const status = req.params.status
-        const products = await Product.findAll({ where: { StatusId: status } });
+        const products = await Product.findAll({ where: { ProductStatusId: req.params.id } });
         res.json(products);
     },
     // get Products by CategoryId
     getByCategoryId: async (req, res) => {
-        const category = req.params.category
-        const products = await Product.findAll({ where: { CategoryId: category } });
+        const products = await Product.findAll({ where: { CategoryId: req.params.id } });
         res.json(products);
     },
 }
