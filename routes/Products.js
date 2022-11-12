@@ -24,15 +24,15 @@ router.get("/:id", controller.getById)
 router.get("/name/:name", controller.getByName)
 
 // Get available Products
-router.get("/available", controller.getAvailable)
+// router.get("/available", controller.getAvailable)
 
 // Get unavailable Products
-router.get("/unavailable", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getUnavailable)
+// router.get("/unavailable", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getUnavailable)
 
 // Get Products by ProductStatusId
-router.get("/status/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.getByProductStatusId)
+router.get("/status/:id", controller.getByProductStatusId)
 
 // Get Products by CategoryId
-router.get("/category/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.getByCategoryId)
+router.get("/category/:id", controller.getByCategoryId)
 
 module.exports = router
