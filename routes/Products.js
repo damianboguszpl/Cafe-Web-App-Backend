@@ -17,6 +17,9 @@ router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin), controller.delete)
 // Get all Products
 router.get("/", controller.getAll)
 
+// Get all Products with associated Special Offers
+router.get("/specialoffers", controller.getAllWithSpecialOffers)
+
 // Get Product by id
 router.get("/:id", controller.getById)
 

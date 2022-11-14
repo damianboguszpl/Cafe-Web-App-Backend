@@ -1,3 +1,5 @@
+const SpecialOffer = require("./SpecialOffer")
+
 module.exports = (sequelize, DataTypes) => {
     const Product = sequelize.define("Product", {
         name: {
@@ -24,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         Product.belongsTo(models.Category)
         Product.belongsTo(models.ProductStatus)
         Product.hasMany(models.Coupon)
+        Product.hasMany(models.SpecialOffer)
     }
 
     return Product

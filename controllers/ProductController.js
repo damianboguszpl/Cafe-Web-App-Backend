@@ -1,4 +1,4 @@
-const { Product } = require("../db/models")
+const { Product, SpecialOffer } = require("../db/models")
 
 module.exports = {
     // create new Product
@@ -47,6 +47,16 @@ module.exports = {
     // get all Products
     getAll: async (req, res) => {
         const products = await Product.findAll();
+        res.json(products);
+    },
+    // get all Products with SpecialOffers
+    getAllWithSpecialOffers: async (req, res) => {
+        const products = await Product.findAll({
+            include: [{
+                model: SpecialOffer,
+                attributes: ['id', 'value', 'start_date', 'end_date']
+            }],
+        });
         res.json(products);
     },
     // get Product /w specific id
