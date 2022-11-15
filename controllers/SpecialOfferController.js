@@ -2,31 +2,31 @@ const { SpecialOffer } = require("../db/models")
 
 module.exports = {
     // create new SpecialOffer
-    create: async (req,res) => {
+    create: async (req, res) => {
         const specialOffer = req.body;
         await SpecialOffer.create(specialOffer);
         res.json(specialOffer);
     },
     // update SpecialOffer
-    update: async (req,res) => {
+    update: async (req, res) => {
         const id = req.params.id;
         const updated = await SpecialOffer.update(
-            { 
-                is_available: req.body.is_available,
+            {
+                // is_available: req.body.is_available,
                 value: req.body.value,
                 start_date: req.body.start_date,
                 end_date: req.body.end_date
-            }, 
+            },
             {
-            where: {
-                id: id
-            }
+                where: {
+                    id: id
+                }
             });
 
         res.json("Updated successfully.");
     },
     // delete SpecialOffer
-    delete: async (req,res) => {
+    delete: async (req, res) => {
         const id = req.params.id;
         await SpecialOffer.destroy({
             where: {
@@ -54,12 +54,12 @@ module.exports = {
     },
     // get available SpecialOffers
     getAvailable: async (req, res) => {
-        const specialOffers = await SpecialOffer.findAll({where: { is_available: true }})
+        const specialOffers = await SpecialOffer.findAll({ where: { is_available: true } })
         res.json(specialOffers)
     },
     // get unavailable SpecialOffers
     getUnavailable: async (req, res) => {
-        const specialOffers = await SpecialOffer.findAll({where: { is_available: false }})
+        const specialOffers = await SpecialOffer.findAll({ where: { is_available: false } })
         res.json(specialOffers)
     },
 }
