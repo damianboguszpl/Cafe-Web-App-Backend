@@ -1,19 +1,31 @@
 const { OrderHeader, OrderDetails, Review, Payment, User, OrderStatus, Table } = require("../db/models")
 
 module.exports = {
-    create: async (req, res) => {
-        if (!req?.body?.EmployeeId)
-            return res.status(400).json({ 'message': 'EmployeeId parameter not specified.' });
-        // if (!req?.body?.PaymentId)
-        //     return res.status(400).json({ 'message': 'PaymentId parameter not specified.' });
-        if (!req?.body?.OrderStatusId)
-            return res.status(400).json({ 'message': 'OrderStatusId parameter not specified.' });
-        
-        if(req?.body?.ClientId && req?.body?.ClientId != null) {
-            const client = await User.findByPk(req?.body?.ClientId);
-            if(!client)
-                return res.status(404).json({ 'message': `No Client matching Id ${req?.body?.ClientId} has been found.` });
-        }
+    // create new OrderHeader
+    create: async (req,res) => {
+        const orderHeader = req.body;
+        // await OrderHeader.create(orderHeader);
+        // res.json(orderHeader);
+        await OrderHeader.create(orderHeader).then(result => {
+            res.json(result)
+        });
+    },
+    // update OrderHeader
+    update: async (req,res) => {
+        const id = req.params.id;
+        const updated = await OrderHeader.update(
+            { 
+                ClientId: req.body.ClientId,
+                EmployeeId: req.body.EmployeeId,
+                ReviewId: req.body.ReviewId,
+                PaymentId: req.body.PaymentId,
+                OrderStatusId: req.body.OrderStatusId
+            },
+            {
+                where: {
+                    id: id
+                }
+            });
 
         const employee = await User.findByPk(req?.body?.EmployeeId);
         if(!employee)
