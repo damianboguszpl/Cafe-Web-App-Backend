@@ -30,13 +30,6 @@ module.exports = {
                 res.json({ error: "User with given phone number already exists." });
             }
             else {
-                // console.log(firstname)
-                // console.log(lastname)
-                // console.log(email)
-                // console.log(phoneNumber)
-                // console.log(sex)
-                // console.log(password)
-                // console.log(user_role.id )
                 bcrypt.hash(password, saltRounds).then((hash) => {
                     User.create({
                         firstname: firstname,
@@ -50,17 +43,55 @@ module.exports = {
                         RoleId: client_role.id // give user 'user' privileges by assigning 'user' role of an id = 1
                     })
                 })
-                // setTimeout(async function () {
-                //     user = await User.findOne({ where: { email: email } });
-                //     // give user 'user' privileges by assigning 'user' role
-                //     User_Role.create({
-                //         RoleId: user_role.id,
-                //         UserId: user.id
-                //     })
-                // }, 1000)
                 res.json("A new user account has been created.");
             }
         }
+    },
+
+    create: async (req, res) => {
+        // const { email, password, firstname, lastname, phoneNumber, sex, RoleId } = req.body;
+        
+        if (!req?.body?.email)
+            return res.status(400).json({ 'message': 'email parameter not specified.' });
+        if (!req?.body?.password)
+            return res.status(400).json({ 'message': 'password parameter not specified.' });
+        if (!req?.body?.phoneNumber)
+            return res.status(400).json({ 'message': 'phoneNumber parameter not specified.' });
+        if (!req?.body?.RoleId)
+            return res.status(400).json({ 'message': 'RoleId parameter not specified.' });
+        if (!req?.body?.firstname)
+            return res.status(400).json({ 'message': 'firstname parameter not specified.' });
+        if (!req?.body?.lastname)
+            return res.status(400).json({ 'message': 'lastname parameter not specified.' });
+        if (!req?.body?.sex)
+            return res.status(400).json({ 'message': 'sex parameter not specified.' }); 
+
+        var user = await User.findOne({ where: { email: req.body.email } });
+        if (user) 
+            return res.status(400).json({ error: "User with given email already exists." });
+
+        user = await User.findOne({ where: { phone: req.body.phoneNumber } });
+        if (user) 
+            return res.status(400).json({ error: "User with given phone number already exists." });
+            
+        var role = await Role.findOne({ where: { id: req.body.RoleId } });
+        if (!role) 
+            return res.status(400).json({ error: "Role with given id does not exists." });
+
+        bcrypt.hash(req.body.password, saltRounds).then((hash) => {
+            User.create({
+                firstname: req.body.firstname,
+                lastname: req.body.lastname,
+                email: req.body.email,
+                phone: req.body.phoneNumber,
+                sex: req.body.sex,
+                points: 0,
+                // hourly_rate: 0,
+                password: hash,
+                RoleId: req.body.RoleId
+            })
+        })
+        return res.json("A new user account has been created.");
     },
 
     login: async (req, res) => {
@@ -124,28 +155,6 @@ module.exports = {
             });
         }
     },
-
-    // // validateLogin
-    // auth: async (req, res) => {
-    //     // console.log(req)
-    //     if(req.session.user) {
-    //         // console.log("logged in")
-    //         // res.send({loggedIn: true, user: req.session.user})
-    //     }
-    //     else {
-    //         // console.log("not logged in")
-    //         res.send({loggedIn: false})
-    //     }
-    // },
-
-    // // validate login
-    // validateToken: async (req, res) => {
-    //     res.json(req.user)
-    // },
-    // validate login
-    // validateToken: async (req, res) => {
-    //     res.json(req.user)
-    // },
 
     // get user by email
     getByEmail: async (req, res) => {
