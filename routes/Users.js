@@ -17,6 +17,9 @@ router.get('/:id', controller.getById)
 // // register
 router.post('/register', controller.register)
 
+// // create
+router.post('/', verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
+
 // // login
 router.post('/login', controller.login)
 
