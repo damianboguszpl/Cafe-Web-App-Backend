@@ -6,7 +6,7 @@ const verifyRole = require("../middlewares/verifyRole")
 const ROLE_LIST = require('../config/role_list')
 
 // get all Users
-router.get('/', verifyJWT, controller.getAll)
+router.get('/', controller.getAll)
 
 // get User by id
 router.get('/:id', controller.getById)
