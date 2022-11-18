@@ -60,9 +60,6 @@ app.use("/reservations", reservationsRouter);
 const reviewsRouter = require('./routes/Reviews');
 app.use("/reviews", reviewsRouter);
 
-const schedulesRouter = require('./routes/Schedules');
-app.use("/schedules", schedulesRouter);
-
 const specialOffersRouter = require('./routes/SpecialOffers');
 app.use("/specialoffers", specialOffersRouter);
 

@@ -45,7 +45,6 @@ module.exports = (sequelize, DataTypes) => {
     User.associate = (models) => {
         User.belongsTo(models.Role)
         User.hasMany(models.Reservation)
-        User.hasOne(models.Schedule)
         User.belongsToMany(models.Coupon, { through: "UserCoupon" })
     }
 
