@@ -93,6 +93,31 @@ module.exports = {
         return res.json("A new user account has been created.");
     },
 
+    update: async (req, res) => {
+        // if (!req?.body?.name)
+        //     return res.status(400).json({ 'message': 'Name parameter not specified.' });
+        const user = await User.findOne({ where: { id: req.params.id } });
+        if(!user)
+            return res.status(400).json({ 'message': `No user matching ID ${req.params.id} has been found.` });
+
+        if (!req?.body?.firstname && !req?.body?.lastname && !req?.body?.email && !req?.body?.phone && !req?.body?.sex)
+            return res.status(400).json({ 'message': 'None of the required parameters were passed.' });
+        else {
+            User.update(
+                {
+                    firstname: req?.body?.firstname ? req.body.firstname : this.firstname,
+                    lastname: req?.body?.lastname ? req.body.lastname : this.lastname,
+                    email: req?.body?.email ? req.body.email : this.email,
+                    phone: req?.body?.phone ? req.body.phone : this.phone,
+                    sex: req?.body?.sex ? req.body.sex : this.sex
+                },
+                { where: { id: req.params.id } }
+            ).then((result) => {
+                return res.json("Updated successfully.");
+            });
+        }
+    },
+
     login: async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ where: { email: email } });
