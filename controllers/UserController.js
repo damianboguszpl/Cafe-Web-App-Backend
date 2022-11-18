@@ -100,7 +100,7 @@ module.exports = {
         if(!user)
             return res.status(400).json({ 'message': `No user matching ID ${req.params.id} has been found.` });
 
-        if (!req?.body?.firstname && !req?.body?.lastname && !req?.body?.email && !req?.body?.phone && !req?.body?.sex)
+        if (!req?.body?.firstname && !req?.body?.lastname && !req?.body?.email && !req?.body?.phone && !req?.body?.sex && !req?.body?.RoleId)
             return res.status(400).json({ 'message': 'None of the required parameters were passed.' });
         else {
             User.update(
@@ -109,7 +109,8 @@ module.exports = {
                     lastname: req?.body?.lastname ? req.body.lastname : this.lastname,
                     email: req?.body?.email ? req.body.email : this.email,
                     phone: req?.body?.phone ? req.body.phone : this.phone,
-                    sex: req?.body?.sex ? req.body.sex : this.sex
+                    sex: req?.body?.sex ? req.body.sex : this.sex,
+                    RoleId: req?.body?.RoleId ? req.body.RoleId : this.RoleId
                 },
                 { where: { id: req.params.id } }
             ).then((result) => {
