@@ -30,10 +30,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        hourly_rate: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
         refreshToken: {
             type: DataTypes.STRING,
             allowNull: true
