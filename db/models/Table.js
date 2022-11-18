@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
     const Table = sequelize.define("Table", {
-        number_of_seats: {
+        numberOfSeats: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },

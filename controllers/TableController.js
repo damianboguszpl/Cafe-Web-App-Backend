@@ -2,8 +2,8 @@ const { Table, Reservation, OrderHeader, TableStatus } = require("../db/models")
 
 module.exports = {
     create: async (req, res) => {
-        if (!req?.body?.number_of_seats)
-            return res.status(400).json({ 'message': 'Number_of_seats parameter not specified.' });
+        if (!req?.body?.numberOfSeats)
+            return res.status(400).json({ 'message': 'NumberOfSeats parameter not specified.' });
         if (!req?.body?.number)
             return res.status(400).json({ 'message': 'Number parameter not specified.' });
         if (!req?.body?.TableStatusId)
@@ -18,7 +18,7 @@ module.exports = {
     },
     
     update: async (req, res) => {
-        if (!req?.body?.number_of_seats && !req?.body?.number && !req?.body?.TableStatusId ) 
+        if (!req?.body?.numberOfSeats && !req?.body?.number && !req?.body?.TableStatusId ) 
             return res.status(400).json({ 'message': 'None of the required parameters were passed.' });
         
         if(req?.body?.TableStatusId && req?.body?.TableStatusId != null) {
@@ -28,7 +28,7 @@ module.exports = {
         }
         await Table.update(
             {
-                number_of_seats: req?.body?.number_of_seats ? req.body.number_of_seats : this.number_of_seats,
+                numberOfSeats: req?.body?.numberOfSeats ? req.body.numberOfSeats : this.numberOfSeats,
                 number: req?.body?.number ? req.body.number : this.number,
                 TableStatusId: req?.body?.TableStatusId ? req.body.TableStatusId : this.TableStatusId
             },
