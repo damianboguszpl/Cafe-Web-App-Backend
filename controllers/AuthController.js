@@ -12,7 +12,7 @@ module.exports = {
         const user = await User.findOne({ where: { email: req.body.email } });
         
         if (!user) {
-            res.json({ error: "Użytkownik nie istnieje" });
+            return res.json({ error: "Użytkownik nie istnieje" });
         }
         else {
             const password_reset_code = await PasswordResetCode.findOne({ where: { userId: user.id}  });
@@ -40,24 +40,44 @@ module.exports = {
                 charset: 'numeric'
             });
             
-            await PasswordResetCode.create({
-                resetCode: resetCode,
-                UserId: user.id
-            })
-            .then( (result) => {
-                console.log("New resetCode created.");
+            bcrypt.hash(resetCode, saltRounds).then((hashedResetCode) => {
+                PasswordResetCode.create({
+                    resetCode: hashedResetCode,
+                    UserId: user.id
+                })
+                .then( (result) => {
+                    console.log("New resetCode created.");
+                    
+                    sendEmail(
+                        user.email,
+                        "Password Reset Request",
+                        {
+                        name: user.firstname,
+                        resetCode: resetCode,
+                        },
+                        "./templates/requestResetPassword.handlebars"
+                    );
+                    return res.json({"message": "Email with Verification Code has been sent."})
+                })
+            });
+            // await PasswordResetCode.create({
+            //     resetCode: resetCode,
+            //     UserId: user.id
+            // })
+            // .then( (result) => {
+            //     console.log("New resetCode created.");
                 
-                sendEmail(
-                    user.email,
-                    "Password Reset Request",
-                    {
-                    name: user.firstname,
-                    resetCode: resetCode,
-                    },
-                    "./templates/requestResetPassword.handlebars"
-                );
-                res.json({"message": "Email with Verification Code has been sent."})
-            })
+            //     sendEmail(
+            //         user.email,
+            //         "Password Reset Request",
+            //         {
+            //         name: user.firstname,
+            //         resetCode: resetCode,
+            //         },
+            //         "./templates/requestResetPassword.handlebars"
+            //     );
+            //     return res.json({"message": "Email with Verification Code has been sent."})
+            // })
         }
     },
 
@@ -81,29 +101,55 @@ module.exports = {
                     res.status(403).json({ error: "ResetCode expired." });
                 }
                 else {
-                    if(password_reset_code.resetCode == req.body.resetCode) {
-                        bcrypt.hash(req.body.password, saltRounds).then((hash) => {
-                            User.update(
-                            { 
-                                password: hash
-                            }, 
-                            {
-                            where: {
-                                email: req.body.email
-                            }
-                            });
-                            PasswordResetCode.destroy({
+                    bcrypt.compare(req.body.resetCode, password_reset_code.resetCode).then( async (match) => {
+                        if (!match) {
+                            return res.status(403).json({ error: "ResetCode incorrect." });
+                        }
+                        else {
+                            bcrypt.hash(req.body.password, saltRounds).then((hash) => {
+                                User.update(
+                                { 
+                                    password: hash
+                                }, 
+                                {
                                 where: {
-                                    id: password_reset_code.id
+                                    email: req.body.email
                                 }
-                            })
-                            console.log("Expired resetCode deleted.");
-                            res.json({ "message": "Password has been updated."});
-                        })
-                    }
-                    else {
-                        res.status(403).json({ error: "ResetCode incorrect." });
-                    }
+                                });
+                                PasswordResetCode.destroy({
+                                    where: {
+                                        id: password_reset_code.id
+                                    }
+                                })
+                                console.log("Expired resetCode deleted.");
+                                res.json({ "message": "Password has been updated."});
+                            });
+                        }
+        
+                    });
+                    // if(password_reset_code.resetCode == req.body.resetCode) {
+                    //     bcrypt.hash(req.body.password, saltRounds).then((hash) => {
+                    //         User.update(
+                    //         { 
+                    //             password: hash
+                    //         }, 
+                    //         {
+                    //         where: {
+                    //             email: req.body.email
+                    //         }
+                    //         });
+                    //         PasswordResetCode.destroy({
+                    //             where: {
+                    //                 id: password_reset_code.id
+                    //             }
+                    //         })
+                    //         console.log("Expired resetCode deleted.");
+                    //         res.json({ "message": "Password has been updated."});
+                    //     })
+                    // }
+                    // else {
+                    //     res.status(403).json({ error: "ResetCode incorrect." });
+                    // }
                 }
             }
             else {
