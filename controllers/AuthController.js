@@ -35,7 +35,7 @@ module.exports = {
     },
 
     request: async (req,res) => {
-        if (!req?.body?.email) { return res.status(400).json({ 'message': 'Email parameter not specified.' }); }
+        if (!req?.body?.email) { return res.status(400).json({ error: 'Email parameter not specified.' }); }
 
         const user = await User.findOne({ where: { email: req.body.email } });
         
@@ -57,7 +57,7 @@ module.exports = {
                     // console.log("Expired resetCode deleted.");
                 }
                 else {
-                    return res.status(400).json({"error":"Email with Verification Code already sent. Code will be still valid for " + parseInt((codeValidTime - (now - createdAt))/1000,10) + " seconds;"})
+                    return res.status(200).json({"message":"Email with Reset Code already sent. Code will be still valid for " + parseInt((codeValidTime - (now - createdAt))/1000,10) + " seconds."})
                 }
             }
             else {
@@ -92,9 +92,9 @@ module.exports = {
     },
 
     reset: async (req,res) => {
-        if (!req?.body?.email) { return res.status(400).json({ 'message': 'Email parameter not specified.' }); }
-        if (!req?.body?.resetCode) { return res.status(400).json({ 'message': 'ResetCode parameter not specified.' }); }
-        if (!req?.body?.password) { return res.status(400).json({ 'message': 'Password parameter not specified.' }); }
+        if (!req?.body?.email) { return res.status(400).json({ error: 'Email parameter not specified.' }); }
+        if (!req?.body?.resetCode) { return res.status(400).json({ error: 'ResetCode parameter not specified.' }); }
+        if (!req?.body?.password) { return res.status(400).json({ error: 'Password parameter not specified.' }); }
 
         const user = await User.findOne({ where: { email: req.body.email } });
         
@@ -132,7 +132,7 @@ module.exports = {
                                     }
                                 })
                                 console.log("Expired resetCode deleted.");
-                                return res.json({ "message": "Password has been updated."});
+                                return res.json({ 'message': "Password has been updated."});
                             });
                         }
         
