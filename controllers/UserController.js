@@ -144,7 +144,7 @@ module.exports = {
                     //save rt to db
 
                     // Creates Secure Cookie with refresh token
-                    // secure na true jeśli będzie https
+                    // secure na true jeśli będzie https                    WAŻNE
                     res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
 
                     // res.json({ token: accessToken, email: user.email, RoleId: user.RoleId  });

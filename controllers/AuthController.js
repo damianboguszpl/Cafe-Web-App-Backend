@@ -6,6 +6,34 @@ const saltRounds = 10
 
 module.exports = {
 
+    logout: async (req, res) => {
+        // On client, also delete the accessToken
+    
+        const cookies = req.cookies;
+        if (!cookies?.jwt) {
+            console.log("cookie not set")
+            return res.sendStatus(204); //No content
+        }
+            
+        const refreshToken = cookies.jwt;
+    
+        // Is refreshToken in db?
+        const user = await User.findOne({ where: { refreshToken: refreshToken } });
+        if (!user) {
+            res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+            // return res.sendStatus(204);
+            return res.status(200).json({ message: "Wylogowano" });
+        }
+    
+        // Delete refreshToken in db
+        user.refreshToken = '';
+        const result = await user.save();
+        console.log(result);
+    
+        res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+        res.sendStatus(204);
+    },
+
     request: async (req,res) => {
         if (!req?.body?.email) { return res.status(400).json({ 'message': 'Email parameter not specified.' }); }
 
@@ -26,7 +54,7 @@ module.exports = {
                             id: password_reset_code.id
                         }
                     })
-                    console.log("Expired resetCode deleted.");
+                    // console.log("Expired resetCode deleted.");
                 }
                 else {
                     return res.status(400).json({"error":"Email with Verification Code already sent. Code will be still valid for " + parseInt((codeValidTime - (now - createdAt))/1000,10) + " seconds;"})
@@ -46,7 +74,7 @@ module.exports = {
                     UserId: user.id
                 })
                 .then( (result) => {
-                    console.log("New resetCode created.");
+                    // console.log("New resetCode created.");
                     
                     sendEmail(
                         user.email,
@@ -60,24 +88,6 @@ module.exports = {
                     return res.json({"message": "Email with Verification Code has been sent."})
                 })
             });
-            // await PasswordResetCode.create({
-            //     resetCode: resetCode,
-            //     UserId: user.id
-            // })
-            // .then( (result) => {
-            //     console.log("New resetCode created.");
-                
-            //     sendEmail(
-            //         user.email,
-            //         "Password Reset Request",
-            //         {
-            //         name: user.firstname,
-            //         resetCode: resetCode,
-            //         },
-            //         "./templates/requestResetPassword.handlebars"
-            //     );
-            //     return res.json({"message": "Email with Verification Code has been sent."})
-            // })
         }
     },
 
@@ -89,7 +99,7 @@ module.exports = {
         const user = await User.findOne({ where: { email: req.body.email } });
         
         if (!user) {
-            res.json({ error: "Użytkownik nie istnieje" });
+            return res.json({ error: "Użytkownik nie istnieje" });
         }
         else {
             const password_reset_code = await PasswordResetCode.findOne({ where: { userId: user.id}  });
@@ -98,7 +108,7 @@ module.exports = {
                 const now = new Date()
                 const codeValidTime = 5*60*1000;
                 if(!(codeValidTime > (now - createdAt))) {
-                    res.status(403).json({ error: "ResetCode expired." });
+                    return res.status(403).json({ error: "ResetCode expired." });
                 }
                 else {
                     bcrypt.compare(req.body.resetCode, password_reset_code.resetCode).then( async (match) => {
@@ -122,34 +132,11 @@ module.exports = {
                                     }
                                 })
                                 console.log("Expired resetCode deleted.");
-                                res.json({ "message": "Password has been updated."});
+                                return res.json({ "message": "Password has been updated."});
                             });
                         }
         
                     });
-                    // if(password_reset_code.resetCode == req.body.resetCode) {
-                    //     bcrypt.hash(req.body.password, saltRounds).then((hash) => {
-                    //         User.update(
-                    //         { 
-                    //             password: hash
-                    //         }, 
-                    //         {
-                    //         where: {
-                    //             email: req.body.email
-                    //         }
-                    //         });
-                    //         PasswordResetCode.destroy({
-                    //             where: {
-                    //                 id: password_reset_code.id
-                    //             }
-                    //         })
-                    //         console.log("Expired resetCode deleted.");
-                    //         res.json({ "message": "Password has been updated."});
-                    //     })
-                    // }
-                    // else {
-                    //     res.status(403).json({ error: "ResetCode incorrect." });
-                    // }
                 }
             }
             else {
