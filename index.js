@@ -21,6 +21,15 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 // Routers
 
+const usersRouter = require('./routes/Users');
+app.use("/users", usersRouter);
+
+const authRouter = require("./routes/Auth");
+app.use("/auth", authRouter);
+
+const rolesRouter = require('./routes/Roles');
+app.use("/roles", rolesRouter);
+
 const categoriesRouter = require('./routes/Categories');
 app.use("/categories", categoriesRouter);
 
@@ -51,9 +60,6 @@ app.use("/reservations", reservationsRouter);
 const reviewsRouter = require('./routes/Reviews');
 app.use("/reviews", reviewsRouter);
 
-const rolesRouter = require('./routes/Roles');
-app.use("/roles", rolesRouter);
-
 const schedulesRouter = require('./routes/Schedules');
 app.use("/schedules", schedulesRouter);
 
@@ -68,16 +74,6 @@ app.use("/tablestatuses", tableStatusesRouter);
 
 const userCouponsRouter = require('./routes/UserCoupons');
 app.use("/usercoupons", userCouponsRouter);
-
-const usersRouter = require('./routes/Users');
-app.use("/users", usersRouter);
-
-const authRouter = require("./routes/Auth");
-app.use("/passwordreset", authRouter);
-
-app.use("/refresh", require('./routes/refresh')); // krótsza postać
-app.use("/logout", require('./routes/Logout'));
-
 
 db.sequelize.sync().then(() => {
     app.listen(port, () => console.log(`Server listening on port ${port}!`))
