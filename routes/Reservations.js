@@ -9,7 +9,7 @@ const ROLE_LIST = require('../config/role_list')
 router.post("/", verifyJWT, controller.create)
 
 // Update Reservation
-router.put("/update/:id", verifyJWT, controller.update)
+router.put("/:id", verifyJWT, controller.update)
 
 // Delete Reservation 
 router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin), controller.delete)
@@ -18,12 +18,18 @@ router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin), controller.delete)
 router.get("/", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getAll)
 
 // Get Reservation by id
-router.get("/:id", controller.getById)
+router.get("/:id", verifyJWT, controller.getById)
 
 // Get Reservation by ClientId
-router.get("/client/:id", controller.getByClientId)
+router.get("/client/:id", verifyJWT, controller.getByClientId)
+
+// Get Reservation by EmployeeId
+router.get("/employee/:id", verifyJWT, controller.getByEmployeeId)
+
+// Get Reservation by ReservationStatusId
+router.get("/reservationstatus/:id", verifyJWT, controller.getByReservationStatusId)
 
 // Get Reservation by TableId
-router.get("/table/:id", controller.getByTableId)
+router.get("/table/:id", verifyJWT, controller.getByTableId)
 
 module.exports = router
