@@ -9,7 +9,7 @@ const ROLE_LIST = require('../config/role_list')
 router.post("/", verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
 
 // Update Coupon
-router.put("/update/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.update)
+router.put("/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.update)
 
 // Delete Coupon 
 router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin), controller.delete)
@@ -21,15 +21,15 @@ router.get("/", controller.getAll)
 router.get("/:id", controller.getById)
 
 // Get Coupon by name
-router.get("/name/:name", controller.getByName)
+// router.get("/name/:name", controller.getByName)
 
 // Get Coupon by ProductId
 router.get("/product/:id", controller.getByProductId)
 
 // Get available Coupons
-router.get("/available", controller.getAvailable)
+router.get("/status/available", controller.getAvailable)
 
 // Get unavailable Coupons
-router.get("/unavailable", controller.getUnavailable)
+router.get("/status/unavailable", controller.getUnavailable)
 
 module.exports = router
