@@ -57,6 +57,9 @@ app.use("/productstatuses", productStatusesRouter);
 const reservationsRouter = require('./routes/Reservations');
 app.use("/reservations", reservationsRouter);
 
+const reservationStatusesRouter = require('./routes/ReservationStatuses');
+app.use("/reservationstatuses", reservationStatusesRouter);
+
 const reviewsRouter = require('./routes/Reviews');
 app.use("/reviews", reviewsRouter);
 
