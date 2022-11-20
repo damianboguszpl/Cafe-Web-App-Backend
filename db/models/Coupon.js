@@ -4,16 +4,20 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        code: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         value: {
+            type: DataTypes.DOUBLE,
+            allowNull: false,
+        },
+        pointPrice: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        point_price: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-        is_available: {
-            type: DataTypes.TINYINT,
+        isAvailable: {
+            type: DataTypes.BOOLEAN,
             allowNull: false,
         }
     }, {
