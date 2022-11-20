@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
     Reservation.associate = (models) => {
         Reservation.belongsTo(models.ReservationStatus)
         Reservation.belongsTo(models.Table)
-        Reservation.belongsTo(models.User)
+        Reservation.belongsTo(models.User, { as: 'Client' })
+        Reservation.belongsTo(models.User, { as: 'Employee' })
     }
 
     return Reservation
