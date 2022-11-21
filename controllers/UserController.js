@@ -18,7 +18,7 @@ module.exports = {
     register: async (req, res) => {
         const { email, password, firstname, lastname, phoneNumber, sex } = req.body;
 
-        const client_role = await Role.findOne({ where: { name: "client" } });
+        const client_role = await Role.findOne({ where: { name: "Klient" } });
         var user = await User.findOne({ where: { email: email } });
         if (user) {
             res.status(400).json({ error: "Użytkownik z podanym adresem email już istnieje" });
@@ -97,7 +97,7 @@ module.exports = {
         // if (!req?.body?.name)
         //     return res.status(400).json({ 'message': 'Name parameter not specified.' });
         const user = await User.findOne({ where: { id: req.params.id } });
-        if(!user)
+        if (!user)
             return res.status(400).json({ 'message': `No user matching ID ${req.params.id} has been found.` });
 
         if (!req?.body?.firstname && !req?.body?.lastname && !req?.body?.email && !req?.body?.phone && !req?.body?.sex && !req?.body?.RoleId)
