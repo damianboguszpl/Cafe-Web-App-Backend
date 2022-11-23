@@ -23,7 +23,7 @@ module.exports = {
         const existstingItem = await OrderDetails.findOne({
             where: { OrderHeaderId: orderDetail.OrderHeaderId, ProductId: orderDetail.ProductId }
         });
-        if (!existstingItem) {
+        if (!existstingItem || (req?.body?.isCoupon && req?.body?.isCoupon == true)) {
             await OrderDetails.create(orderDetail);
         }
         else {
@@ -32,7 +32,8 @@ module.exports = {
                     transaction_price: req.body.transaction_price,
                     quantity: existstingItem.quantity + req.body.quantity,
                     OrderHeaderId: req.body.OrderHeaderId,
-                    ProductId: req.body.ProductId
+                    ProductId: req.body.ProductId,
+                    isCoupon: req?.body?.isCoupon ? req.body.isCoupon : 0
                 },
                 { where: { id: existstingItem.id } }
             );
@@ -46,7 +47,7 @@ module.exports = {
         if (!orderDetail)
             return res.status(404).json({ 'message': `No OrderDetails matching ID ${req.params.id} has been found.` });
 
-        if (!req?.body?.transaction_price && !req?.body?.quantity && !req?.body?.OrderHeaderId && !req?.body?.ProductId)
+        if (!req?.body?.transaction_price && !req?.body?.quantity && !req?.body?.OrderHeaderId && !req?.body?.ProductId && !req?.body?.isCoupon)
             return res.status(400).json({ 'message': 'None of the required parameters were passed.' });
         else {
             await OrderDetails.update(
@@ -54,7 +55,8 @@ module.exports = {
                     transaction_price: req?.body?.transaction_price ? req.body.transaction_price : this.transaction_price,
                     quantity: req?.body?.quantity ? req.body.quantity : this.quantity,
                     OrderHeaderId: req?.body?.OrderHeaderId ? req.body.OrderHeaderId : this.OrderHeaderId,
-                    ProductId: req?.body?.ProductId ? req.body.ProductId : this.ProductId
+                    ProductId: req?.body?.ProductId ? req.body.ProductId : this.ProductId,
+                    isCoupon: req?.body?.isCoupon ? req.body.isCoupon : this.isCoupon
                 },
                 { where: { id: req.params.id } }
             );
