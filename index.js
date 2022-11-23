@@ -75,6 +75,9 @@ app.use("/tablestatuses", tableStatusesRouter);
 const userCouponsRouter = require('./routes/UserCoupons');
 app.use("/usercoupons", userCouponsRouter);
 
+const userCouponStatusesRouter = require('./routes/UserCouponStatuses');
+app.use("/usercouponstatuses", userCouponStatusesRouter);
+
 db.sequelize.sync().then(() => {
     app.listen(port, () => console.log(`Server listening on port ${port}!`))
 })
