@@ -4,10 +4,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        code: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
+        // code: {
+        //     type: DataTypes.STRING,
+        //     allowNull: false,
+        // },
         value: {
             type: DataTypes.DOUBLE,
             allowNull: false,
@@ -26,8 +26,8 @@ module.exports = (sequelize, DataTypes) => {
 
     Coupon.associate = (models) => {
         Coupon.belongsTo(models.Product)
-        Coupon.belongsToMany(models.User, {
-            through: "UserCoupon"})
+        // Coupon.belongsToMany(models.User, { through: "UserCoupon" })
+        // Coupon.belongsTo(models.UserCoupon)
     }
 
     return Coupon
