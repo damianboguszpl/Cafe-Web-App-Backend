@@ -11,48 +11,48 @@ module.exports = {
         });
     },
     // update OrderHeader
-    update: async (req,res) => {
-        const id = req.params.id;
-        const updated = await OrderHeader.update(
-            { 
-                ClientId: req.body.ClientId,
-                EmployeeId: req.body.EmployeeId,
-                ReviewId: req.body.ReviewId,
-                PaymentId: req.body.PaymentId,
-                OrderStatusId: req.body.OrderStatusId
-            },
-            {
-                where: {
-                    id: id
-                }
-            });
+    // update: async (req,res) => {
+    //     const id = req.params.id;
+    //     const updated = await OrderHeader.update(
+    //         { 
+    //             ClientId: req.body.ClientId,
+    //             EmployeeId: req.body.EmployeeId,
+    //             ReviewId: req.body.ReviewId,
+    //             PaymentId: req.body.PaymentId,
+    //             OrderStatusId: req.body.OrderStatusId
+    //         },
+    //         {
+    //             where: {
+    //                 id: id
+    //             }
+    //         });
 
-        const employee = await User.findByPk(req?.body?.EmployeeId);
-        if(!employee)
-            return res.status(404).json({ 'message': `No Employee matching Id ${req?.body?.EmployeeId} has been found.` });
+    //     const employee = await User.findByPk(req?.body?.EmployeeId);
+    //     if(!employee)
+    //         return res.status(404).json({ 'message': `No Employee matching Id ${req?.body?.EmployeeId} has been found.` });
         
-        if(req?.body?.ReviewId && req?.body?.ReviewId != null) {
-            const review = await Review.findByPk(req?.body?.ReviewId);
-            if(!review)
-                return res.status(404).json({ 'message': `No Review matching Id ${req?.body?.ReviewId} has been found.` });
-        }
+    //     if(req?.body?.ReviewId && req?.body?.ReviewId != null) {
+    //         const review = await Review.findByPk(req?.body?.ReviewId);
+    //         if(!review)
+    //             return res.status(404).json({ 'message': `No Review matching Id ${req?.body?.ReviewId} has been found.` });
+    //     }
 
-        // const payment = await Payment.findByPk(req?.body?.PaymentId);
-        // if(!payment)
-        //     return res.status(404).json({ 'message': `No Payment matching Id ${req?.body?.PaymentId} has been found.` });
+    //     // const payment = await Payment.findByPk(req?.body?.PaymentId);
+    //     // if(!payment)
+    //     //     return res.status(404).json({ 'message': `No Payment matching Id ${req?.body?.PaymentId} has been found.` });
         
-        const orderStatus = await OrderStatus.findByPk(req?.body?.OrderStatusId);
-        if(!orderStatus)
-            return res.status(404).json({ 'message': `No OrderStatus matching Id ${req?.body?.OrderStatusId} has been found.` });
+    //     const orderStatus = await OrderStatus.findByPk(req?.body?.OrderStatusId);
+    //     if(!orderStatus)
+    //         return res.status(404).json({ 'message': `No OrderStatus matching Id ${req?.body?.OrderStatusId} has been found.` });
         
-        if(req?.body?.TableId && req?.body?.TableId != null) {
-            const table = await Table.findByPk(req?.body?.TableId);
-            if(!table)
-                return res.status(404).json({ 'message': `No Table matching Id ${req?.body?.TableId} has been found.` });
-        }
-        const orderHeader = req.body;
-        await OrderHeader.create(orderHeader).then(result => res.json(result));
-    },
+    //     if(req?.body?.TableId && req?.body?.TableId != null) {
+    //         const table = await Table.findByPk(req?.body?.TableId);
+    //         if(!table)
+    //             return res.status(404).json({ 'message': `No Table matching Id ${req?.body?.TableId} has been found.` });
+    //     }
+    //     const orderHeader = req.body;
+    //     await OrderHeader.create(orderHeader).then(result => res.json(result));
+    // },
     
     update: async (req, res) => {
         const orderHeader = await OrderHeader.findByPk(req.params.id);
@@ -99,7 +99,8 @@ module.exports = {
                 ReviewId: req?.body?.ReviewId ? req.body.ReviewId : this.ReviewId,
                 PaymentId: req?.body?.PaymentId ? req.body.PaymentId: this.PaymentId,
                 OrderStatusId: req?.body?.OrderStatusId ? req.body.OrderStatusId : this.OrderStatusId,
-                TableId: req?.body?.TableId ? req.body.TableId : this.TableId
+                TableId: req?.body?.TableId ? req.body.TableId : this.TableId,
+                finalPrice: req?.body?.finalPrice ? req.body.finalPrice : this.finalPrice
             },
             { where: { id: req.params.id } }
         );
