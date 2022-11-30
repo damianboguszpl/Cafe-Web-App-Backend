@@ -125,8 +125,14 @@ module.exports = {
         const reservations = await Reservation.findAll({ 
             include: [{
                 model: Table,
-                // attributes: [['id', 'id']]
-            }],where: { ReservationStatusId: req.params.id } });
+                attributes: ['numberOfSeats', 'number', 'TableStatusId']
+            }, 
+            {
+                model: User, 
+                attributes: ['firstname', 'lastname', 'email', 'phone', 'sex'],
+                as: 'Client'
+            }],
+            where: { ReservationStatusId: req.params.id } });
         if (!reservations.length)
             return res.status(204).json({ 'message': `No reservations matching ReservationStatusId ${req.params.id} have been found.` });
         res.json(reservations);
