@@ -20,6 +20,9 @@ router.get("/", controller.getAll)
 // Get all Products with associated Special Offers
 router.get("/specialoffers", controller.getAllWithSpecialOffers)
 
+// Get all Products with associated Special Offers that have no coupons
+router.get("/withoutcoupons", controller.getAllWithoutCoupons)
+
 // Get Product by id
 router.get("/:id", controller.getById)
 
