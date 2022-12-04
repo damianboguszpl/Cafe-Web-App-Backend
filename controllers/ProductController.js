@@ -1,4 +1,5 @@
-const { Product, SpecialOffer } = require("../db/models")
+const { Product, SpecialOffer, Coupon } = require("../db/models");
+// const Coupon = require("../db/models/Coupon");
 
 module.exports = {
     // create new Product
@@ -58,6 +59,24 @@ module.exports = {
             }],
         });
         res.json(products);
+    },
+    // get all Products with SpecialOffers that have no coupons
+    getAllWithoutCoupons: async (req, res) => {
+        const coupons = await Coupon.findAll();
+        const products = await Product.findAll({
+            include: [{
+                model: SpecialOffer,
+                attributes: ['id', 'value', 'start_date', 'end_date']
+            }],
+        });
+        if(coupons != null) {
+            const productsWithoutCoupons = products.filter(n => !products.filter( (product) => {
+                return coupons.some(e => e.ProductId === product.id)
+            }).includes(n))
+            res.json(productsWithoutCoupons);
+        }
+        else 
+            res.json(products)
     },
     // get Product /w specific id
     getById: async (req, res) => {
