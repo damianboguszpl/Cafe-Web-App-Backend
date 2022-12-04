@@ -6,31 +6,18 @@ module.exports = {
         const coupon = req.body;
         
         if (!req?.body?.ProductId)
-            return res.status(400).json({ 'message': 'ProductId parameter not specified.' });
+            return res.status(400).json({ 'error': 'Atrybut ProductId nie został określony' });
         const product = await Product.findByPk(req?.body?.ProductId);
         if (!product)
-            return res.status(404).json({ 'message': `No Product matching ID ${req?.body?.ProductId} has been found.` });
+            return res.status(404).json({ 'error': `Nie znaleziono produktu o ID ${req?.body?.ProductId}.` });
         const existstingCouponForProduct = await Coupon.findOne({ where: { ProductId: req.body.ProductId } });
         if(existstingCouponForProduct != null) 
-            return res.status(400).json({ 'message': `There already exists coupon for a product with ID ${req?.body?.ProductId}` });
-
-        var codeOk = 0;
-        var code = 0;
-        while (codeOk != 1) {   // generating unique code for a new Coupon
-            code = randomstring.generate({
-                length: 6,
-                charset: 'numeric'
-            });
-            const existstingCoupon = Coupon.findOne({ where: { code: code } });
-            if(existstingCoupon != null){
-                
-                codeOk = 1;
-            }
-        }
+            return res.status(400).json({ 'error': `Istnieje już kupon na produkt o ID ${req?.body?.ProductId}` });
+        if(req.body.value < 5 || req.body.value > 100) 
+            return res.status(400).json({ 'error': `Wartość kuponu jest niepoprawna` });
         
         await Coupon.create({
-            name: req?.body?.name ? req.body.name : "",
-            code: code,
+            name: req?.body?.name ? req.body.name : product.name + " -" + req?.body?.pointPrice + "%",
             value: req?.body?.value ? req.body.value : 0,
             pointPrice: req?.body?.pointPrice ? req.body.pointPrice : 100,
             isAvailable: req?.body?.isAvailable ? req.body.isAvailable : 1,
@@ -52,7 +39,6 @@ module.exports = {
         await Coupon.update(
             { 
                 name: req?.body?.name ? req.body.name : "",
-                // code: req?.body?.code ? req.body.code : code,    shouldn't be updatable (?)
                 value: req?.body?.value ? req.body.value : 0,
                 pointPrice: req?.body?.pointPrice ? req.body.pointPrice : 100,
                 isAvailable: req?.body?.isAvailable ? req.body.isAvailable : 1,
