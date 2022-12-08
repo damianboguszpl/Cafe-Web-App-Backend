@@ -17,7 +17,7 @@ module.exports = {
             return res.status(400).json({ 'error': `Wartość kuponu jest niepoprawna` });
         
         await Coupon.create({
-            name: req?.body?.name ? req.body.name : product.name + " -" + req?.body?.pointPrice + "%",
+            name: req?.body?.name ? req.body.name : product.name + " -" + req?.body?.value + "%",
             value: req?.body?.value ? req.body.value : 0,
             pointPrice: req?.body?.pointPrice ? req.body.pointPrice : 100,
             isAvailable: req?.body?.isAvailable ? req.body.isAvailable : 1,
@@ -35,13 +35,13 @@ module.exports = {
             if (!product)
                 return res.status(404).json({ 'message': `No Product matching ID ${req?.body?.ProductId} has been found.` });
         }
-
+        console.log(req?.body)
         await Coupon.update(
             { 
-                name: req?.body?.name ? req.body.name : "",
-                value: req?.body?.value ? req.body.value : 0,
-                pointPrice: req?.body?.pointPrice ? req.body.pointPrice : 100,
-                isAvailable: req?.body?.isAvailable ? req.body.isAvailable : 1,
+                name: req?.body?.name ? req.body.name : coupon.name,
+                value: req?.body?.value ? req.body.value : coupon.value,
+                pointPrice: req?.body?.pointPrice ? req.body.pointPrice : coupon.pointPrice,
+                isAvailable: req?.body?.isAvailable ? req.body.isAvailable : coupon.isAvailable,
                 ProductId: req.body.ProductId
             }, 
             {
