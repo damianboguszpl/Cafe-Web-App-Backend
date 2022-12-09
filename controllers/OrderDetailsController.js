@@ -1,4 +1,5 @@
-const { OrderDetails, OrderHeader, Product } = require("../db/models")
+const { OrderDetails, OrderHeader, Product, UserCoupon } = require("../db/models");
+// const UserCoupon = require("../db/models/UserCoupon");
 const { updateOrderFinalPrice } = require("./utils/updateOrderFinalPrice")
 
 module.exports = {
@@ -20,22 +21,47 @@ module.exports = {
             return res.status(404).json({ 'message': `No Product matching ID ${req?.body?.ProductId} has been found.` });
 
         const orderDetail = req.body;
-        const existstingItem = await OrderDetails.findOne({
-            where: { OrderHeaderId: orderDetail.OrderHeaderId, ProductId: orderDetail.ProductId }
+        orderDetail.transaction_price = orderDetail.transaction_price.toFixed(2);
+        const existstingNotCouponItem = await OrderDetails.findOne({
+            where: { OrderHeaderId: orderDetail.OrderHeaderId, ProductId: orderDetail.ProductId, isCoupon: false }
         });
-        if (!existstingItem || (req?.body?.isCoupon && req?.body?.isCoupon == true)) {
-            await OrderDetails.create(orderDetail);
+
+        
+
+        console.log(req?.body?.isCoupon)
+        if (!existstingNotCouponItem || (req?.body?.isCoupon && req?.body?.isCoupon == true)) {
+            if(req?.body?.UserCouponId != null) {
+                const existstingCouponItem = await OrderDetails.findOne({
+                    where: { OrderHeaderId: orderDetail.OrderHeaderId, UserCouponId: req.body.UserCouponId }
+                });
+                if(existstingCouponItem != null) {
+                    return res.status(400).json({ 'error': 'Ten kupon jest już dodany do zamówienia.' });
+                }
+                else {
+                    await OrderDetails.create(orderDetail);
+                    await UserCoupon.update({
+                        UserCouponStatusId: 2
+                    }, {
+                        where: { id: req.body.UserCouponId }
+                    });
+                }
+            }
+            else {
+                await OrderDetails.create(orderDetail);
+            }
+            
+
         }
         else {
             await OrderDetails.update(
                 {
                     transaction_price: req.body.transaction_price,
-                    quantity: existstingItem.quantity + req.body.quantity,
+                    quantity: existstingNotCouponItem.quantity + req.body.quantity,
                     OrderHeaderId: req.body.OrderHeaderId,
                     ProductId: req.body.ProductId,
-                    isCoupon: req?.body?.isCoupon ? req.body.isCoupon : 0
+                    isCoupon: req?.body?.isCoupon ? req.body.isCoupon : false
                 },
-                { where: { id: existstingItem.id } }
+                { where: { id: existstingNotCouponItem.id } }
             );
         }
         updateOrderFinalPrice(req.body.OrderHeaderId);
@@ -52,7 +78,7 @@ module.exports = {
         else {
             await OrderDetails.update(
                 {
-                    transaction_price: req?.body?.transaction_price ? req.body.transaction_price : this.transaction_price,
+                    transaction_price: req?.body?.transaction_price ? req?.body?.transaction_price?.toFixed(2) : this.transaction_price?.toFixed(2),
                     quantity: req?.body?.quantity ? req.body.quantity : this.quantity,
                     OrderHeaderId: req?.body?.OrderHeaderId ? req.body.OrderHeaderId : this.OrderHeaderId,
                     ProductId: req?.body?.ProductId ? req.body.ProductId : this.ProductId,
@@ -72,6 +98,13 @@ module.exports = {
             return res.status(404).json({ 'message': `No OrderDetails matching ID ${req.params.id} has been found.` });
         else {
             const orderHeaderId = orderDetail.OrderHeaderId;
+            if(orderDetail.UserCouponId != null) {
+                await UserCoupon.update({
+                    UserCouponStatusId: 1
+                }, {
+                    where: { id: orderDetail.UserCouponId }
+                });
+            }
             await OrderDetails.destroy({
                 where: { id: req.params.id }
             }
