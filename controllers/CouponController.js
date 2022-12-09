@@ -11,8 +11,8 @@ module.exports = {
         if (!product)
             return res.status(404).json({ 'error': `Nie znaleziono produktu o ID ${req?.body?.ProductId}.` });
         const existstingCouponForProduct = await Coupon.findOne({ where: { ProductId: req.body.ProductId } });
-        if(existstingCouponForProduct != null) 
-            return res.status(400).json({ 'error': `Istnieje już kupon na produkt o ID ${req?.body?.ProductId}` });
+        if(existstingCouponForProduct != null && existstingCouponForProduct.isAvailable === true) 
+            return res.status(400).json({ 'error': `Istnieje już aktywny kupon na produkt o ID ${req?.body?.ProductId}` });
         if(req.body.value < 5 || req.body.value > 100) 
             return res.status(400).json({ 'error': `Wartość kuponu jest niepoprawna` });
         
@@ -30,27 +30,53 @@ module.exports = {
         const coupon = await Coupon.findOne({ where: { id: req.params.id } });
         if(!coupon)
             return res.status(404).json({ 'message': `No coupon matching ID ${req.params.id} has been found.` });
+        var product = null;
         if(req?.body?.ProductId){
-            const product = await Product.findByPk(req.body.ProductId);
+            product = await Product.findByPk(req.body.ProductId);
             if (!product)
                 return res.status(404).json({ 'message': `No Product matching ID ${req?.body?.ProductId} has been found.` });
         }
-        console.log(req?.body)
+
+        var newIsAvailable = null;
+        var newProductId = null;
+        if(req?.body?.isAvailable === false) {
+            newIsAvailable = false;
+        }
+
+        const existstingCouponsForProduct = await Coupon.findAll({ where: { ProductId: req.body.ProductId } });
+        if(existstingCouponsForProduct != null && existstingCouponsForProduct.length) {
+            if(existstingCouponsForProduct.some(e => e.isAvailable === true && e.id !== coupon.id)) {
+                if (req?.body?.isAvailable === true) {
+                    return res.status(400).json({ 'error': `Istnieje już aktywny kupon na produkt o ID ${req.body.ProductId}` });
+                }
+                else {
+                    newIsAvailable = false;
+                    newProductId = req.body.ProductId;
+                }  
+            }
+            else {
+                newIsAvailable = req?.body?.isAvailable;
+                newProductId = req.body.ProductId;
+            }
+        }
+        else {
+            if (req?.body?.isAvailable === true)
+                newIsAvailable = true;
+            newProductId = req.body.ProductId;
+        }
+
         await Coupon.update(
             { 
-                name: req?.body?.name ? req.body.name : coupon.name,
-                value: req?.body?.value ? req.body.value : coupon.value,
-                pointPrice: req?.body?.pointPrice ? req.body.pointPrice : coupon.pointPrice,
-                isAvailable: req?.body?.isAvailable ? req.body.isAvailable : coupon.isAvailable,
-                ProductId: req.body.ProductId
+                name: req?.body?.name ? req.body.name : product.name + " -" + req?.body?.value + "%",
+                value: req?.body?.value !== coupon.value ? req.body.value : coupon.value,
+                pointPrice: req?.body?.pointPrice !== coupon.pointPrice ? req.body.pointPrice : coupon.pointPrice,
+                isAvailable: newIsAvailable !== null ? newIsAvailable : coupon.isAvailable,
+                ProductId: newProductId !== null ? newProductId : coupon.ProductId
             }, 
-            {
-            where: {
-                id: req.params.id
-            }
-            });
+            { where: { id: req.params.id } }
+        );
 
-        res.json("Updated successfully.");
+        return res.json("Updated successfully.");
     },
     
     delete: async (req,res) => {
