@@ -23,26 +23,40 @@ module.exports = {
         if (!userCouponStatus)
             return res.status(404).json({ 'message': `No userCouponStatus matching ID ${req?.body?.UserCouponStatusId} has been found.` });
      
-        var codeOk = 0;
-        var code = 0;
-        while (codeOk != 1) {   // generating unique code for a new Coupon
-            code = randomstring.generate({
-                length: 6,
-                charset: 'numeric'
+        if(coupon.isAvailable === false)
+            return res.status(404).json({ 'message': `Kupon z ID ${req?.body?.CouponId} nie jest dostępny.` });
+        if(user.points >= coupon.pointPrice) {
+            var codeOk = 0;
+            var code = 0;
+            while (codeOk != 1) {   // generating unique code for a new Coupon
+                code = randomstring.generate({
+                    length: 6,
+                    charset: 'numeric'
+                });
+                const existstingUserCoupon = UserCoupon.findOne({ where: { code: code } });
+                if(existstingUserCoupon != null)
+                    codeOk = 1;
+            }
+            
+            const userCoupon = await UserCoupon.create({
+                code: code,
+                expiration_date: req.body.expiration_date,
+                CouponId: req.body.CouponId,
+                UserId: req.body.UserId,
+                UserCouponStatusId: req.body.UserCouponStatusId
             });
-            const existstingUserCoupon = UserCoupon.findOne({ where: { code: code } });
-            if(existstingUserCoupon != null)
-                codeOk = 1;
+
+            await User.update({
+                points: user.points - coupon.pointPrice
+            },
+            { where: { id: user.id } });
+
+            return res.json(userCoupon);
+            
         }
-        
-        const userCoupon = await UserCoupon.create({
-            code: code,
-            expiration_date: req.body.expiration_date,
-            CouponId: req.body.CouponId,
-            UserId: req.body.UserId,
-            UserCouponStatusId: req.body.UserCouponStatusId
-        });
-        return res.json(userCoupon);
+        else {
+            return res.status(400).json({ 'error': 'Użytkownik nie ma wystarczającej liczby punktów.' });
+        }
     },
     // update UserCoupon
     update: async (req,res) => {
