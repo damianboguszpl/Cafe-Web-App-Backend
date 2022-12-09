@@ -1,4 +1,4 @@
-const { OrderHeader, OrderDetails, Review, Payment, User, OrderStatus, Table } = require("../db/models")
+const { OrderHeader, OrderDetails, Review, Payment, User, OrderStatus, Table, UserCoupon } = require("../db/models")
 
 module.exports = {
     // create new OrderHeader
@@ -104,6 +104,25 @@ module.exports = {
             },
             { where: { id: req.params.id } }
         );
+
+        if(req?.body?.OrderStatusId === 3) {
+            const details = await OrderDetails.findAll({ where: { OrderHeaderId: req.params.id, isCoupon: true } });
+            if(details != null) {
+                console.log(details)
+                details.forEach( (orderDetail) => {
+                    console.log(orderDetail)
+                    UserCoupon.update({
+                        UserCouponStatusId: 1
+                    }, {
+                        where: { id: orderDetail.UserCouponId }
+                    });
+                    OrderDetails.destroy({
+                        where: { id: orderDetail.id }
+                    })
+                });
+            }
+        }
+
         res.json("Updated successfully.");
     },
     
@@ -112,7 +131,7 @@ module.exports = {
         if(!orderHeader)
             return res.status(404).json({ 'message': `No OrderHeader matching Id ${req.params.id} has been found.` });
         else {
-            await OrderDetails.findAll({ where: { OrderHeaderId: req.params.id } });
+            // await OrderDetails.findAll({ where: { OrderHeaderId: req.params.id } });
             await OrderDetails.destroy({
                 where: { OrderHeaderId: req.params.id } }
             );
