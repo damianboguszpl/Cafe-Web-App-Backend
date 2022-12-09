@@ -71,7 +71,7 @@ module.exports = {
         });
         if(coupons != null) {
             const productsWithoutCoupons = products.filter(n => !products.filter( (product) => {
-                return coupons.some(e => e.ProductId === product.id)
+                return coupons.some(e => e.ProductId === product.id && e.isAvailable === true)
             }).includes(n))
             res.json(productsWithoutCoupons);
         }
