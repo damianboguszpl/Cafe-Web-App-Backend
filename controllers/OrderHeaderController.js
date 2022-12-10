@@ -1,4 +1,4 @@
-const { OrderHeader, OrderDetails, Review, Payment, User, OrderStatus, Table, UserCoupon } = require("../db/models")
+const { OrderHeader, OrderDetails, Review, Payment, User, OrderStatus, Table, UserCoupon, Product } = require("../db/models")
 
 module.exports = {
     // create new OrderHeader
@@ -164,7 +164,17 @@ module.exports = {
     },
     
     getByClientId: async (req, res) => {
-        const orderHeaders = await OrderHeader.findAll({ where: { ClientId: req.params.id } });
+        const orderHeaders = await OrderHeader.findAll({ 
+            where: { ClientId: req.params.id },
+            include: [{
+                model: OrderDetails,
+                attributes: ['id', 'transaction_price', 'quantity', 'isCoupon', 'ProductId', 'UserCouponId'],
+                include: [{
+                    model: Product,
+                    attributes: ['id', 'name', 'size', 'price', 'allergen', 'CategoryId', 'ProductStatusId']
+                }],
+            }],
+        });
         if(!orderHeaders.length)
             return res.status(204).json({ 'message': `No OrderHeaders matching ClientId ${req.params.id} have been found.` });
         res.json(orderHeaders);
