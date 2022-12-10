@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         OrderHeader.belongsTo(models.Table)
         OrderHeader.belongsTo(models.User, { as: 'Client' })
         OrderHeader.belongsTo(models.User, { as: 'Employee' })
+        OrderHeader.hasMany(models.OrderDetails)
     }
 
     return OrderHeader
