@@ -5,13 +5,13 @@ const saltRounds = 10
 
 module.exports = {
     getAll: async (req, res) => {
-        const users = await User.findAll();
+        const users = await User.findAll({ attributes: { exclude: ['password', 'refreshToken'] } });
         res.json(users);
     },
 
     getById: async (req, res) => {
         const id = req.params.id
-        const user = await User.findByPk(id);
+        const user = await User.findOne({ where: { id: id}, attributes: { exclude: ['password', 'refreshToken'] }  });
         res.json(user);
     },
 
@@ -119,6 +119,32 @@ module.exports = {
         }
     },
 
+    edit: async (req, res) => {
+        // if (!req?.body?.name)
+        //     return res.status(400).json({ 'message': 'Name parameter not specified.' });
+        const user = await User.findOne({ where: { id: req.params.id } });
+        if (!user)
+            return res.status(400).json({ 'message': `No user matching ID ${req.params.id} has been found.` });
+
+        if (!req?.body?.firstname && !req?.body?.lastname && !req?.body?.email && !req?.body?.phone && !req?.body?.sex && !req?.body?.RoleId)
+            return res.status(400).json({ 'message': 'None of the required parameters were passed.' });
+        else {
+            User.update(
+                {
+                    firstname: req?.body?.firstname ? req.body.firstname : this.firstname,
+                    lastname: req?.body?.lastname ? req.body.lastname : this.lastname,
+                    email: req?.body?.email ? req.body.email : this.email,
+                    phone: req?.body?.phone ? req.body.phone : this.phone,
+                    sex: req?.body?.sex ? req.body.sex : this.sex,
+                    // RoleId: req?.body?.RoleId ? req.body.RoleId : this.RoleId
+                },
+                { where: { id: req.params.id } }
+            ).then((result) => {
+                return res.json("Updated successfully.");
+            });
+        }
+    },
+
     login: async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ where: { email: email } });
@@ -187,21 +213,21 @@ module.exports = {
     // get user by email
     getByEmail: async (req, res) => {
         const email = req.params.email
-        const user = await User.findOne({ where: { email: email }, attributes: { exclude: ['password'] } });
+        const user = await User.findOne({ where: { email: email }, attributes: { exclude: ['password', 'refreshToken'] } });
         res.json(user);
     },
 
     // get user by phone
     getByPhone: async (req, res) => {
         const phone = req.params.phone
-        const user = await User.findOne({ where: { phone: phone }, attributes: { exclude: ['password'] } });
+        const user = await User.findOne({ where: { phone: phone }, attributes: { exclude: ['password', 'refreshToken'] } });
         res.json(user);
     },
 
     // get user by RoleId
     getByRoleId: async (req, res) => {
         const roleid = req.params.roleid
-        const users = await User.findAll({ where: { RoleId: roleid }, attributes: { exclude: ['password'] } });
+        const users = await User.findAll({ where: { RoleId: roleid }, attributes: { exclude: ['password', 'refreshToken'] } });
         res.json(users);
     }
 }

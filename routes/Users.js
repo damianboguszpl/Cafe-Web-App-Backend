@@ -20,8 +20,11 @@ router.post('/register', controller.register)
 // // create
 router.post('/', verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
 
-// Update Product
+// Update User
 router.put("/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.update)
+
+// Edit User
+router.put("/edit/:id", verifyJWT, controller.edit)
 
 // // login
 router.post('/login', controller.login)
