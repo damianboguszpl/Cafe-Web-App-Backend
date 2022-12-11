@@ -190,7 +190,7 @@ module.exports = {
                             }
                         },
                         process.env.ACCESS_TOKEN_SECRET,
-                        { expiresIn: '300s' }
+                        { expiresIn: '3600s' }
                     );
                     const refreshToken = sign(
                         {
