@@ -57,7 +57,7 @@ module.exports = {
                     // console.log("Expired resetCode deleted.");
                 }
                 else {
-                    return res.status(200).json({"message":"Email with Reset Code already sent. Code will be still valid for " + parseInt((codeValidTime - (now - createdAt))/1000,10) + " seconds."})
+                    return res.status(200).json({"message":"Wiadomość e-mail z kodem resetującym została już wysłana. Kod będzie jeszcze ważny przez " + parseInt((codeValidTime - (now - createdAt))/1000,10) + " sekund."})
                 }
             }
             else {
@@ -85,16 +85,16 @@ module.exports = {
                         },
                         "./templates/requestResetPassword.handlebars"
                     );
-                    return res.json({"message": "Email with Verification Code has been sent."})
+                    return res.json({"message": "Email z kodem resetującym hasło został wysłany."})
                 })
             });
         }
     },
 
     reset: async (req,res) => {
-        if (!req?.body?.email) { return res.status(400).json({ error: 'Email parameter not specified.' }); }
-        if (!req?.body?.resetCode) { return res.status(400).json({ error: 'ResetCode parameter not specified.' }); }
-        if (!req?.body?.password) { return res.status(400).json({ error: 'Password parameter not specified.' }); }
+        if (!req?.body?.email) { return res.status(400).json({ error: 'Atrybut Email nie został określony.' }); }
+        if (!req?.body?.resetCode) { return res.status(400).json({ error: 'Atrybut ResetCode nie został określony.' }); }
+        if (!req?.body?.password) { return res.status(400).json({ error: 'Atrybut Password nie został określony.' }); }
 
         const user = await User.findOne({ where: { email: req.body.email } });
         
@@ -108,12 +108,12 @@ module.exports = {
                 const now = new Date()
                 const codeValidTime = 5*60*1000;
                 if(!(codeValidTime > (now - createdAt))) {
-                    return res.status(403).json({ error: "ResetCode expired." });
+                    return res.status(400).json({ error: "Upłynął czas na zmianę hasła. Rozpocznij operację od początku." });
                 }
                 else {
                     bcrypt.compare(req.body.resetCode, password_reset_code.resetCode).then( async (match) => {
                         if (!match) {
-                            return res.status(403).json({ error: "ResetCode incorrect." });
+                            return res.status(400).json({ error: "Kod resetujący hasło jest niepoprawny." });
                         }
                         else {
                             bcrypt.hash(req.body.password, saltRounds).then((hash) => {
@@ -131,8 +131,8 @@ module.exports = {
                                         id: password_reset_code.id
                                     }
                                 })
-                                console.log("Expired resetCode deleted.");
-                                return res.json({ 'message': "Password has been updated."});
+                                // console.log("Expired resetCode deleted.");
+                                return res.json({ 'message': "Hasło zostało zaktualizowane."});
                             });
                         }
         
@@ -140,7 +140,7 @@ module.exports = {
                 }
             }
             else {
-                return res.status(403).json({ error: "ResetCode incorrect." });
+                return res.status(400).json({ error: "Kod resetujący hasło jest niepoprawny." });
             }
         }
     },
