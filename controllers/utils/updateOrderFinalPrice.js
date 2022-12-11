@@ -13,6 +13,5 @@ module.exports = {
             { finalPrice: orderPrice },
             { where: { id: orderHeaderId } }
         )
-        // return "finalPrice for given OrderHeader updated."
     }
 }

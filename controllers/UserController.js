@@ -37,7 +37,6 @@ module.exports = {
                         phone: phoneNumber,
                         sex: sex,
                         points: 0,
-                        // hourly_rate: 0,
                         password: hash,
                         RoleId: client_role.id // give user 'user' privileges by assigning 'user' role of an id = 1
                     })
@@ -48,8 +47,6 @@ module.exports = {
     },
 
     create: async (req, res) => {
-        // const { email, password, firstname, lastname, phoneNumber, sex, RoleId } = req.body;
-
         if (!req?.body?.email)
             return res.status(400).json({ 'message': 'email parameter not specified.' });
         if (!req?.body?.password)
@@ -85,7 +82,6 @@ module.exports = {
                 phone: req.body.phoneNumber,
                 sex: req.body.sex,
                 points: 0,
-                // hourly_rate: 0,
                 password: hash,
                 RoleId: req.body.RoleId
             })
@@ -94,8 +90,6 @@ module.exports = {
     },
 
     update: async (req, res) => {
-        // if (!req?.body?.name)
-        //     return res.status(400).json({ 'message': 'Name parameter not specified.' });
         const user = await User.findOne({ where: { id: req.params.id } });
         if (!user)
             return res.status(400).json({ 'message': `No user matching ID ${req.params.id} has been found.` });
@@ -131,8 +125,6 @@ module.exports = {
     },
 
     edit: async (req, res) => {
-        // if (!req?.body?.name)
-        //     return res.status(400).json({ 'message': 'Name parameter not specified.' });
         const user = await User.findOne({ where: { id: req.params.id } });
         if (!user)
             return res.status(400).json({ 'message': `No user matching ID ${req.params.id} has been found.` });
@@ -158,7 +150,6 @@ module.exports = {
                     email: req?.body?.email ? req.body.email : this.email,
                     phone: req?.body?.phone ? req.body.phone : this.phone,
                     sex: req?.body?.sex ? req.body.sex : this.sex,
-                    // RoleId: req?.body?.RoleId ? req.body.RoleId : this.RoleId
                 },
                 { where: { id: req.params.id } }
             ).then((result) => {
@@ -180,7 +171,6 @@ module.exports = {
                     res.status(400).json({ error: "Hasło jest niepoprawne" });
                 }
                 else {
-                    // req.session.user = user
 
                     const accessToken = sign(
                         {
@@ -201,52 +191,39 @@ module.exports = {
                         { expiresIn: '1d' }
                     );
 
-                    // user.refreshToken = refreshToken;
                     try {
                         const result = await User.update(
                             { refreshToken: refreshToken },
                             { where: { id: user.id } }
                         )
-                        // handleResult(result)
-                        // console.log("dodano Ref Tok")
+                        // console..log(result)
                     } catch (err) {
-                        // handleError(err)
-                        // console.log("Nie dodano ref tok")
+                        // console.log(err)
                     }
-
-                    // const result = await user.save();
-                    //save rt to db
 
                     // Creates Secure Cookie with refresh token
                     // secure na true jeśli będzie https                    WAŻNE
                     res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
 
-                    // res.json({ token: accessToken, email: user.email, RoleId: user.RoleId  });
                     res.json({ RoleId: user.RoleId, accessToken });
-
-
-                    // res.send(user)
                 }
 
             });
         }
     },
 
-    // get user by email
     getByEmail: async (req, res) => {
         const email = req.params.email
         const user = await User.findOne({ where: { email: email }, attributes: { exclude: ['password', 'refreshToken'] } });
         res.json(user);
     },
 
-    // get user by phone
     getByPhone: async (req, res) => {
         const phone = req.params.phone
         const user = await User.findOne({ where: { phone: phone }, attributes: { exclude: ['password', 'refreshToken'] } });
         res.json(user);
     },
 
-    // get user by RoleId
     getByRoleId: async (req, res) => {
         const roleid = req.params.roleid
         const users = await User.findAll({ where: { RoleId: roleid }, attributes: { exclude: ['password', 'refreshToken'] } });

@@ -105,13 +105,6 @@ module.exports = {
         res.json(coupon);
     },
     
-    // getByName: async (req, res) => {
-    //     const coupon = await Coupon.findOne({ where: { name: req.params.name } });
-    //     if(!coupon)
-    //         return res.status(204).json({ 'message': `No coupon matching Name '${req.params.name}' has been found.` });
-    //     res.json(coupon);
-    // },
-    
     getByProductId: async (req, res) => {
         const coupons = await Coupon.findAll({ where: { ProductId: req.params.id } });
         if (!coupons.length)

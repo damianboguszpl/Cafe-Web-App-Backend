@@ -1,9 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
     const SpecialOffer = sequelize.define("SpecialOffer", {
-        // is_available: {
-        //     type: DataTypes.TINYINT,
-        //     allowNull: false,
-        // },
         value: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -20,9 +16,6 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'special_offers'
     })
 
-    // SpecialOffer.associate = (models) => {
-    //     SpecialOffer.belongsTo(models.Product)
-    // }
 
     return SpecialOffer
 }

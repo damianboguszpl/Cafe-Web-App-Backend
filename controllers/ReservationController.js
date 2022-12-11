@@ -47,11 +47,6 @@ module.exports = {
         if (!reservation)
             return res.status(404).json({ 'message': `No Reservation matching Id ${req.params.id} has been found.` });
 
-        // if(req?.body?.ClientId && req?.body?.ClientId != null) {
-        //     const client = await User.findByPk(req?.body?.ClientId);
-        //     if(!client)
-        //         return res.status(404).json({ 'message': `No Client matching Id ${req?.body?.ClientId} has been found.` });
-        // }
         if (req?.body?.EmployeeId && req?.body?.EmployeeId != null) {
             const employee = await User.findByPk(req?.body?.EmployeeId);
             if (!employee)
@@ -72,7 +67,6 @@ module.exports = {
             {
                 date: req?.body?.date ? req.body.date : this.date,
                 ReservationStatusId: req?.body?.ReservationStatusId ? req.body.ReservationStatusId : this.ReservationStatusId,
-                // ClientId: req?.body?.ClientId ? req.body.ClientId : this.ClientId,   // Should ClientId be updatable ??
                 EmployeeId: req?.body?.EmployeeId ? req.body.EmployeeId : this.EmployeeId,
                 TableId: req?.body?.TableId ? req.body.TableId : this.TableId
             },

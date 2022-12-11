@@ -29,12 +29,6 @@ router.get("/:id", controller.getById)
 // Get Product by name
 router.get("/name/:name", controller.getByName)
 
-// Get available Products
-// router.get("/available", controller.getAvailable)
-
-// Get unavailable Products
-// router.get("/unavailable", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getUnavailable)
-
 // Get Products by ProductStatusId
 router.get("/status/:id", controller.getByProductStatusId)
 

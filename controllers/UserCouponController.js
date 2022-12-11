@@ -2,7 +2,6 @@ const { UserCoupon, User, Coupon, UserCouponStatus } = require("../db/models")
 var randomstring = require("randomstring");
 
 module.exports = {
-    // create new UserCoupon
     create: async (req,res) => {
         if (!req?.body?.CouponId)
             return res.status(400).json({ 'message': 'CouponId parameter not specified.' });
@@ -58,7 +57,7 @@ module.exports = {
             return res.status(400).json({ 'error': 'Użytkownik nie ma wystarczającej liczby punktów.' });
         }
     },
-    // update UserCoupon
+    
     update: async (req,res) => {
         if (!req?.body?.expiration_date && !req?.body?.CouponId && !req?.body?.UserId && !req?.body?.UserCouponStatusId)
             return res.status(400).json({ 'message': 'None of the required parameters were passed.' });
@@ -91,7 +90,7 @@ module.exports = {
 
         res.json("Updated successfully.");
     },
-    // delete UserCoupon
+    
     delete: async (req,res) => {
         // await UserCoupon.destroy({
         //     where: {
@@ -108,7 +107,7 @@ module.exports = {
             return res.status(204).json({ 'message': 'No UserCoupons found.' });
         res.json(userCoupons);
     },
-    // get UserCoupon /w specific id
+    
     getById: async (req, res) => {
         const userCoupon = await UserCoupon.findByPk(req.params.id);
         if(!userCoupon)
@@ -122,21 +121,21 @@ module.exports = {
             return res.status(204).json({ 'message': `No UserCoupon matching Code ${req.params.code} has been found.` });
         res.json(userCoupon);
     },
-    // get UserCoupons by UserId
+    
     getByUserId: async (req, res) => {
         const usercoupons = await UserCoupon.findAll({ where: { UserId: req.params.id } });
         if (!usercoupons.length)
             return res.status(204).json({ 'message': `No UserCoupons matching UserId ${req.params.UserId} have been found.` });
         res.json(usercoupons);
     },
-    // get UserCoupons by CouponId
+    
     getByCouponId: async (req, res) => {
         const usercoupons = await UserCoupon.findAll({ where: { CouponId: req.params.id } });
         if (!usercoupons.length)
             return res.status(204).json({ 'message': `No UserCoupons matching CouponId ${req.params.CouponId} have been found.` });
         res.json(usercoupons);
     },
-    // get UserCoupons by UserCouponStatusId
+    
     getByUserCouponStatusId: async (req, res) => {
         const usercoupons = await UserCoupon.findAll({ where: { UserCouponStatusId: req.params.id } });
         if (!usercoupons.length)

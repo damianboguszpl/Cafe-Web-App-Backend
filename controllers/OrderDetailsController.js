@@ -1,5 +1,4 @@
 const { OrderDetails, OrderHeader, Product, UserCoupon } = require("../db/models");
-// const UserCoupon = require("../db/models/UserCoupon");
 const { updateOrderFinalPrice } = require("./utils/updateOrderFinalPrice")
 
 module.exports = {
@@ -26,8 +25,6 @@ module.exports = {
             where: { OrderHeaderId: orderDetail.OrderHeaderId, ProductId: orderDetail.ProductId, isCoupon: false }
         });
 
-        
-
         console.log(req?.body?.isCoupon)
         if (!existstingNotCouponItem || (req?.body?.isCoupon && req?.body?.isCoupon == true)) {
             if(req?.body?.UserCouponId != null) {
@@ -49,8 +46,6 @@ module.exports = {
             else {
                 await OrderDetails.create(orderDetail);
             }
-            
-
         }
         else {
             await OrderDetails.update(
@@ -146,9 +141,6 @@ module.exports = {
             where: { OrderHeaderId: orderheaderid }
         }
         );
-        // i dont get err and orders with empty orderDetails array cause page error (not loading)
-        // if(!orderDetails.length)
-        //     return res.status(204).json({ 'message': `No OrderDetails matching OrderHeaderId ${req.params.id} have been found.` });
         res.json(orderDetails);
     },
 }

@@ -22,8 +22,6 @@ module.exports = (sequelize, DataTypes) => {
 
     Coupon.associate = (models) => {
         Coupon.belongsTo(models.Product)
-        // Coupon.belongsToMany(models.User, { through: "UserCoupon" })
-        // Coupon.belongsTo(models.UserCoupon)
     }
 
     return Coupon

@@ -54,7 +54,6 @@ module.exports = {
                             id: password_reset_code.id
                         }
                     })
-                    // console.log("Expired resetCode deleted.");
                 }
                 else {
                     return res.status(200).json({"message":"Wiadomość e-mail z kodem resetującym została już wysłana. Kod będzie jeszcze ważny przez " + parseInt((codeValidTime - (now - createdAt))/1000,10) + " sekund."})
@@ -74,8 +73,6 @@ module.exports = {
                     UserId: user.id
                 })
                 .then( (result) => {
-                    // console.log("New resetCode created.");
-                    
                     sendEmail(
                         user.email,
                         "Password Reset Request",
@@ -131,11 +128,9 @@ module.exports = {
                                         id: password_reset_code.id
                                     }
                                 })
-                                // console.log("Expired resetCode deleted.");
                                 return res.json({ 'message': "Hasło zostało zaktualizowane."});
                             });
                         }
-        
                     });
                 }
             }
