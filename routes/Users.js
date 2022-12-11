@@ -11,9 +11,6 @@ router.get('/', controller.getAll)
 // get User by id
 router.get('/:id', controller.getById)
 
-// update
-// router.put("/update/:id", controller.update)  // TO DO
-
 // // register
 router.post('/register', controller.register)
 
@@ -28,10 +25,6 @@ router.put("/edit/:id", verifyJWT, controller.edit)
 
 // // login
 router.post('/login', controller.login)
-
-// // validate login
-// router.get('/auth', validateToken, controller.validateToken)
-// router.post('/auth', controller.auth)
 
 // get Users by email
 router.get('/email/:email', verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByEmail)

@@ -1,8 +1,7 @@
 const { Product, SpecialOffer, Coupon } = require("../db/models");
-// const Coupon = require("../db/models/Coupon");
 
 module.exports = {
-    // create new Product
+    
     create: async (req,res) => {
         if (!req?.body?.name) { return res.status(400).json({ 'message': 'Name parameter not specified.' }); }
         if (!req?.body?.size) { return res.status(400).json({ 'message': 'Size parameter not specified.' }); }
@@ -14,7 +13,7 @@ module.exports = {
         await Product.create(product);
         res.json(product);
     },
-    // update Product
+    
     update: async (req,res) => {
         const id = req.params.id;
         const updated = await Product.update(
@@ -35,7 +34,7 @@ module.exports = {
 
         res.json("Updated successfully.");
     },
-    // delete Product
+    
     delete: async (req,res) => {
         const id = req.params.id;
         await Product.destroy({
@@ -45,12 +44,12 @@ module.exports = {
         })
         res.json("Deleted successfully.");
     },
-    // get all Products
+    
     getAll: async (req, res) => {
         const products = await Product.findAll();
         res.json(products);
     },
-    // get all Products with SpecialOffers
+    
     getAllWithSpecialOffers: async (req, res) => {
         const products = await Product.findAll({
             include: [{
@@ -60,7 +59,7 @@ module.exports = {
         });
         res.json(products);
     },
-    // get all Products with SpecialOffers that have no coupons
+    
     getAllWithoutCoupons: async (req, res) => {
         const coupons = await Coupon.findAll();
         const products = await Product.findAll({
@@ -78,34 +77,24 @@ module.exports = {
         else 
             res.json(products)
     },
-    // get Product /w specific id
+    
     getById: async (req, res) => {
         const id = req.params.id
         const product = await Product.findByPk(id);
         res.json(product);
     },
-    // get Product by name
+    
     getByName: async (req, res) => {
         const name = req.params.name
         const product = await Product.findOne({ where: { name: name } });
         res.json(product);
     },
-    // get available Products
-    // getAvailable: async (req, res) => {
-    //     const products = await Product.findAll({where: { is_available: true }})
-    //     res.json(products)
-    // },
-    // get unavailable Products
-    // getUnavailable: async (req, res) => {
-    //     const products = await Product.findAll({where: { is_available: false }})
-    //     res.json(products)
-    // },
-    // get Products by StatusId
+    
     getByProductStatusId: async (req, res) => {
         const products = await Product.findAll({ where: { ProductStatusId: req.params.id } });
         res.json(products);
     },
-    // get Products by CategoryId
+    
     getByCategoryId: async (req, res) => {
         const products = await Product.findAll({ where: { CategoryId: req.params.id } });
         res.json(products);

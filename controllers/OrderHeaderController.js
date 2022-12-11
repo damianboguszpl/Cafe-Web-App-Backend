@@ -1,66 +1,17 @@
 const { OrderHeader, OrderDetails, Review, Payment, User, OrderStatus, Table, UserCoupon, Product } = require("../db/models")
 
 module.exports = {
-    // create new OrderHeader
     create: async (req,res) => {
         const orderHeader = req.body;
-        // await OrderHeader.create(orderHeader);
-        // res.json(orderHeader);
         await OrderHeader.create(orderHeader).then(result => {
             res.json(result)
         });
     },
-    // update OrderHeader
-    // update: async (req,res) => {
-    //     const id = req.params.id;
-    //     const updated = await OrderHeader.update(
-    //         { 
-    //             ClientId: req.body.ClientId,
-    //             EmployeeId: req.body.EmployeeId,
-    //             ReviewId: req.body.ReviewId,
-    //             PaymentId: req.body.PaymentId,
-    //             OrderStatusId: req.body.OrderStatusId
-    //         },
-    //         {
-    //             where: {
-    //                 id: id
-    //             }
-    //         });
-
-    //     const employee = await User.findByPk(req?.body?.EmployeeId);
-    //     if(!employee)
-    //         return res.status(404).json({ 'message': `No Employee matching Id ${req?.body?.EmployeeId} has been found.` });
-        
-    //     if(req?.body?.ReviewId && req?.body?.ReviewId != null) {
-    //         const review = await Review.findByPk(req?.body?.ReviewId);
-    //         if(!review)
-    //             return res.status(404).json({ 'message': `No Review matching Id ${req?.body?.ReviewId} has been found.` });
-    //     }
-
-    //     // const payment = await Payment.findByPk(req?.body?.PaymentId);
-    //     // if(!payment)
-    //     //     return res.status(404).json({ 'message': `No Payment matching Id ${req?.body?.PaymentId} has been found.` });
-        
-    //     const orderStatus = await OrderStatus.findByPk(req?.body?.OrderStatusId);
-    //     if(!orderStatus)
-    //         return res.status(404).json({ 'message': `No OrderStatus matching Id ${req?.body?.OrderStatusId} has been found.` });
-        
-    //     if(req?.body?.TableId && req?.body?.TableId != null) {
-    //         const table = await Table.findByPk(req?.body?.TableId);
-    //         if(!table)
-    //             return res.status(404).json({ 'message': `No Table matching Id ${req?.body?.TableId} has been found.` });
-    //     }
-    //     const orderHeader = req.body;
-    //     await OrderHeader.create(orderHeader).then(result => res.json(result));
-    // },
     
     update: async (req, res) => {
         const orderHeader = await OrderHeader.findByPk(req.params.id);
         if(!orderHeader)
             return res.status(404).json({ 'message': `No OrderHeader matching Id ${req.params.id} has been found.` });
-        // if (!req?.body?.ClientId && !req?.body?.ReviewId && !req?.body?.TableId) 
-        // if (!req?.body?.ClientId && !req?.body?.ReviewId && !req?.body?.TableId) 
-        //     return res.status(400).json({ 'message': 'None of the required parameters were passed.' });
         
         if(req?.body?.ClientId && req?.body?.ClientId != null) {
             const client = await User.findByPk(req?.body?.ClientId);
@@ -131,7 +82,6 @@ module.exports = {
         if(!orderHeader)
             return res.status(404).json({ 'message': `No OrderHeader matching Id ${req.params.id} has been found.` });
         else {
-            // await OrderDetails.findAll({ where: { OrderHeaderId: req.params.id } });
             await OrderDetails.destroy({
                 where: { OrderHeaderId: req.params.id } }
             );

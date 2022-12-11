@@ -15,7 +15,7 @@ module.exports = {
         if(!review)
             return res.status(204).json({ 'message': `No Review matching ID ${req.params.id} has been found.` });
         
-        if (!req?.body?.title || !req?.body?.body) // both parameters are required
+        if (!req?.body?.title || !req?.body?.body)
             return res.status(400).json({ 'message': 'Required parameters Title and Body were not passed.' });
         
         const id = req.params.id;

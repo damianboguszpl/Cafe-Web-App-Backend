@@ -40,10 +40,6 @@ module.exports = (sequelize, DataTypes) => {
 
     User.associate = (models) => {
         User.belongsTo(models.Role)
-        // User.hasMany(models.Reservation)
-
-        // User.belongsToMany(models.Coupon, { through: "UserCoupon" }) // Automatyczna relacja m:n z tabelą łączącą nie pozwala na duplikaty, czyli user nie mógłby mieć kilku takich samych kuponów
-        // User.belongsTo(models.UserCoupon)
     }
 
     return User
