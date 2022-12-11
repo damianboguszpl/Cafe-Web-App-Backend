@@ -103,6 +103,17 @@ module.exports = {
         if (!req?.body?.firstname && !req?.body?.lastname && !req?.body?.email && !req?.body?.phone && !req?.body?.sex && !req?.body?.RoleId)
             return res.status(400).json({ 'message': 'None of the required parameters were passed.' });
         else {
+            if(req?.body?.email) {
+                var user2 = await User.findOne({ where: { email: req.body.email } });
+                if (user2 && req.body.email != user.email)
+                    return res.status(400).json({ error: "Podany adres email jest już zajęty." });
+            }
+            if(req?.body?.phone) {
+                user2 = await User.findOne({ where: { phone: req.body.phone } });
+                if (user2 && req.body.phone != user.phone)
+                    return res.status(400).json({ error: "Podany numer telefonu jest już zajęty." });
+            }
+            
             User.update(
                 {
                     firstname: req?.body?.firstname ? req.body.firstname : this.firstname,
@@ -125,10 +136,21 @@ module.exports = {
         const user = await User.findOne({ where: { id: req.params.id } });
         if (!user)
             return res.status(400).json({ 'message': `No user matching ID ${req.params.id} has been found.` });
-
+        
         if (!req?.body?.firstname && !req?.body?.lastname && !req?.body?.email && !req?.body?.phone && !req?.body?.sex && !req?.body?.RoleId)
             return res.status(400).json({ 'message': 'None of the required parameters were passed.' });
         else {
+            if(req?.body?.email) {
+                var user2 = await User.findOne({ where: { email: req.body.email } });
+                if (user2 && req.body.email != user.email)
+                    return res.status(400).json({ error: "Podany adres email jest już zajęty." });
+            }
+            if(req?.body?.phone) {
+                user2 = await User.findOne({ where: { phone: req.body.phone } });
+                if (user2 && req.body.phone != user.phone)
+                    return res.status(400).json({ error: "Podany numer telefonu jest już zajęty." });
+            }
+
             User.update(
                 {
                     firstname: req?.body?.firstname ? req.body.firstname : this.firstname,
