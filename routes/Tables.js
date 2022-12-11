@@ -9,7 +9,7 @@ const ROLE_LIST = require('../config/role_list')
 router.post("/", verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
 
 // Update Table
-router.put("/update/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.update)
+router.put("/update/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.update)
 
 // Delete Table 
 router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin), controller.delete)
