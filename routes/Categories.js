@@ -17,6 +17,9 @@ router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin), controller.delete)
 // Get all Categories
 router.get("/", controller.getAll)
 
+// Get all Categories
+router.get("/notempty", controller.getAllNotEmpty)
+
 // Get Category by id
 router.get("/:id", controller.getById)
 
