@@ -46,6 +46,27 @@ module.exports = {
         res.json(categories);
     },
     
+    getAllNotEmpty: async (req, res) => {
+        const categories = await Category.findAll({
+            include: [{
+                model: Product,
+                attributes: ['id', 'name', 'size', 'price', 'allergen', 'CategoryId', 'ProductStatusId']
+            }],
+        });
+        if (!categories.length) 
+            return res.status(204).json({ 'error': 'No categories found.' });
+        var filteredCategories = categories.filter((category) => {
+            return category.Products.length > 0
+        })
+        const categoriesToReturn = filteredCategories.map((category) => {
+            return {
+              'id':category.id,
+              'name':category.name
+            }
+          });
+        res.json(categoriesToReturn);
+    },
+
     getById: async (req, res) => {
         if (!req?.params?.id)
             return res.status(204).json({ 'error': 'Category ID required.' });
