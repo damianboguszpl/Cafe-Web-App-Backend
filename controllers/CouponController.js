@@ -23,7 +23,7 @@ module.exports = {
             isAvailable: req?.body?.isAvailable ? req.body.isAvailable : 1,
             ProductId: req.body.ProductId
         });
-        return res.json(coupon);
+        return res.status(201).json({ 'message' : `Utworzono nowy kupon`});
     },
     
     update: async (req,res) => {
