@@ -14,11 +14,20 @@ module.exports = {
             return res.status(400).json({ 'error': 'Produkt o podanej nazwie już istnieje.' });
 
         const newProduct = await Product.create(req.body);
-        return res.status(201).json({ 'message' : `Dodano nowy produkt`, 'data': newProduct});
+        return res.status(201).json({ 'message' : `Dodano nowy produkt.`, 'data': newProduct});
     },
     
     update: async (req,res) => {
-        const id = req.params.id;
+        const product = await Product.findOne({ where: { id: req.params.id } });
+        if(!product)
+            return res.status(400).json({ 'error': `Nie znaleziono produktu o Id ${req.params.id}.` });
+
+        if(req?.body?.name) {
+            const product2 = await Product.findOne({where:{name: req.body.name}});
+            if (product2 && req.body.name != product.name)
+                return res.status(400).json({ 'error': 'Produkt o podanej nazwie już istnieje.' });
+        }
+
         const updated = await Product.update(
             { 
                 name: req.body.name,
@@ -29,22 +38,17 @@ module.exports = {
                 CategoryId: req.body.CategoryId,
                 ProductStatusId: req.body.ProductStatusId
             }, 
-            {
-            where: {
-                id: id
-            }
-            });
+            { where: { id: req.params.id } }
+        );
 
-        res.json("Produkt został zaktualizowany.");
+        res.json({'message' : `Zaktualizowano produkt.`});
     },
     
     delete: async (req,res) => {
         const id = req.params.id;
-        await Product.destroy({
-            where: {
-                id: id
-            }
-        })
+        await Product.destroy(
+            { where: { id: id } }
+        );
         res.json("Deleted successfully.");
     },
     

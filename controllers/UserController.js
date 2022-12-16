@@ -119,7 +119,7 @@ module.exports = {
                 },
                 { where: { id: req.params.id } }
             ).then((result) => {
-                return res.json("Updated successfully.");
+                res.json({'message' : `Zaktualizowano dane użytkownika.`});
             });
         }
     },
@@ -153,7 +153,7 @@ module.exports = {
                 },
                 { where: { id: req.params.id } }
             ).then((result) => {
-                return res.json("Updated successfully.");
+                res.json({'message' : `Zaktualizowano dane użytkownika.`});
             });
         }
     },

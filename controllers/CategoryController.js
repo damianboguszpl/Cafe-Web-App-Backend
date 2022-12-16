@@ -14,24 +14,29 @@ module.exports = {
 
     update: async (req,res) => {
         if (!req?.body?.name)
-            return res.status(400).json({ 'error': 'Name parameter not specified.' });
-        const category = await Category.findOne({ where: { id: req.params.id } });
-        if(!category)
-            return res.status(204).json({ 'error': `No category matching ID ${req.params.id} has been found.` });
+            return res.status(400).json({ 'error': 'Nie określono nazwy kategorii.' });
+        const categoryToEdit = await Category.findOne({ where: { id: req.params.id } });
+        if(!categoryToEdit)
+            return res.status(400).json({ 'error': `Nie znaleziono kategorii o Id ${req.params.id}` });
+
+        const category = await Category.findOne({where:{name: req.body.name}});
+        if (category && req.body.name != categoryToEdit.name)
+            return res.status(400).json({ 'error': 'Kategoria o podanej nazwie już istnieje.' });
+
         await Category.update(
             { name: req.body.name }, 
             { where: { id: req.params.id} }
         );
-        res.json({ 'message': "Updated successfully." });
+        res.json({'message' : `Zaktualizowano kategorię.`});
     },
 
     delete: async (req,res) => {
         const category = await Category.findOne({ where: { id: req.params.id } });
         if(!category)
-            return res.status(204).json({ 'error': `No category matching ID ${req.params.id} has been found.` });
+            return res.status(400).json({ 'error': `No category matching ID ${req.params.id} has been found.` });
         const anyProduct = await Product.findOne({ where: { CategoryId: req.params.id } });
         if(anyProduct)
-            return res.status(204).json({ 'error': 'Category you tried to delete is used by at least 1 Product.' });
+            return res.status(400).json({ 'error': 'Category you tried to delete is used by at least 1 Product.' });
         
         await Category.destroy(
             { where: { id: req.params.id } }

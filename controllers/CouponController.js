@@ -46,8 +46,8 @@ module.exports = {
         const existstingCouponsForProduct = await Coupon.findAll({ where: { ProductId: req.body.ProductId } });
         if(existstingCouponsForProduct != null && existstingCouponsForProduct.length) {
             if(existstingCouponsForProduct.some(e => e.isAvailable === true && e.id !== coupon.id)) {
-                if (req?.body?.isAvailable === true) {
-                    return res.status(400).json({ 'error': `Istnieje już aktywny kupon na produkt o ID ${req.body.ProductId}` });
+                if (req?.body?.isAvailable === 'true') {
+                    return res.status(400).json({ 'error': `Istnieje już aktywny kupon na produkt '${product.name}'` });
                 }
                 else {
                     newIsAvailable = false;
@@ -76,7 +76,7 @@ module.exports = {
             { where: { id: req.params.id } }
         );
 
-        return res.json("Updated successfully.");
+        res.json({'message' : `Zaktualizowano kupon.`});
     },
     
     delete: async (req,res) => {
