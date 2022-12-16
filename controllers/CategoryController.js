@@ -3,13 +3,13 @@ const { Category, Product } = require("../db/models")
 module.exports = {
     create: async (req,res) => {
         if (!req?.body?.name)
-            return res.status(400).json({ 'error': 'Name parameter not specified.' });
+            return res.status(400).json({ 'error': 'Nie określono nazwy kategorii.' });
         const category = await Category.findOne({ where: { name: req.body.name } });
         if(category)
-            return res.status(400).json({ 'error': 'Category with same Name already exists.' });
-        const newCategory = req.body;
-        await Category.create(newCategory);
-        res.json(newCategory);
+            return res.status(400).json({ 'error': 'Kategoria o podanej nazwie już istnieje.' });
+
+        const newCategory = await Category.create(req.body);
+        return res.status(201).json({ 'message' : `Dodano nową kategorię.`, 'data': newCategory});
     },
 
     update: async (req,res) => {
