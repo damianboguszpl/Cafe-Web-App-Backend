@@ -3,15 +3,18 @@ const { Product, SpecialOffer, Coupon } = require("../db/models");
 module.exports = {
     
     create: async (req,res) => {
-        if (!req?.body?.name) { return res.status(400).json({ 'message': 'Name parameter not specified.' }); }
-        if (!req?.body?.size) { return res.status(400).json({ 'message': 'Size parameter not specified.' }); }
-        if (!req?.body?.price) { return res.status(400).json({ 'message': 'Price parameter not specified.' }); }
-        if (!req?.body?.CategoryId) { return res.status(400).json({ 'message': 'CategoryId parameter not specified.' }); }
-        if (!req?.body?.ProductStatusId) { return res.status(400).json({ 'message': 'ProductStatusId parameter not specified.' }); }
+        if (!req?.body?.name) { return res.status(400).json({ 'error': 'Nie określono nazwy produktu.' }); }
+        if (!req?.body?.size) { return res.status(400).json({ 'error': 'Nie określono rozmiaru produktu.' }); }
+        if (!req?.body?.price) { return res.status(400).json({ 'error': 'Nie określono ceny produktu.' }); }
+        if (!req?.body?.CategoryId) { return res.status(400).json({ 'error': 'Nie określono kategorii produktu.' }); }
+        if (!req?.body?.ProductStatusId) { return res.status(400).json({ 'error': 'Nie określono statusu produktu.' }); }
 
-        const product = req.body;
-        await Product.create(product);
-        res.json(product);
+        const existingProduct = await Product.findOne({where:{name: req.body.name}})
+        if (existingProduct) 
+            return res.status(400).json({ 'error': 'Produkt o podanej nazwie już istnieje.' });
+
+        const newProduct = await Product.create(req.body);
+        return res.status(201).json({ 'message' : `Dodano nowy produkt`, 'data': newProduct});
     },
     
     update: async (req,res) => {
@@ -32,7 +35,7 @@ module.exports = {
             }
             });
 
-        res.json("Updated successfully.");
+        res.json("Produkt został zaktualizowany.");
     },
     
     delete: async (req,res) => {
