@@ -15,22 +15,17 @@ module.exports = {
                 start_date: req.body.start_date,
                 end_date: req.body.end_date
             },
-            {
-                where: {
-                    id: id
-                }
-            });
+            { where: { id: id } }
+        );
 
-        res.json("Updated successfully.");
+        res.json({'message' : `Zaktualizowano promocję.`});
     },
     
     delete: async (req, res) => {
         const id = req.params.id;
-        await SpecialOffer.destroy({
-            where: {
-                id: id
-            }
-        })
+        await SpecialOffer.destroy(
+            { where: { id: id } }
+        );
         res.json("Deleted successfully.");
     },
     
