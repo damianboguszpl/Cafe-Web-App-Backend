@@ -46,8 +46,7 @@ module.exports = {
     },
     
     getByProductId: async (req, res) => {
-        const productid = req.params.productid
-        const orderDetails = await SpecialOffer.findAll({ where: { ProductId: productid } });
+        const orderDetails = await SpecialOffer.findAll({ where: { ProductId: req.params.id } });
         res.json(orderDetails);
     },
     
