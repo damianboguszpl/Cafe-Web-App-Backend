@@ -23,6 +23,9 @@ router.put("/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.update)
 // Edit User
 router.put("/edit/:id", verifyJWT, controller.edit)
 
+// Edit User
+router.put("/changepassword/:id", verifyJWT, controller.changePassword)
+
 // // login
 router.post('/login', controller.login)
 
