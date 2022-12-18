@@ -212,6 +212,42 @@ module.exports = {
         }
     },
 
+    changePassword: async (req,res) => {
+        const { password, newPassword } = req.body;
+        const user = await User.findOne({ where: { id: req.params.id } });
+
+        if (!req?.body?.password)
+            return res.status(400).json({ 'error': 'Nie wysłano hasła.' });
+        if (!req?.body?.newPassword)
+            return res.status(400).json({ 'error': 'Nie wysłano nowego hasła.' });
+
+        if (!user) {
+            res.status(400).json({ error: "Użytkownik nie istnieje" });
+        }
+        else {
+            bcrypt.compare(password, user.password).then(async (match) => {
+                if (!match) {
+                    return res.status(400).json({ error: "Stare hasło jest niepoprawne" });
+                }
+                else {
+                    try {
+                        bcrypt.hash(newPassword, saltRounds).then((hash) => {
+                            User.update(
+                                { password: hash },
+                                { where: { id: user.id } }
+                            )
+                        })
+                        return res.status(200).json({ 'message': "Hasło zostało zmienione" });
+                        // console..log(result)
+                    } catch (err) {
+                        // console.log(err)
+                        return res.status(400).json({ error: err});
+                    }
+                }
+            });
+        }
+    },
+
     getByEmail: async (req, res) => {
         const email = req.params.email
         const user = await User.findOne({ where: { email: email }, attributes: { exclude: ['password', 'refreshToken'] } });
