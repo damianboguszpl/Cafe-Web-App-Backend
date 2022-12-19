@@ -32,9 +32,6 @@ router.get("/employee/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.emp
 // Get OrderHeader by OrderStatusId
 router.get("/orderstatus/:id", verifyJWT, controller.getByOrderStatusId)
 
-// Get OrderHeader by ReviewId
-router.get("/review/:id", verifyJWT, controller.getByReviewId)
-
 // Get OrderHeader by TableId
 router.get("/table/:id", verifyJWT, controller.getByTableId)
 

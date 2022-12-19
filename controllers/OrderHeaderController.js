@@ -1,4 +1,4 @@
-const { OrderHeader, OrderDetails, Review, Payment, User, OrderStatus, Table, UserCoupon, Product } = require("../db/models")
+const { OrderHeader, OrderDetails, Payment, User, OrderStatus, Table, UserCoupon, Product } = require("../db/models")
 
 module.exports = {
     create: async (req,res) => {
@@ -23,11 +23,6 @@ module.exports = {
             if(!employee)
                 return res.status(404).json({ 'message': `Nie znaleziono Pracownika o Id ${req?.body?.EmployeeId}.` });
         }
-        if(req?.body?.ReviewId && req?.body?.ReviewId != null) {
-            const review = await Review.findByPk(req?.body?.ReviewId);
-            if(!review)
-                return res.status(404).json({ 'message': `Nie znaleziono Recenzji o Id ${req?.body?.ReviewId}.` });
-        }
         if(req?.body?.PaymentId && req?.body?.PaymentId != null) {
             const payment = await Payment.findByPk(req?.body?.PaymentId);
             if(!payment)
@@ -47,7 +42,6 @@ module.exports = {
             {
                 ClientId: req?.body?.ClientId ? req.body.ClientId : this.ClientId,
                 EmployeeId: req?.body?.EmployeeId ? req.body.EmployeeId : this.EmployeeId,
-                ReviewId: req?.body?.ReviewId ? req.body.ReviewId : this.ReviewId,
                 PaymentId: req?.body?.PaymentId ? req.body.PaymentId: this.PaymentId,
                 OrderStatusId: req?.body?.OrderStatusId ? req.body.OrderStatusId : this.OrderStatusId,
                 TableId: req?.body?.TableId ? req.body.TableId : this.TableId,
@@ -141,13 +135,6 @@ module.exports = {
         const orderHeaders = await OrderHeader.findAll({ where: { OrderStatusId: req.params.id } });
         if(!orderHeaders.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych Zamówień ze Statusem o Id ${req.params.id}.` });
-        res.json(orderHeaders);
-    },
-    
-    getByReviewId: async (req, res) => {
-        const orderHeaders = await OrderHeader.findAll({ where: { ReviewId: req.params.id } });
-        if(!orderHeaders.length)
-            return res.status(404).json({ 'message': `Nie znaleziono Zamówienia z Recenzją o Id ${req.params.id}.` });
         res.json(orderHeaders);
     },
     
