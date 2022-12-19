@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
     })
 
     OrderHeader.associate = (models) => {
-        OrderHeader.belongsTo(models.Review)
         OrderHeader.belongsTo(models.Payment)
         OrderHeader.belongsTo(models.OrderStatus)
         OrderHeader.belongsTo(models.Table)
