@@ -4,18 +4,18 @@ const { Reservation, Table, ReservationStatus, User } = require("../db/models")
 module.exports = {
     create: async (req, res) => {
         if (!req?.body?.date)
-            return res.status(400).json({ 'message': 'Date parameter not specified.' });
+            return res.status(400).json({ 'message': 'Nie podano daty.' });
         if (!req?.body?.TableId)
-            return res.status(400).json({ 'message': 'TableId parameter not specified.' });
+            return res.status(400).json({ 'message': 'Nie podano Id Stolika.' });
 
         const reservationStatus = await ReservationStatus.findByPk(req?.body?.ReservationStatusId);
         if (!reservationStatus)
-            return res.status(404).json({ 'message': `No ReservationStatus matching Id ${req?.body?.ReservationStatusId} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Statusu Rezerwacji o Id ${req?.body?.ReservationStatusId}.` });
 
         if (req?.body?.ClientId && req?.body?.ClientId != null) {
             const client = await User.findByPk(req?.body?.ClientId);
             if (!client) {
-                return res.status(404).json({ 'message': `No Client matching Id ${req.body.ClientId} has been found.` });
+                return res.status(404).json({ 'message': `Nie znaleziono Klienta o Id ${req.body.ClientId}.` });
             }
             else {
                 const existingReservation = await Reservation.findOne({ where: { ClientId: req.body.ClientId } });
@@ -23,7 +23,7 @@ module.exports = {
                 if (existingReservation != null) {
                     const existingReservationStatus = await ReservationStatus.findOne({ where: { id: existingReservation.ReservationStatusId } });
                     if (existingReservationStatus.name != "Zakończona")
-                        return res.status(404).json({ 'message': `Client having Id ${req.body.ClientId} already has pending reservation.` });
+                        return res.status(404).json({ 'message': `Klient o Id ${req.body.ClientId} ma już aktywną Rezerwację.` });
                 }
             }
 
@@ -32,12 +32,12 @@ module.exports = {
         if (req?.body?.EmployeeId && req?.body?.EmployeeId != null) {
             const employee = await User.findByPk(req?.body?.EmployeeId);
             if (!employee)
-                return res.status(404).json({ 'message': `No Employee matching Id ${req?.body?.EmployeeId} has been found.` });
+                return res.status(404).json({ 'message': `Nie znaleziono Pracownika o Id ${req?.body?.EmployeeId}.` });
         }
 
         const table = await Table.findByPk(req?.body?.TableId);
         if (!table)
-            return res.status(404).json({ 'message': `No Table matching Id ${req?.body?.TableId} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Stolika o Id ${req?.body?.TableId}.` });
 
         await Reservation.create(req.body).then(result => res.json(result));
     },
@@ -45,22 +45,22 @@ module.exports = {
     update: async (req, res) => {
         const reservation = await Reservation.findByPk(req.params.id);
         if (!reservation)
-            return res.status(404).json({ 'message': `No Reservation matching Id ${req.params.id} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Rezerwacji o Id ${req.params.id} .` });
 
         if (req?.body?.EmployeeId && req?.body?.EmployeeId != null) {
             const employee = await User.findByPk(req?.body?.EmployeeId);
             if (!employee)
-                return res.status(404).json({ 'message': `No Employee matching Id ${req?.body?.EmployeeId} has been found.` });
+                return res.status(404).json({ 'message': `Nie znaleziono Pracownika o Id ${req?.body?.EmployeeId}.` });
         }
         if (req?.body?.ReservationStatusId && req?.body?.ReservationStatusId != null) {
             const reservationStatus = await ReservationStatus.findByPk(req?.body?.ReservationStatusId);
             if (!reservationStatus)
-                return res.status(404).json({ 'message': `No ReservationStatus matching Id ${req?.body?.ReservationStatusId} has been found.` });
+                return res.status(404).json({ 'message': `Nie znaleziono Statusu Rezerwacji o Id ${req?.body?.ReservationStatusId}.` });
         }
         if (req?.body?.TableId && req?.body?.TableId != null) {
             const table = await Table.findByPk(req?.body?.TableId);
             if (!table)
-                return res.status(404).json({ 'message': `No Table matching Id ${req?.body?.TableId} has been found.` });
+                return res.status(404).json({ 'message': `Nie znaleziono Stolika o Id ${req?.body?.TableId}.` });
         }
 
         await Reservation.update(
@@ -72,31 +72,31 @@ module.exports = {
             },
             { where: { id: req.params.id } }
         );
-        res.json("Updated successfully.");
+        res.json({'message': `Zaktualizowano Rezerwację.`});
     },
 
     delete: async (req, res) => {
         const reservation = await Reservation.findByPk(req.params.id);
         if (!reservation)
-            return res.status(404).json({ 'message': `No Reservation matching Id ${req.params.id} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Rezerwacji o Id ${req.params.id}.` });
         await Reservation.destroy({
             where: { id: req.params.id }
         }
         );
-        res.json("Deleted successfully.");
+        res.json({'message': `Usunięto Rezerwację.`});
     },
 
     getAll: async (req, res) => {
         const reservations = await Reservation.findAll();
         if (!reservations.length)
-            return res.status(204).json({ 'message': 'No Reservations found.' });
+            return res.status(404).json({ 'message': 'Nie znaleziono żadnych Rezerwacji.' });
         res.json(reservations);
     },
 
     getById: async (req, res) => {
         const reservation = await Reservation.findOne({ where: { id: req.params.id } });
         if (!reservation)
-            return res.status(204).json({ 'message': `No Reservation matching Id ${req.params.id} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Rezerwacji o Id ${req.params.id}.` });
 
         res.json(reservation);
     },
@@ -104,14 +104,14 @@ module.exports = {
     getByClientId: async (req, res) => {
         const reservations = await Reservation.findAll({ where: { ClientId: req.params.id } });
         if (!reservations.length)
-            return res.status(204).json({ 'message': `No Reservations matching ClientId ${req.params.id} have been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono żadnych Rezerwacji Klienta o Id ${req.params.id}.` });
         res.json(reservations);
     },
 
     getByEmployeeId: async (req, res) => {
         const reservations = await Reservation.findAll({ where: { EmployeeId: req.params.id } });
         if (!reservations.length)
-            return res.status(204).json({ 'message': `No Reservations matching EmployeeId ${req.params.id} have been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono żadnych Rezerwacji przypisanych do Pracownika o Id ${req.params.id}.` });
         res.json(reservations);
     },
 
@@ -128,14 +128,14 @@ module.exports = {
             }],
             where: { ReservationStatusId: req.params.id } });
         if (!reservations.length)
-            return res.status(204).json({ 'message': `No reservations matching ReservationStatusId ${req.params.id} have been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono żadnych Rezerwacji ze Statusem Rezerwacji o Id ${req.params.id}.` });
         res.json(reservations);
     },
 
     getByTableId: async (req, res) => {
         const reservations = await Reservation.findAll({ where: { TableId: req.params.id } });
         if (!reservations.length)
-            return res.status(204).json({ 'message': `No Reservations matching TableId ${req.params.id} have been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono żadnych Rezerwacji na Stolik o Id ${req.params.id}.` });
         res.json(reservations);
     },
 }

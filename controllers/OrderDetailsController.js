@@ -4,20 +4,20 @@ const { updateOrderFinalPrice } = require("./utils/updateOrderFinalPrice")
 module.exports = {
     create: async (req, res) => {
         if (!req?.body?.transaction_price)
-            return res.status(400).json({ 'message': 'transaction_price parameter not specified.' });
+            return res.status(400).json({ 'message': 'Nie podano ceny.' });
         if (!req?.body?.quantity)
-            return res.status(400).json({ 'message': 'quantity parameter not specified.' });
+            return res.status(400).json({ 'message': 'Nie podano ilości.' });
         if (!req?.body?.OrderHeaderId)
-            return res.status(400).json({ 'message': 'OrderHeaderId parameter not specified.' });
+            return res.status(400).json({ 'message': 'Nie podano Id Zamówienia.' });
         if (!req?.body?.ProductId)
-            return res.status(400).json({ 'message': 'ProductId parameter not specified.' });
+            return res.status(400).json({ 'message': 'Nie podano Id Produktu.' });
 
         const orderHeader = await OrderHeader.findByPk(req?.body?.OrderHeaderId);
         if (!orderHeader)
-            return res.status(404).json({ 'message': `No OrderHeader matching ID ${req?.body?.OrderHeaderId} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Zamówienia o Id ${req?.body?.OrderHeaderId}.` });
         const product = await Product.findByPk(req?.body?.ProductId);
         if (!product)
-            return res.status(404).json({ 'message': `No Product matching ID ${req?.body?.ProductId} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Produktu o Id ${req?.body?.ProductId}.` });
 
         const orderDetail = req.body;
         orderDetail.transaction_price = orderDetail.transaction_price.toFixed(2);
@@ -32,7 +32,7 @@ module.exports = {
                     where: { OrderHeaderId: orderDetail.OrderHeaderId, UserCouponId: req.body.UserCouponId }
                 });
                 if(existstingCouponItem != null) {
-                    return res.status(400).json({ 'error': 'Ten kupon jest już dodany do zamówienia.' });
+                    return res.status(400).json({ 'error': 'Ten Kupon jest już dodany do Zamówienia.' });
                 }
                 else {
                     await OrderDetails.create(orderDetail);
@@ -66,10 +66,10 @@ module.exports = {
     update: async (req, res) => {
         const orderDetail = await OrderDetails.findByPk(req.params.id);
         if (!orderDetail)
-            return res.status(404).json({ 'message': `No OrderDetails matching ID ${req.params.id} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Składnika Zamówienia o Id ${req.params.id}.` });
 
         if (!req?.body?.transaction_price && !req?.body?.quantity && !req?.body?.OrderHeaderId && !req?.body?.ProductId && !req?.body?.isCoupon)
-            return res.status(400).json({ 'message': 'None of the required parameters were passed.' });
+            return res.status(400).json({ 'message': 'Nie podano wymaganych danych.' });
         else {
             await OrderDetails.update(
                 {
@@ -83,14 +83,14 @@ module.exports = {
             );
             const orderDetails = await OrderDetails.findByPk(req.params.id);
             updateOrderFinalPrice(orderDetails.OrderHeaderId);
-            res.json("Updated successfully.");
+            res.json({'mesage': `Zaktualizowano Składnik Zamówienia.`});
         }
     },
 
     delete: async (req, res) => {
         const orderDetail = await OrderDetails.findByPk(req.params.id);
         if (!orderDetail)
-            return res.status(404).json({ 'message': `No OrderDetails matching ID ${req.params.id} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Składnika Zamówienia o Id ${req.params.id}.` });
         else {
             const orderHeaderId = orderDetail.OrderHeaderId;
             if(orderDetail.UserCouponId != null) {
@@ -105,21 +105,21 @@ module.exports = {
             }
             );
             updateOrderFinalPrice(orderHeaderId);
-            res.json("Deleted successfully.");
+            res.json({'message': 'Usunięto Składnik Zamówienia.'});
         }
     },
 
     getAll: async (req, res) => {
         const orderDetails = await OrderDetails.findAll();
         if (!orderDetails.length)
-            return res.status(204).json({ 'message': 'No OrderDetails found.' });
+            return res.status(404).json({ 'message': 'Nie znaleziono żadnych Składników Zamówień.' });
         res.json(orderDetails);
     },
 
     getById: async (req, res) => {
         const orderDetails = await OrderDetails.findOne({ where: { id: req.params.id } });
         if (!orderDetails)
-            return res.status(204).json({ 'message': `No OrderDetails matching Id ${req.params.id} have been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Składnika Zamówienia o Id ${req.params.id}.` });
         res.json(orderDetails);
     },
 
@@ -127,7 +127,7 @@ module.exports = {
         const id = req.params.id
         const orderDetails = await OrderDetails.findAll({ where: { ProductId: id } });
         if (!orderDetails.length)
-            return res.status(204).json({ 'message': `No OrderDetails matching ProductId ${req.params.id} have been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono żadnych Składników Zamówień na Produkt o Id ${req.params.id}.` });
         res.json(orderDetails);
     },
 

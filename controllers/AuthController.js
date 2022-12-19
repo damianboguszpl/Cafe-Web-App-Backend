@@ -5,7 +5,6 @@ const bcrypt = require("bcrypt")
 const saltRounds = 10
 
 module.exports = {
-
     logout: async (req, res) => {
         // On client, also delete the accessToken
     
@@ -22,7 +21,7 @@ module.exports = {
         if (!user) {
             res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
             // return res.sendStatus(204);
-            return res.status(200).json({ message: "Wylogowano" });
+            return res.status(200).json({ 'message': "Wylogowano" });
         }
     
         // Delete refreshToken in db
@@ -35,12 +34,12 @@ module.exports = {
     },
 
     request: async (req,res) => {
-        if (!req?.body?.email) { return res.status(400).json({ error: 'Email parameter not specified.' }); }
+        if (!req?.body?.email) { return res.status(400).json({ 'error': 'Nie podano adresu email.' }); }
 
         const user = await User.findOne({ where: { email: req.body.email } });
         
         if (!user) {
-            return res.json({ error: "Użytkownik nie istnieje" });
+            return res.json({ 'error': "Użytkownik nie istnieje" });
         }
         else {
             const password_reset_code = await PasswordResetCode.findOne({ where: { userId: user.id}  });
@@ -89,14 +88,14 @@ module.exports = {
     },
 
     reset: async (req,res) => {
-        if (!req?.body?.email) { return res.status(400).json({ error: 'Atrybut Email nie został określony.' }); }
-        if (!req?.body?.resetCode) { return res.status(400).json({ error: 'Atrybut ResetCode nie został określony.' }); }
-        if (!req?.body?.password) { return res.status(400).json({ error: 'Atrybut Password nie został określony.' }); }
+        if (!req?.body?.email) { return res.status(400).json({ 'error': 'Nie podano adresu e-mail.' }); }
+        if (!req?.body?.resetCode) { return res.status(400).json({ 'error': 'Nie podano kodu resetującego hasło.' }); }
+        if (!req?.body?.password) { return res.status(400).json({ 'error': 'Nie podano hasła.' }); }
 
         const user = await User.findOne({ where: { email: req.body.email } });
         
         if (!user) {
-            return res.json({ error: "Użytkownik nie istnieje" });
+            return res.json({ 'error': "Użytkownik nie istnieje" });
         }
         else {
             const password_reset_code = await PasswordResetCode.findOne({ where: { userId: user.id}  });
@@ -105,12 +104,12 @@ module.exports = {
                 const now = new Date()
                 const codeValidTime = 5*60*1000;
                 if(!(codeValidTime > (now - createdAt))) {
-                    return res.status(400).json({ error: "Upłynął czas na zmianę hasła. Rozpocznij operację od początku." });
+                    return res.status(400).json({ 'error': "Upłynął czas na zmianę hasła. Rozpocznij operację od początku." });
                 }
                 else {
                     bcrypt.compare(req.body.resetCode, password_reset_code.resetCode).then( async (match) => {
                         if (!match) {
-                            return res.status(400).json({ error: "Kod resetujący hasło jest niepoprawny." });
+                            return res.status(400).json({ 'error': "Kod resetujący hasło jest niepoprawny." });
                         }
                         else {
                             bcrypt.hash(req.body.password, saltRounds).then((hash) => {
@@ -135,7 +134,7 @@ module.exports = {
                 }
             }
             else {
-                return res.status(400).json({ error: "Kod resetujący hasło jest niepoprawny." });
+                return res.status(400).json({ 'error': "Kod resetujący hasło jest niepoprawny." });
             }
         }
     },

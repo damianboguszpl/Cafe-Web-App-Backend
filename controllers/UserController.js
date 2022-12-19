@@ -6,13 +6,17 @@ const saltRounds = 10
 module.exports = {
     getAll: async (req, res) => {
         const users = await User.findAll({ attributes: { exclude: ['password', 'refreshToken'] } });
-        res.json(users);
+        if (!users.length) 
+            return res.status(404).json({ 'message': 'Nie znaleziono żadnych Użytkowników.' });
+        return res.json(users);
     },
 
     getById: async (req, res) => {
         const id = req.params.id
         const user = await User.findOne({ where: { id: id}, attributes: { exclude: ['password', 'refreshToken'] }  });
-        res.json(user);
+        if(!user)
+            return res.status(404).json({ 'message': `Nie znaleziono Użytkownika o Id ${req.params.id}.` });
+        return res.json(user);
     },
 
     register: async (req, res) => {
@@ -21,12 +25,12 @@ module.exports = {
         const client_role = await Role.findOne({ where: { name: "Klient" } });
         var user = await User.findOne({ where: { email: email } });
         if (user) {
-            res.status(400).json({ error: "Użytkownik z podanym adresem email już istnieje" });
+            res.status(400).json({ 'error': "Użytkownik z podanym adresem email już istnieje." });
         }
         else {
             var user2 = await User.findOne({ where: { phone: phoneNumber } });
             if (user2) {
-                res.status(400).json({ error: "Użytkownik z podanym numerem telefonu już istnieje" });
+                res.status(400).json({ 'error': "Użytkownik z podanym numerem telefonu już istnieje." });
             }
             else {
                 bcrypt.hash(password, saltRounds).then((hash) => {
@@ -41,38 +45,38 @@ module.exports = {
                         RoleId: client_role.id // give user 'user' privileges by assigning 'user' role of an id = 1
                     })
                 })
-                res.json("A new user account has been created.");
+                res.json({'message': `Utworzono nowe konto.`});
             }
         }
     },
 
     create: async (req, res) => {
         if (!req?.body?.email)
-            return res.status(400).json({ 'message': 'email parameter not specified.' });
+            return res.status(400).json({ 'message': 'Nie podano adresu e-mail.' });
         if (!req?.body?.password)
-            return res.status(400).json({ 'message': 'password parameter not specified.' });
+            return res.status(400).json({ 'message': 'Nie podano hasła.' });
         if (!req?.body?.phoneNumber)
-            return res.status(400).json({ 'message': 'phoneNumber parameter not specified.' });
+            return res.status(400).json({ 'message': 'Nie podano numeru telefonu.' });
         if (!req?.body?.RoleId)
-            return res.status(400).json({ 'message': 'RoleId parameter not specified.' });
+            return res.status(400).json({ 'message': 'Nie podano Id Roli.' });
         if (!req?.body?.firstname)
-            return res.status(400).json({ 'message': 'firstname parameter not specified.' });
+            return res.status(400).json({ 'message': 'Nie podano imienia.' });
         if (!req?.body?.lastname)
-            return res.status(400).json({ 'message': 'lastname parameter not specified.' });
+            return res.status(400).json({ 'message': 'Nie podano nazwiska.' });
         if (!req?.body?.sex)
-            return res.status(400).json({ 'message': 'sex parameter not specified.' });
+            return res.status(400).json({ 'message': 'Nie podano płci.' });
 
         var user = await User.findOne({ where: { email: req.body.email } });
         if (user)
-            return res.status(400).json({ error: "Użytkownik z podanym adresem email już istnieje" });
+            return res.status(400).json({ 'error': "Użytkownik z podanym adresem email już istnieje" });
 
         user = await User.findOne({ where: { phone: req.body.phoneNumber } });
         if (user)
-            return res.status(400).json({ error: "Użytkownik z podanym numerem telefonu już istnieje" });
+            return res.status(400).json({ 'error': "Użytkownik z podanym numerem telefonu już istnieje" });
 
         var role = await Role.findOne({ where: { id: req.body.RoleId } });
         if (!role)
-            return res.status(400).json({ error: "Role with given id does not exists." });
+            return res.status(400).json({ 'error': "Nie istnieje Rola o podanym Id." });
 
         bcrypt.hash(req.body.password, saltRounds).then((hash) => {
             User.create({
@@ -86,26 +90,26 @@ module.exports = {
                 RoleId: req.body.RoleId
             })
         })
-        return res.json("A new user account has been created.");
+        return res.json({'message': `Utworzono nowe konto.`});
     },
 
     update: async (req, res) => {
         const user = await User.findOne({ where: { id: req.params.id } });
         if (!user)
-            return res.status(400).json({ 'message': `No user matching ID ${req.params.id} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Użytkownika o Id ${req.params.id}.` });
 
         if (!req?.body?.firstname && !req?.body?.lastname && !req?.body?.email && !req?.body?.phone && !req?.body?.sex && !req?.body?.RoleId)
-            return res.status(400).json({ 'message': 'None of the required parameters were passed.' });
+            return res.status(400).json({ 'message': 'Nie podano wymaganych danych.' });
         else {
             if(req?.body?.email) {
                 var user2 = await User.findOne({ where: { email: req.body.email } });
                 if (user2 && req.body.email != user.email)
-                    return res.status(400).json({ error: "Podany adres email jest już zajęty." });
+                    return res.status(400).json({ 'error': "Podany adres email jest już zajęty." });
             }
             if(req?.body?.phone) {
                 user2 = await User.findOne({ where: { phone: req.body.phone } });
                 if (user2 && req.body.phone != user.phone)
-                    return res.status(400).json({ error: "Podany numer telefonu jest już zajęty." });
+                    return res.status(400).json({ 'error': "Podany numer telefonu jest już zajęty." });
             }
             
             User.update(
@@ -119,7 +123,7 @@ module.exports = {
                 },
                 { where: { id: req.params.id } }
             ).then((result) => {
-                res.json({'message' : `Zaktualizowano dane użytkownika.`});
+                res.json({'message': `Zaktualizowano dane Użytkownika.`});
             });
         }
     },
@@ -127,20 +131,20 @@ module.exports = {
     edit: async (req, res) => {
         const user = await User.findOne({ where: { id: req.params.id } });
         if (!user)
-            return res.status(400).json({ 'message': `No user matching ID ${req.params.id} has been found.` });
+            return res.status(400).json({ 'message': `Nie znaleziono Użytkownika o Id ${req.params.id}.` });
         
         if (!req?.body?.firstname && !req?.body?.lastname && !req?.body?.email && !req?.body?.phone && !req?.body?.sex && !req?.body?.RoleId)
-            return res.status(400).json({ 'message': 'None of the required parameters were passed.' });
+            return res.status(400).json({ 'message': 'Nie podano wymaganych danych.' });
         else {
             if(req?.body?.email) {
                 var user2 = await User.findOne({ where: { email: req.body.email } });
                 if (user2 && req.body.email != user.email)
-                    return res.status(400).json({ error: "Podany adres email jest już zajęty." });
+                    return res.status(400).json({ 'error': "Podany adres email jest już zajęty." });
             }
             if(req?.body?.phone) {
                 user2 = await User.findOne({ where: { phone: req.body.phone } });
                 if (user2 && req.body.phone != user.phone)
-                    return res.status(400).json({ error: "Podany numer telefonu jest już zajęty." });
+                    return res.status(400).json({ 'error': "Podany numer telefonu jest już zajęty." });
             }
 
             User.update(
@@ -153,7 +157,7 @@ module.exports = {
                 },
                 { where: { id: req.params.id } }
             ).then((result) => {
-                res.json({'message' : `Zaktualizowano dane użytkownika.`});
+                res.json({'message': `Zaktualizowano dane Użytkownika.`});
             });
         }
     },
@@ -163,12 +167,12 @@ module.exports = {
         const user = await User.findOne({ where: { email: email } });
 
         if (!user) {
-            res.status(400).json({ error: "Użytkownik nie istnieje" });
+            res.status(400).json({ 'error': "Użytkownik nie istnieje." });
         }
         else {
             bcrypt.compare(password, user.password).then(async (match) => {
                 if (!match) {
-                    res.status(400).json({ error: "Hasło jest niepoprawne" });
+                    res.status(400).json({ 'error': "Hasło jest niepoprawne." });
                 }
                 else {
 
@@ -222,12 +226,12 @@ module.exports = {
             return res.status(400).json({ 'error': 'Nie wysłano nowego hasła.' });
 
         if (!user) {
-            res.status(400).json({ error: "Użytkownik nie istnieje" });
+            res.status(400).json({ 'error': "Użytkownik nie istnieje" });
         }
         else {
             bcrypt.compare(password, user.password).then(async (match) => {
                 if (!match) {
-                    return res.status(400).json({ error: "Stare hasło jest niepoprawne" });
+                    return res.status(400).json({ 'error': "Stare hasło jest niepoprawne" });
                 }
                 else {
                     try {
@@ -241,7 +245,7 @@ module.exports = {
                         // console..log(result)
                     } catch (err) {
                         // console.log(err)
-                        return res.status(400).json({ error: err});
+                        return res.status(400).json({ 'error': err});
                     }
                 }
             });
@@ -251,18 +255,24 @@ module.exports = {
     getByEmail: async (req, res) => {
         const email = req.params.email
         const user = await User.findOne({ where: { email: email }, attributes: { exclude: ['password', 'refreshToken'] } });
+        if(!user)
+            return res.status(404).json({ 'message': `Nie znaleziono Użytkownika o adresie e-mail ${req.params.email}.` });
         res.json(user);
     },
 
     getByPhone: async (req, res) => {
         const phone = req.params.phone
         const user = await User.findOne({ where: { phone: phone }, attributes: { exclude: ['password', 'refreshToken'] } });
+        if(!user)
+            return res.status(404).json({ 'message': `Nie znaleziono Użytkownika o numerze telefonu ${req.params.phone}.` });
         res.json(user);
     },
 
     getByRoleId: async (req, res) => {
         const roleid = req.params.roleid
         const users = await User.findAll({ where: { RoleId: roleid }, attributes: { exclude: ['password', 'refreshToken'] } });
+        if(!users.length)
+            return res.status(404).json({ 'message': `Nie znaleziono żadnych Użytkowników z Rolą o Id ${req.params.roleid}.` });
         res.json(users);
     }
 }
