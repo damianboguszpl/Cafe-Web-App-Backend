@@ -11,37 +11,37 @@ module.exports = {
     update: async (req, res) => {
         const orderHeader = await OrderHeader.findByPk(req.params.id);
         if(!orderHeader)
-            return res.status(404).json({ 'message': `No OrderHeader matching Id ${req.params.id} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Zamówienia o Id ${req.params.id}.` });
         
         if(req?.body?.ClientId && req?.body?.ClientId != null) {
             const client = await User.findByPk(req?.body?.ClientId);
             if(!client)
-                return res.status(404).json({ 'message': `No Client matching Id ${req?.body?.ClientId} has been found.` });
+                return res.status(404).json({ 'message': `Nie znaleziono Klienta o Id ${req?.body?.ClientId}.` });
         }
         if(req?.body?.EmployeeId && req?.body?.EmployeeId != null) {
             const employee = await User.findByPk(req?.body?.EmployeeId);
             if(!employee)
-                return res.status(404).json({ 'message': `No Employee matching Id ${req?.body?.EmployeeId} has been found.` });
+                return res.status(404).json({ 'message': `Nie znaleziono Pracownika o Id ${req?.body?.EmployeeId}.` });
         }
         if(req?.body?.ReviewId && req?.body?.ReviewId != null) {
             const review = await Review.findByPk(req?.body?.ReviewId);
             if(!review)
-                return res.status(404).json({ 'message': `No Review matching Id ${req?.body?.ReviewId} has been found.` });
+                return res.status(404).json({ 'message': `Nie znaleziono Recenzji o Id ${req?.body?.ReviewId}.` });
         }
         if(req?.body?.PaymentId && req?.body?.PaymentId != null) {
             const payment = await Payment.findByPk(req?.body?.PaymentId);
             if(!payment)
-                return res.status(404).json({ 'message': `No Payment matching Id ${req?.body?.PaymentId} has been found.` });
+                return res.status(404).json({ 'message': `Nie znaleziono Płatności o Id ${req?.body?.PaymentId}.` });
         }
         if(req?.body?.OrderStatusId && req?.body?.OrderStatusId != null) {
             const orderStatus = await OrderStatus.findByPk(req?.body?.OrderStatusId);
             if(!orderStatus)
-                return res.status(404).json({ 'message': `No OrderStatus matching Id ${req?.body?.OrderStatusId} has been found.` });
+                return res.status(404).json({ 'message': `Nie znaleziono Statusu Zamówienia o Id ${req?.body?.OrderStatusId}.` });
         }
         if(req?.body?.TableId && req?.body?.TableId != null) {
             const table = await Table.findByPk(req?.body?.TableId);
             if(!table)
-                return res.status(404).json({ 'message': `No Table matching Id ${req?.body?.TableId} has been found.` });
+                return res.status(404).json({ 'message': `Nie znaleziono Stolika o Id ${req?.body?.TableId}.` });
         }
         await OrderHeader.update(
             {
@@ -74,13 +74,13 @@ module.exports = {
             }
         }
 
-        res.json("Updated successfully.");
+        res.json({'message': `Zaktualizowano Zamówienie.`});
     },
     
     delete: async (req, res) => {
         const orderHeader = await OrderHeader.findByPk(req.params.id);
         if(!orderHeader)
-            return res.status(404).json({ 'message': `No OrderHeader matching Id ${req.params.id} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Zamówienia o Id ${req.params.id}.` });
         else {
             await OrderDetails.destroy({
                 where: { OrderHeaderId: req.params.id } }
@@ -88,28 +88,28 @@ module.exports = {
             await OrderHeader.destroy({
                 where: { id: req.params.id } }
             );
-            res.json("Deleted successfully.");
+            res.json({'message': `Usunięto Zamówienie.`});
         }
     },
     
     getAll: async (req, res) => {
         const orderHeaders = await OrderHeader.findAll();
         if (!orderHeaders.length) 
-            return res.status(204).json({ 'message': 'No OrderHeaders found.' });
+            return res.status(404).json({ 'message': 'Nie znaleziono żadnych Zamówień.' });
         res.json(orderHeaders);
     },
     
     getById: async (req, res) => {
         const orderHeader = await OrderHeader.findOne({ where: { id: req.params.id } });
         if(!orderHeader)
-            return res.status(204).json({ 'message': `No OrderHeader matching Id ${req.params.id} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Zamówienia o Id ${req.params.id}.` });
         res.json(orderHeader);
     },
     
     getByPaymentId: async (req, res) => {
         const orderHeaders = await OrderHeader.findAll({ where: { PaymentId: req.params.id } });
         if(!orderHeaders.length)
-            return res.status(204).json({ 'message': `No OrderHeaders matching PaymentId ${req.params.id} have been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Zamówień z Płatnościa o Id ${req.params.id}.` });
         res.json(orderHeaders);
     },
     
@@ -126,35 +126,35 @@ module.exports = {
             }],
         });
         if(!orderHeaders.length)
-            return res.status(204).json({ 'message': `No OrderHeaders matching ClientId ${req.params.id} have been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono żadnych Zamówień Klienta o Id ${req.params.id}.` });
         res.json(orderHeaders);
     },
     
     getByEmployeeId: async (req, res) => {
         const orderHeaders = await OrderHeader.findAll({ where: { EmployeeId: req.params.id } });
         if(!orderHeaders.length)
-            return res.status(204).json({ 'message': `No OrderHeaders matching EmployeeId ${req.params.id} have been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono żadnych Zamówień dodanych przez Pracownika o Id ${req.params.id}.` });
         res.json(orderHeaders);
     },
     
     getByOrderStatusId: async (req, res) => {
         const orderHeaders = await OrderHeader.findAll({ where: { OrderStatusId: req.params.id } });
         if(!orderHeaders.length)
-            return res.status(204).json({ 'message': `No OrderHeaders matching OrderStatusId ${req.params.id} have been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono żadnych Zamówień ze Statusem o Id ${req.params.id}.` });
         res.json(orderHeaders);
     },
     
     getByReviewId: async (req, res) => {
         const orderHeaders = await OrderHeader.findAll({ where: { ReviewId: req.params.id } });
         if(!orderHeaders.length)
-            return res.status(204).json({ 'message': `No OrderHeaders matching ReviewId ${req.params.id} have been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Zamówienia z Recenzją o Id ${req.params.id}.` });
         res.json(orderHeaders);
     },
     
     getByTableId: async (req, res) => {
         const orderHeaders = await OrderHeader.findAll({ where: { TableId: req.params.id } });
         if(!orderHeaders.length)
-            return res.status(204).json({ 'message': `No OrderHeaders matching TableId ${req.params.id} have been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono żadnych Zamówień ze Stolikiem o Id ${req.params.id}.` });
         res.json(orderHeaders);
     }
 }

@@ -6,15 +6,15 @@ module.exports = {
         const coupon = req.body;
         
         if (!req?.body?.ProductId)
-            return res.status(400).json({ 'error': 'Atrybut ProductId nie został określony' });
+            return res.status(400).json({ 'error': 'Nie podano Id Produktu.' });
         const product = await Product.findByPk(req?.body?.ProductId);
         if (!product)
-            return res.status(404).json({ 'error': `Nie znaleziono produktu o ID ${req?.body?.ProductId}.` });
+            return res.status(404).json({ 'error': `Nie znaleziono Produktu o Id ${req?.body?.ProductId}.` });
         const existstingCouponForProduct = await Coupon.findOne({ where: { ProductId: req.body.ProductId } });
         if(existstingCouponForProduct != null && existstingCouponForProduct.isAvailable === true) 
-            return res.status(400).json({ 'error': `Istnieje już aktywny kupon na produkt o ID ${req?.body?.ProductId}` });
+            return res.status(400).json({ 'error': `Istnieje już aktywny Kupon na Produkt o Id ${req?.body?.ProductId}` });
         if(req.body.value < 5 || req.body.value > 100) 
-            return res.status(400).json({ 'error': `Wartość kuponu jest niepoprawna` });
+            return res.status(400).json({ 'error': `Wartość Kuponu jest niepoprawna` });
         
         await Coupon.create({
             name: req?.body?.name ? req.body.name : product.name + " -" + req?.body?.value + "%",
@@ -23,18 +23,18 @@ module.exports = {
             isAvailable: req?.body?.isAvailable ? req.body.isAvailable : 1,
             ProductId: req.body.ProductId
         });
-        return res.status(201).json({ 'message' : `Dodano nowy kupon`});
+        return res.status(201).json({ 'message': `Dodano nowy Kupon.`});
     },
     
     update: async (req,res) => {
         const coupon = await Coupon.findOne({ where: { id: req.params.id } });
         if(!coupon)
-            return res.status(404).json({ 'message': `No coupon matching ID ${req.params.id} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Kuponu o Id ${req.params.id}.` });
         var product = null;
         if(req?.body?.ProductId){
             product = await Product.findByPk(req.body.ProductId);
             if (!product)
-                return res.status(404).json({ 'message': `No Product matching ID ${req?.body?.ProductId} has been found.` });
+                return res.status(404).json({ 'message': `Nie znaleziono Produktu o Id ${req?.body?.ProductId}.` });
         }
 
         var newIsAvailable = null;
@@ -47,7 +47,7 @@ module.exports = {
         if(existstingCouponsForProduct != null && existstingCouponsForProduct.length) {
             if(existstingCouponsForProduct.some(e => e.isAvailable === true && e.id !== coupon.id)) {
                 if (req?.body?.isAvailable === 'true') {
-                    return res.status(400).json({ 'error': `Istnieje już aktywny kupon na produkt '${product.name}'` });
+                    return res.status(400).json({ 'error': `Istnieje już aktywny Kupon na Produkt '${product.name}'.` });
                 }
                 else {
                     newIsAvailable = false;
@@ -76,53 +76,53 @@ module.exports = {
             { where: { id: req.params.id } }
         );
 
-        res.json({'message' : `Zaktualizowano kupon.`});
+        res.json({'message': `Zaktualizowano Kupon.`});
     },
     
     delete: async (req,res) => {
         const coupon = await Coupon.findOne({ where: { id: req.params.id } });
         if(!coupon)
-            return res.status(404).json({ 'message': `No coupon matching ID ${req.params.id} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Kuponu o Id ${req.params.id}.` });
         await Coupon.destroy({
             where: {
                 id: req.params.id
             }
         })
-        res.json("Deleted successfully.");
+        res.json({'message': 'Usunięto Kupon.'});
     },
     
     getAll: async (req, res) => {
         const coupons = await Coupon.findAll();
         if (!coupons.length) 
-            return res.status(204).json({ 'message': 'No coupons found.' });
+            return res.status(404).json({ 'message': 'Nie znaleziono żadnego Kuponu.' });
         res.json(coupons);
     },
     
     getById: async (req, res) => {
         const coupon = await Coupon.findByPk(req.params.id);
         if(!coupon)
-            return res.status(204).json({ 'message': `No coupon matching ID ${req.params.id} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Kuponu o Id ${req.params.id}.` });
         res.json(coupon);
     },
     
     getByProductId: async (req, res) => {
         const coupons = await Coupon.findAll({ where: { ProductId: req.params.id } });
         if (!coupons.length)
-            return res.status(204).json({ 'message': `No coupons matching ProductId ${req.params.id} have been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Kuponu na Produkt o Id ${req.params.id}.` });
         res.json(coupons);
     },
     
     getAvailable: async (req, res) => {
         const coupons = await Coupon.findAll({where: { isAvailable: true }})
         if (!coupons.length)
-            return res.status(204).json({ 'message': `No available coupons have been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono żadnych dostępnych Kuponów.` });
         res.json(coupons)
     },
     
     getUnavailable: async (req, res) => {
         const coupons = await Coupon.findAll({where: { isAvailable: false }})
         if (!coupons.length)
-            return res.status(204).json({ 'message': `No unavailable coupons have been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono żadnych niedostępnych Kuponów.` });
         res.json(coupons)
     }
 }

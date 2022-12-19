@@ -3,24 +3,24 @@ const { Product, SpecialOffer, Coupon } = require("../db/models");
 module.exports = {
     
     create: async (req,res) => {
-        if (!req?.body?.name) { return res.status(400).json({ 'error': 'Nie określono nazwy produktu.' }); }
-        if (!req?.body?.size) { return res.status(400).json({ 'error': 'Nie określono rozmiaru produktu.' }); }
-        if (!req?.body?.price) { return res.status(400).json({ 'error': 'Nie określono ceny produktu.' }); }
-        if (!req?.body?.CategoryId) { return res.status(400).json({ 'error': 'Nie określono kategorii produktu.' }); }
-        if (!req?.body?.ProductStatusId) { return res.status(400).json({ 'error': 'Nie określono statusu produktu.' }); }
+        if (!req?.body?.name) { return res.status(400).json({ 'error': 'Nie podano nazwy Produktu.' }); }
+        if (!req?.body?.size) { return res.status(400).json({ 'error': 'Nie podano rozmiaru Produktu.' }); }
+        if (!req?.body?.price) { return res.status(400).json({ 'error': 'Nie podano ceny Produktu.' }); }
+        if (!req?.body?.CategoryId) { return res.status(400).json({ 'error': 'Nie podano Kategorii Produktu.' }); }
+        if (!req?.body?.ProductStatusId) { return res.status(400).json({ 'error': 'Nie podano Statusu Produktu.' }); }
 
         const existingProduct = await Product.findOne({where:{name: req.body.name}})
         if (existingProduct) 
             return res.status(400).json({ 'error': 'Produkt o podanej nazwie już istnieje.' });
 
         const newProduct = await Product.create(req.body);
-        return res.status(201).json({ 'message' : `Dodano nowy produkt.`, 'data': newProduct});
+        return res.status(201).json({ 'message': `Dodano nowy Produkt.`, 'data': newProduct});
     },
     
     update: async (req,res) => {
         const product = await Product.findOne({ where: { id: req.params.id } });
         if(!product)
-            return res.status(400).json({ 'error': `Nie znaleziono produktu o Id ${req.params.id}.` });
+            return res.status(400).json({ 'error': `Nie znaleziono Produktu o Id ${req.params.id}.` });
 
         if(req?.body?.name) {
             const product2 = await Product.findOne({where:{name: req.body.name}});
@@ -41,7 +41,7 @@ module.exports = {
             { where: { id: req.params.id } }
         );
 
-        res.json({'message' : `Zaktualizowano produkt.`});
+        return res.json({'message': `Zaktualizowano Produkt.`});
     },
     
     delete: async (req,res) => {
@@ -49,12 +49,14 @@ module.exports = {
         await Product.destroy(
             { where: { id: id } }
         );
-        res.json("Deleted successfully.");
+        return res.json({'message': `Usunięto Produkt.`});
     },
     
     getAll: async (req, res) => {
         const products = await Product.findAll();
-        res.json(products);
+        if (!products.length) 
+            return res.status(404).json({ 'message': 'Nie znaleziono żadnych Produktów.' });
+        return res.json(products);
     },
     
     getAllWithSpecialOffers: async (req, res) => {
@@ -64,7 +66,9 @@ module.exports = {
                 attributes: ['id', 'value', 'start_date', 'end_date']
             }],
         });
-        res.json(products);
+        if (!products.length) 
+            return res.status(404).json({ 'message': 'Nie znaleziono żadnych Produktów.' });
+        return res.json(products);
     },
     
     getAllWithoutCoupons: async (req, res) => {
@@ -79,31 +83,39 @@ module.exports = {
             const productsWithoutCoupons = products.filter(n => !products.filter( (product) => {
                 return coupons.some(e => e.ProductId === product.id && e.isAvailable === true)
             }).includes(n))
-            res.json(productsWithoutCoupons);
+            return res.json(productsWithoutCoupons);
         }
         else 
-            res.json(products)
+        return res.json(products)
     },
     
     getById: async (req, res) => {
         const id = req.params.id
         const product = await Product.findByPk(id);
-        res.json(product);
+        if(!product)
+            return res.status(400).json({ 'error': `Nie znaleziono Produktu o Id ${req.params.id}.` });
+            return res.json(product);
     },
     
     getByName: async (req, res) => {
         const name = req.params.name
         const product = await Product.findOne({ where: { name: name } });
-        res.json(product);
+        if(!product)
+            return res.status(400).json({ 'error': `Nie znaleziono Produktu o nazwie ${req.params.name}.` });
+        return res.json(product);
     },
     
     getByProductStatusId: async (req, res) => {
         const products = await Product.findAll({ where: { ProductStatusId: req.params.id } });
-        res.json(products);
+        if (!products.length)
+            return res.status(404).json({ 'message': `Nie znaleziono żadnych Produktów ze Statusem o Id ${req.params.id}.` });
+        return res.json(products);
     },
     
     getByCategoryId: async (req, res) => {
         const products = await Product.findAll({ where: { CategoryId: req.params.id } });
-        res.json(products);
+        if (!products.length)
+            return res.status(404).json({ 'message': `Nie znaleziono żadnych Produktów z Kategorii o Id ${req.params.id}.` });
+        return res.json(products);
     },
 }

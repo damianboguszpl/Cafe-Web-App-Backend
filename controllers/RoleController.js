@@ -3,59 +3,59 @@ const { Role, User } = require("../db/models")
 module.exports = {
     create: async (req,res) => {
         if (!req?.body?.name)
-            return res.status(400).json({ 'message': 'Name parameter not specified.' });
+            return res.status(400).json({ 'message': 'Nie podano nazwy.' });
         const role = await Role.findOne({ where: { name: req.body.name } });
         if(role)
-            return res.status(204).json({ 'message': 'Role with same Name already exists.' });
-        const newRole = req.body;
-        await Role.create(newRole);
-        res.json(newRole);
+            return res.status(400).json({ 'message': 'Rola o podanej nazwie już istnieje.' });
+
+        const newRole = await Role.create(req.body);
+        return res.status(201).json({ 'message': `Dodano nową Rolę.`, 'data': newRole});
     },
     
     update: async (req,res) => {
         if (!req?.body?.name)
-            return res.status(400).json({ 'message': 'Name parameter not specified.' });
+            return res.status(400).json({ 'message': 'Nie podano nazwy.' });
         const role = await Role.findOne({ where: { id: req.params.id } });
         if(!role)
-            return res.status(204).json({ 'message': `No Role matching Id ${req.params.id} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Roli o Id ${req.params.id}.` });
         await Role.update(
             { name: req.body.name }, 
             { where: { id: req.params.id } }
             );
-        res.json("Updated successfully.");
+        res.json({'message': `Zaktualizowano rolę.`});
     },
     
     delete: async (req,res) => {
         const role = await Role.findOne({ where: { id: req.params.id } });
         if(!role)
-            return res.status(204).json({ 'message': `No Role matching Id ${req.params.id} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Roli o Id ${req.params.id}.` });
         const anyUser = await User.findOne({ where: { RoleId: req.params.id } });
         if(anyUser)
-            return res.status(204).json({ 'message': 'Role you tried to delete is used by at least 1 User.' });
+            return res.status(400).json({ 'message': 'Rola, którą chcesz usunąć, przypisana jest do co najmniej 1 Użytkownika.' });
         await Role.destroy({
             where: { id: req.params.id } }
         );
-        res.json("Deleted successfully.");
+        res.json({'message': `Usunięto rolę.`});
     },
     
     getAll: async (req, res) => {
         const roles = await Role.findAll();
         if (!roles.length) 
-            return res.status(204).json({ 'message': 'No Roles found.' });
+            return res.status(404).json({ 'message': 'Nie znaleziono żadnej Roli.' });
         res.json(roles);
     },
     
     getById: async (req, res) => {
         const role = await Role.findOne({ where: { id: req.params.id } });
         if(!role)
-            return res.status(204).json({ 'message': `No Role matching Id ${req.params.id} has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Roli o Id ${req.params.id}.` });
         res.json(role);
     },
     
     getByName: async (req, res) => {
         const role = await Role.findOne({ where: { name: req.params.name } });
         if(!role)
-            return res.status(204).json({ 'message': `No Role matching Name '${req.params.name}' has been found.` });
+            return res.status(404).json({ 'message': `Nie znaleziono Roli o nazwie '${req.params.name}'.` });
         res.json(role);
     },
 }
