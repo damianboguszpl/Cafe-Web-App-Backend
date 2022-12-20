@@ -8,7 +8,7 @@ const handleRefreshToken = async (req, res) => {
 
     const refreshToken = cookies.jwt;
 
-    const user = await User.findOne({ where: { refreshToken: refreshToken } });
+    const user = await User.findOne({ where: { refreshToken: refreshToken }, attributes: { exclude: ['password'] } });
     if (!user)
         return res.sendStatus(403);
 
