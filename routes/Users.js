@@ -30,7 +30,8 @@ router.put("/changepassword/:id", verifyJWT, controller.changePassword)
 router.post('/login', controller.login)
 
 // get Users by email
-router.get('/email/:email', verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByEmail)
+// router.get('/email/:email', verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByEmail)
+router.get('/email/:email', verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee, ROLE_LIST.client), controller.getByEmail)
 
 // get Users by phone
 router.get('/phone/:phone', verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByPhone)
