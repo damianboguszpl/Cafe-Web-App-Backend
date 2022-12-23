@@ -6,15 +6,15 @@ const saltRounds = 10
 module.exports = {
     getAll: async (req, res) => {
         const users = await User.findAll({ attributes: { exclude: ['password', 'refreshToken'] } });
-        if (!users.length) 
+        if (!users.length)
             return res.status(404).json({ 'message': 'Nie znaleziono żadnych Użytkowników.' });
         return res.json(users);
     },
 
     getById: async (req, res) => {
         const id = req.params.id
-        const user = await User.findOne({ where: { id: id}, attributes: { exclude: ['password', 'refreshToken'] }  });
-        if(!user)
+        const user = await User.findOne({ where: { id: id }, attributes: { exclude: ['password', 'refreshToken'] } });
+        if (!user)
             return res.status(404).json({ 'message': `Nie znaleziono Użytkownika o Id ${req.params.id}.` });
         return res.json(user);
     },
@@ -45,7 +45,7 @@ module.exports = {
                         RoleId: client_role.id // give user 'user' privileges by assigning 'user' role of an id = 1
                     })
                 })
-                res.json({'message': `Utworzono nowe konto.`});
+                res.json({ 'message': `Utworzono nowe konto.` });
             }
         }
     },
@@ -90,7 +90,7 @@ module.exports = {
                 RoleId: req.body.RoleId
             })
         })
-        return res.json({'message': `Utworzono nowe konto.`});
+        return res.json({ 'message': `Utworzono nowe konto.` });
     },
 
     update: async (req, res) => {
@@ -101,17 +101,17 @@ module.exports = {
         if (!req?.body?.firstname && !req?.body?.lastname && !req?.body?.email && !req?.body?.phone && !req?.body?.sex && !req?.body?.RoleId)
             return res.status(400).json({ 'message': 'Nie podano wymaganych danych.' });
         else {
-            if(req?.body?.email) {
+            if (req?.body?.email) {
                 var user2 = await User.findOne({ where: { email: req.body.email } });
                 if (user2 && req.body.email != user.email)
                     return res.status(400).json({ 'error': "Podany adres email jest już zajęty." });
             }
-            if(req?.body?.phone) {
+            if (req?.body?.phone) {
                 user2 = await User.findOne({ where: { phone: req.body.phone } });
                 if (user2 && req.body.phone != user.phone)
                     return res.status(400).json({ 'error': "Podany numer telefonu jest już zajęty." });
             }
-            
+
             User.update(
                 {
                     firstname: req?.body?.firstname ? req.body.firstname : this.firstname,
@@ -123,7 +123,7 @@ module.exports = {
                 },
                 { where: { id: req.params.id } }
             ).then((result) => {
-                res.json({'message': `Zaktualizowano dane Użytkownika.`});
+                res.json({ 'message': `Zaktualizowano dane Użytkownika.` });
             });
         }
     },
@@ -132,16 +132,16 @@ module.exports = {
         const user = await User.findOne({ where: { id: req.params.id } });
         if (!user)
             return res.status(400).json({ 'message': `Nie znaleziono Użytkownika o Id ${req.params.id}.` });
-        
+
         if (!req?.body?.firstname && !req?.body?.lastname && !req?.body?.email && !req?.body?.phone && !req?.body?.sex && !req?.body?.RoleId)
             return res.status(400).json({ 'message': 'Nie podano wymaganych danych.' });
         else {
-            if(req?.body?.email) {
+            if (req?.body?.email) {
                 var user2 = await User.findOne({ where: { email: req.body.email } });
                 if (user2 && req.body.email != user.email)
                     return res.status(400).json({ 'error': "Podany adres email jest już zajęty." });
             }
-            if(req?.body?.phone) {
+            if (req?.body?.phone) {
                 user2 = await User.findOne({ where: { phone: req.body.phone } });
                 if (user2 && req.body.phone != user.phone)
                     return res.status(400).json({ 'error': "Podany numer telefonu jest już zajęty." });
@@ -157,7 +157,7 @@ module.exports = {
                 },
                 { where: { id: req.params.id } }
             ).then((result) => {
-                res.json({'message': `Zaktualizowano dane Użytkownika.`});
+                res.json({ 'message': `Zaktualizowano dane Użytkownika.` });
             });
         }
     },
@@ -216,7 +216,7 @@ module.exports = {
         }
     },
 
-    changePassword: async (req,res) => {
+    changePassword: async (req, res) => {
         const { password, newPassword } = req.body;
         const user = await User.findOne({ where: { id: req.params.id } });
 
@@ -245,7 +245,7 @@ module.exports = {
                         // console..log(result)
                     } catch (err) {
                         // console.log(err)
-                        return res.status(400).json({ 'error': err});
+                        return res.status(400).json({ 'error': err });
                     }
                 }
             });
@@ -255,7 +255,7 @@ module.exports = {
     getByEmail: async (req, res) => {
         const email = req.params.email
         const user = await User.findOne({ where: { email: email }, attributes: { exclude: ['password', 'refreshToken'] } });
-        if(!user)
+        if (!user)
             return res.status(404).json({ 'message': `Nie znaleziono Użytkownika o adresie e-mail ${req.params.email}.` });
         res.json(user);
     },
@@ -263,7 +263,7 @@ module.exports = {
     getByPhone: async (req, res) => {
         const phone = req.params.phone
         const user = await User.findOne({ where: { phone: phone }, attributes: { exclude: ['password', 'refreshToken'] } });
-        if(!user)
+        if (!user)
             return res.status(404).json({ 'message': `Nie znaleziono Użytkownika o numerze telefonu ${req.params.phone}.` });
         res.json(user);
     },
@@ -271,7 +271,7 @@ module.exports = {
     getByRoleId: async (req, res) => {
         const roleid = req.params.roleid
         const users = await User.findAll({ where: { RoleId: roleid }, attributes: { exclude: ['password', 'refreshToken'] } });
-        if(!users.length)
+        if (!users.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych Użytkowników z Rolą o Id ${req.params.roleid}.` });
         res.json(users);
     }
