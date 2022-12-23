@@ -4,6 +4,7 @@ const controller = require('../controllers/ReservationController')
 const { verifyJWT } = require("../middlewares/verifyJWT")
 const verifyRole = require("../middlewares/verifyRole")
 const ROLE_LIST = require('../config/role_list')
+const { verifyUser } = require('../middlewares/verifyUser')
 
 // Create new Reservation
 router.post("/", verifyJWT, controller.create)
@@ -20,16 +21,16 @@ router.get("/", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), cont
 // Get Reservation by id
 router.get("/:id", verifyJWT, controller.getById)
 
-// Get Reservation by ClientId
-router.get("/client/:id", verifyJWT, controller.getByClientId)
+// Get Reservations by ClientId
+router.get("/client/:id", verifyJWT, verifyUser, controller.getByClientId)
 
-// Get Reservation by EmployeeId
-router.get("/employee/:id", verifyJWT, controller.getByEmployeeId)
+// Get Reservations by EmployeeId
+router.get("/employee/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByEmployeeId)
 
 // Get Reservation by ReservationStatusId
-router.get("/reservationstatus/:id", verifyJWT, controller.getByReservationStatusId)
+router.get("/reservationstatus/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByReservationStatusId)
 
 // Get Reservation by TableId
-router.get("/table/:id", verifyJWT, controller.getByTableId)
+router.get("/table/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByTableId)
 
 module.exports = router

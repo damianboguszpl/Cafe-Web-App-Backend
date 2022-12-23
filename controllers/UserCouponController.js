@@ -112,14 +112,34 @@ module.exports = {
         const userCoupon = await UserCoupon.findByPk(req.params.id);
         if(!userCoupon)
             return res.status(404).json({ 'message': `Nie znaleziono Kuponu Użytkownika o Id ${req.params.id}.` });
-        res.json(userCoupon);
+        
+        // Client can get only his own usercoupon's data
+        if(req.RoleId === 1) {
+            const client = await User.findOne({ where: { id: userCoupon.UserId }, attributes: ['id', 'email'] });
+            if (client != null) {
+                if (client.email !== req.user) {
+                    return res.status(401).json({ 'error': `Unauthorized`});
+                }
+            }
+        }
+        return res.json(userCoupon);
     },
 
     getByCode: async (req, res) => {
         const userCoupon = await UserCoupon.findOne({ where: { code: req.params.code } });
         if(!userCoupon)
             return res.status(404).json({ 'message': `Nie znaleziono Kuponu uzytkownika o kodzie '${req.params.code}'.` });
-        res.json(userCoupon);
+        
+            // Client can get only his own usercoupon's data
+        if(req.RoleId === 1) {
+            const client = await User.findOne({ where: { id: userCoupon.UserId }, attributes: ['id', 'email'] });
+            if (client != null) {
+                if (client.email !== req.user) {
+                    return res.status(401).json({ 'error': `Unauthorized`});
+                }
+            }
+        }
+        return res.json(userCoupon);
     },
     
     getByUserId: async (req, res) => {

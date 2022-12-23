@@ -30,6 +30,6 @@ router.get("/product/:id", controller.getByProductId)
 router.get("/status/available", controller.getAvailable)
 
 // Get unavailable Coupons
-router.get("/status/unavailable", controller.getUnavailable)
+router.get("/status/unavailable", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getUnavailable)
 
 module.exports = router
