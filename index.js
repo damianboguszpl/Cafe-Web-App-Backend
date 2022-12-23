@@ -3,6 +3,7 @@ const cors = require('cors');
 const app = express()
 const port = 3001
 const db = require('./db/models')
+const swaggerOptions = require('./config/swagger_options')
 
 require('dotenv').config();
 
@@ -17,10 +18,15 @@ app.use(cors({
 }));
 
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// swagger
+const swaggerUi = require('swagger-ui-express')
+const swaggerJsdoc = require("swagger-jsdoc")
+const swaggerSpecs = swaggerJsdoc(swaggerOptions)
+app.use('/api-info', swaggerUi.serve, swaggerUi.setup(swaggerSpecs))
 
 // Routers
-
 const usersRouter = require('./routes/Users');
 app.use("/users", usersRouter);
 
