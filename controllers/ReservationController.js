@@ -62,6 +62,16 @@ module.exports = {
             if (!table)
                 return res.status(404).json({ 'message': `Nie znaleziono Stolika o Id ${req?.body?.TableId}.` });
         }
+        
+        // Client can update only his own reservation
+        if(req.RoleId === 1) {
+            const client = await User.findOne({ where: { id: reservation.ClientId }, attributes: ['id', 'email'] });
+            if (client != null) {
+                if (client.email !== req.user) {
+                    return res.status(401).json({ 'error': `Unauthorized`});
+                }
+            }
+        }
 
         await Reservation.update(
             {
@@ -72,7 +82,7 @@ module.exports = {
             },
             { where: { id: req.params.id } }
         );
-        res.json({'message': `Zaktualizowano Rezerwację.`});
+        return res.json({'message': `Zaktualizowano Rezerwację.`});
     },
 
     delete: async (req, res) => {
@@ -98,6 +108,15 @@ module.exports = {
         if (!reservation)
             return res.status(404).json({ 'message': `Nie znaleziono Rezerwacji o Id ${req.params.id}.` });
 
+        // Client can get only his own reservation's data
+        if(req.RoleId === 1) {
+            const client = await User.findOne({ where: { id: reservation.ClientId }, attributes: ['id', 'email'] });
+            if (client != null) {
+                if (client.email !== req.user) {
+                    return res.status(401).json({ 'error': `Unauthorized`});
+                }
+            }
+        }
         res.json(reservation);
     },
 

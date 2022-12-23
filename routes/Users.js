@@ -4,36 +4,37 @@ const controller = require('../controllers/UserController')
 const { verifyJWT } = require("../middlewares/verifyJWT")
 const verifyRole = require("../middlewares/verifyRole")
 const ROLE_LIST = require('../config/role_list')
+const { verifyUser } = require('../middlewares/verifyUser')
 
-// get all Users
-router.get('/', controller.getAll)
+// login
+router.post('/login', controller.login)
 
-// get User by id
-router.get('/:id', controller.getById)
-
-// // register
+// register
 router.post('/register', controller.register)
 
-// // create
+// create
 router.post('/', verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
 
 // Update User
 router.put("/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.update)
 
 // Edit User
-router.put("/edit/:id", verifyJWT, controller.edit)
+router.put("/edit/:id", verifyJWT, verifyUser, controller.edit)
 
-// Edit User
-router.put("/changepassword/:id", verifyJWT, controller.changePassword)
+// Change User's Password
+router.put("/changepassword/:id", verifyJWT, verifyUser, controller.changePassword)
 
-// // login
-router.post('/login', controller.login)
+// get all Users
+router.get('/', verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getAll)
 
-// get Users by email
+// get User by id
+router.get('/:id', verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee, ROLE_LIST.client), verifyUser, controller.getById)
+
+// get User by email
 // router.get('/email/:email', verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByEmail)
-router.get('/email/:email', verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee, ROLE_LIST.client), controller.getByEmail)
+router.get('/email/:email', verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee, ROLE_LIST.client), verifyUser, controller.getByEmail)
 
-// get Users by phone
+// get User by phone
 router.get('/phone/:phone', verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByPhone)
 
 // get Users by RoleId

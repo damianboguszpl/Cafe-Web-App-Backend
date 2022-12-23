@@ -97,6 +97,16 @@ module.exports = {
         const orderHeader = await OrderHeader.findOne({ where: { id: req.params.id } });
         if(!orderHeader)
             return res.status(404).json({ 'message': `Nie znaleziono Zamówienia o Id ${req.params.id}.` });
+            
+        // Client can get only his own ordeheaders' data
+        if(req.RoleId === 1) {
+            const client = await User.findOne({ where: { id: orderHeader.ClientId }, attributes: ['id', 'email'] });
+            if (client != null) {
+                if (client.email !== req.user) {
+                    return res.status(401).json({ 'error': `Unauthorized`});
+                }
+            }
+        }
         res.json(orderHeader);
     },
     

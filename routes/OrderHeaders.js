@@ -4,6 +4,7 @@ const controller = require('../controllers/OrderHeaderController')
 const { verifyJWT } = require("../middlewares/verifyJWT")
 const verifyRole = require("../middlewares/verifyRole")
 const ROLE_LIST = require('../config/role_list')
+const { verifyUser } = require('../middlewares/verifyUser')
 
 // Create new OrderHeader
 router.post("/", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.create)
@@ -15,7 +16,7 @@ router.put("/update/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.emplo
 router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.delete)
 
 // Get all OrderHeaders
-router.get("/", verifyJWT, controller.getAll)
+router.get("/", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getAll)
 
 // Get OrderHeader by id
 router.get("/:id", verifyJWT, controller.getById)
@@ -24,15 +25,15 @@ router.get("/:id", verifyJWT, controller.getById)
 router.get("/product/:id", verifyJWT, controller.getByPaymentId)
 
 // Get OrderHeader by ClientId
-router.get("/client/:id", verifyJWT, controller.getByClientId)
+router.get("/client/:id", verifyJWT, verifyUser, controller.getByClientId)
 
 // Get OrderHeader by EmployeeId
 router.get("/employee/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByEmployeeId)
 
-// Get OrderHeader by OrderStatusId
-router.get("/orderstatus/:id", verifyJWT, controller.getByOrderStatusId)
+// Get OrderHeaders by OrderStatusId
+router.get("/orderstatus/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByOrderStatusId)
 
 // Get OrderHeader by TableId
-router.get("/table/:id", verifyJWT, controller.getByTableId)
+router.get("/table/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByTableId)
 
 module.exports = router
