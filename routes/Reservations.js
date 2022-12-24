@@ -28,7 +28,7 @@ router.get("/client/:id", verifyJWT, verifyUser, controller.getByClientId)
 router.get("/employee/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByEmployeeId)
 
 // Get Reservation by ReservationStatusId
-router.get("/reservationstatus/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByReservationStatusId)
+router.get("/reservationstatus/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee, ROLE_LIST.client), controller.getByReservationStatusId)
 
 // Get Reservation by TableId
 router.get("/table/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByTableId)
