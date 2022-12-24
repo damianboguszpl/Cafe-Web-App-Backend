@@ -5,23 +5,127 @@ const { verifyJWT } = require("../middlewares/verifyJWT")
 const verifyRole = require("../middlewares/verifyRole")
 const ROLE_LIST = require('../config/role_list')
 
-// TODO: document
-// Create new OrderStatus
+/**
+ * @openapi
+ * /orderstatuses:
+ *  post:
+ *      description: Endpoint for create new order status
+ *      summary: Create order status
+ *      tags:
+ *      - orderstatuses
+ *      parameters:
+ *          - name: name
+ *            in: body
+ *            required: true
+ *      responses:
+ *          201:
+ *              description: Created
+ *          400:
+ *              description: Bad request
+ */
 router.post("/", verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
 
-// Update OrderStatus
+/**
+ * @openapi
+ * /orderstatuses/update/{id}:
+ *  put:
+ *      description: Endpoint for update order status
+ *      summary: Update order status
+ *      tags:
+ *      - orderstatuses
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            required: true
+ *          - name: name
+ *            in: body
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          400:
+ *              description: Bad request
+ *          404:
+ *              description: Not found
+ */
 router.put("/update/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.update)
 
-// Delete OrderStatus 
+/**
+ * @openapi
+ * /orderstatuses/{id}:
+ *  delete:
+ *      description: Endpoint for delete order status
+ *      summary: Delete order status
+ *      tags:
+ *      - orderstatuses
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          400:
+ *              description: Bad request
+ *          404:
+ *              description: Not found
+ */
 router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin), controller.delete)
 
-// Get all OrderStatuses
+/**
+ * @openapi
+ * /orderstatuses:
+ *  get:
+ *      description: Endpoint for get all order status
+ *      summary: Get all order status
+ *      tags:
+ *      - orderstatuses
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          404:
+ *              description: Not found
+ */
 router.get("/", controller.getAll)
 
-// Get OrderStatus by id
+/**
+ * @openapi
+ * /orderstatuses/{id}:
+ *  get:
+ *      description: Endpoint for update new order status
+ *      summary: Update order status
+ *      tags:
+ *      - orderstatuses
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          404:
+ *              description: Not found
+ */
 router.get("/:id", controller.getById)
 
-// Get OrderStatus by name
+/**
+ * @openapi
+ * /orderstatuses/name/{name}:
+ *  get:
+ *      description: Endpoint for update new order status
+ *      summary: Update order status
+ *      tags:
+ *      - orderstatuses
+ *      parameters:
+ *          - name: name
+ *            in: path
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          404:
+ *              description: Not found
+ */
 router.get("/name/:name", controller.getByName)
 
 module.exports = router
