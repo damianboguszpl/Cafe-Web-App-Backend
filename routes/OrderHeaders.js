@@ -6,6 +6,7 @@ const verifyRole = require("../middlewares/verifyRole")
 const ROLE_LIST = require('../config/role_list')
 const { verifyUser } = require('../middlewares/verifyUser')
 
+// TODO: document
 // Create new OrderHeader
 router.post("/", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.create)
 

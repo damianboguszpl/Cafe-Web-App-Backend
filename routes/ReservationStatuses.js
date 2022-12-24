@@ -5,6 +5,7 @@ const { verifyJWT } = require("../middlewares/verifyJWT")
 const verifyRole = require("../middlewares/verifyRole")
 const ROLE_LIST = require('../config/role_list')
 
+// TODO: document
 // Create new ReservationStatus
 router.post("/", verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
 

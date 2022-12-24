@@ -6,6 +6,7 @@ const verifyRole = require("../middlewares/verifyRole")
 const ROLE_LIST = require('../config/role_list')
 const { verifyUser } = require('../middlewares/verifyUser')
 
+// TODO: document
 // Create new UserCoupon
 router.post("/", verifyJWT, controller.create)
 
