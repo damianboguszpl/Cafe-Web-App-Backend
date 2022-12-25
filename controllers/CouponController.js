@@ -113,7 +113,13 @@ module.exports = {
     },
     
     getAvailable: async (req, res) => {
-        const coupons = await Coupon.findAll({where: { isAvailable: true }})
+        const coupons = await Coupon.findAll({
+            where: { isAvailable: true },
+            include: [{
+                model: Product,
+                attributes: ['id', 'name', 'size', 'price', 'allergen', 'CategoryId', 'ProductStatusId']
+            }],
+        })
         if (!coupons.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych dostępnych Kuponów.` });
         res.json(coupons)
