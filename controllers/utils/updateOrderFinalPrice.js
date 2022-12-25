@@ -13,7 +13,7 @@ module.exports = {
             await OrderHeader.update(
                 { finalPrice: orderPrice },
                 { where: { id: orderHeaderId } }
-            )
+            );
         }
     }
 }
