@@ -1,10 +1,43 @@
 const { User, PasswordResetCode } = require("../db/models");
+const jwt = require('jsonwebtoken');
 var randomstring = require("randomstring");
 const sendEmail = require("../utils/email/sendEmail");
 const bcrypt = require("bcrypt")
 const saltRounds = 10
 
 module.exports = {
+    handleRefreshToken: async (req, res) => {
+        const cookies = req.cookies;
+        if (!cookies?.jwt)
+            return res.sendStatus(401);
+    
+        const refreshToken = cookies.jwt;
+    
+        const user = await User.findOne({ where: { refreshToken: refreshToken }, attributes: { exclude: ['password'] } });
+        if (!user)
+            return res.sendStatus(403);
+    
+        jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err || user.email !== decoded.email)
+                    return res.sendStatus(403);
+                const accessToken = jwt.sign(
+                    {
+                        "user": {
+                            "email": decoded.email,
+                            "RoleId": decoded.RoleId
+                        }
+                    },
+                    process.env.ACCESS_TOKEN_SECRET,
+                    { expiresIn: '3600s' }
+                );
+                res.json({ user, accessToken, "isLogged": true })
+            }
+        );
+    },
+
     logout: async (req, res) => {
         // On client, also delete the accessToken
     
