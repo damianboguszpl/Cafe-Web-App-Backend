@@ -237,7 +237,7 @@ router.get('/:id', verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee, RO
 /**
  * @openapi
  * /users/email/{email}:
- *  put:
+ *  get:
  *      description: Endpoint for get user by email
  *      summary: Get user by email
  *      tags:
