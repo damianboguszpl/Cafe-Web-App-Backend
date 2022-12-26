@@ -92,8 +92,8 @@ router.get("/", controller.getAll)
  * @openapi
  * /orderstatuses/{id}:
  *  get:
- *      description: Endpoint for update new order status
- *      summary: Update order status
+ *      description: Endpoint for get order status by id
+ *      summary: Get order status by id
  *      tags:
  *      - orderstatuses
  *      parameters:
@@ -112,8 +112,8 @@ router.get("/:id", controller.getById)
  * @openapi
  * /orderstatuses/name/{name}:
  *  get:
- *      description: Endpoint for update new order status
- *      summary: Update order status
+ *      description: Endpoint for get order status by name
+ *      summary: Get order status by name
  *      tags:
  *      - orderstatuses
  *      parameters:
