@@ -5,23 +5,125 @@ const { verifyJWT } = require("../middlewares/verifyJWT")
 const verifyRole = require("../middlewares/verifyRole")
 const ROLE_LIST = require('../config/role_list')
 
-// TODO: document
-// Create new UserCouponStatus
+/**
+ * @openapi
+ * /usercouponstatuses:
+ *  post:
+ *      description: Endpoint for create new user coupon status
+ *      summary: Create user coupon status
+ *      tags:
+ *      - usercouponstatuses
+ *      parameters:
+ *          - name: name
+ *            in: body
+ *            required: true
+ *      responses:
+ *          201:
+ *              description: Created
+ *          400:
+ *              description: Bad request
+ */
 router.post("/", verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
 
-// Update UserCouponStatus
+/**
+ * @openapi
+ * /usercouponstatuses/{id}:
+ *  put:
+ *      description: Endpoint for update user coupon status
+ *      summary: Update user coupon status
+ *      tags:
+ *      - usercouponstatuses
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            required: true
+ *          - name: name
+ *            in: body
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          400:
+ *              description: Bad request
+ *          404:
+ *              description: Not found
+ */
 router.put("/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.update)
 
-// Delete UserCouponStatus 
+/**
+ * @openapi
+ * /usercouponstatuses/{id}:
+ *  delete:
+ *      description: Endpoint for delete user coupon status
+ *      summary: Delete user coupon status
+ *      tags:
+ *      - usercouponstatuses
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          404:
+ *              description: Not found
+ */
 router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin), controller.delete)
 
-// Get all UserCouponStatuses
+/**
+ * @openapi
+ * /usercouponstatuses:
+ *  get:
+ *      description: Endpoint for get all user coupon statuses
+ *      summary: Get all user coupon statuses
+ *      tags:
+ *      - usercouponstatuses
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          404:
+ *              description: Not found
+ */
 router.get("/", controller.getAll)
 
-// Get UserCouponStatus by id
+/**
+ * @openapi
+ * /usercouponstatuses/{id}:
+ *  get:
+ *      description: Endpoint for get user coupon status by id
+ *      summary: Get user coupon status by id
+ *      tags:
+ *      - usercouponstatuses
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          404:
+ *              description: Not found
+ */
 router.get("/:id", controller.getById)
 
-// Get UserCouponStatus by name
+/**
+ * @openapi
+ * /usercouponstatuses/name/{name}:
+ *  get:
+ *      description: Endpoint for get user coupon status by name
+ *      summary: Get user coupon status by name
+ *      tags:
+ *      - usercouponstatuses
+ *      parameters:
+ *          - name: name
+ *            in: path
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          404:
+ *              description: Not found
+ */
 router.get("/name/:name", controller.getByName)
 
 module.exports = router
