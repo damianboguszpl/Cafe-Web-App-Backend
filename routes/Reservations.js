@@ -134,7 +134,7 @@ router.get("/:id", verifyJWT, controller.getById)
  * /reservations/client/{id}:
  *  get:
  *      description: Endpoint for get reservation by client id
- *      summary: Get reservation by id
+ *      summary: Get reservation by client id
  *      tags:
  *      - reservations
  *      parameters:
@@ -154,7 +154,7 @@ router.get("/client/:id", verifyJWT, verifyUser, controller.getByClientId)
  * /reservations/employee/{id}:
  *  get:
  *      description: Endpoint for get reservation by employee id
- *      summary: Get reservation by id
+ *      summary: Get reservation by employee id
  *      tags:
  *      - reservations
  *      parameters:
@@ -174,7 +174,7 @@ router.get("/employee/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.emp
  * /reservations/reservationstatus/{id}:
  *  get:
  *      description: Endpoint for get reservation by reservation status id
- *      summary: Get reservation by reservation status
+ *      summary: Get reservation by reservation status id
  *      tags:
  *      - reservations
  *      parameters:
@@ -194,7 +194,7 @@ router.get("/reservationstatus/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE
  * /reservations/table/{id}:
  *  get:
  *      description: Endpoint for get reservation by table id
- *      summary: Get reservation by table
+ *      summary: Get reservation by table id
  *      tags:
  *      - reservations
  *      parameters:
