@@ -20,32 +20,39 @@ module.exports = {
     },
 
     register: async (req, res) => {
-        const { email, password, firstname, lastname, phoneNumber, sex } = req.body;
+        if (!req?.body?.email || !req?.body?.password || !req?.body?.firstname || !req?.body?.lastname 
+            || !req?.body?.phoneNumber || !req?.body?.sex)
+            return res.status(400).json({ 'error': 'Nie podano wszystkich wymaganych danych.' });
+        
+        var passwordRegExp = new RegExp(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/);
+        if (!passwordRegExp.test(req.body.password)) {
+            return res.status(400).json({ 'error': "Hasło nie spełnia zasad bezpieczeństwa." });
+        }
 
         const client_role = await Role.findOne({ where: { name: "Klient" } });
-        var user = await User.findOne({ where: { email: email } });
+        var user = await User.findOne({ where: { email: req.body.email } });
         if (user) {
-            res.status(400).json({ 'error': "Użytkownik z podanym adresem email już istnieje." });
+            return res.status(400).json({ 'error': "Użytkownik z podanym adresem email już istnieje." });
         }
         else {
-            var user2 = await User.findOne({ where: { phone: phoneNumber } });
+            var user2 = await User.findOne({ where: { phone: req.body.phoneNumber } });
             if (user2) {
-                res.status(400).json({ 'error': "Użytkownik z podanym numerem telefonu już istnieje." });
+                return res.status(400).json({ 'error': "Użytkownik z podanym numerem telefonu już istnieje." });
             }
             else {
-                bcrypt.hash(password, saltRounds).then((hash) => {
+                bcrypt.hash(req.body.password, saltRounds).then((hash) => {
                     User.create({
-                        firstname: firstname,
-                        lastname: lastname,
-                        email: email,
-                        phone: phoneNumber,
-                        sex: sex,
+                        firstname: req.body.firstname,
+                        lastname: req.body.lastname,
+                        email: req.body.email,
+                        phone: req.body.phoneNumber,
+                        sex: req.body.sex,
                         points: 0,
                         password: hash,
-                        RoleId: client_role.id // give user 'user' privileges by assigning 'user' role of an id = 1
+                        RoleId: client_role.id
                     })
                 })
-                res.json({'message': `Utworzono nowe konto.`});
+                return res.json({'message': `Utworzono nowe konto.`});
             }
         }
     },
@@ -65,6 +72,11 @@ module.exports = {
             return res.status(400).json({ 'message': 'Nie podano nazwiska.' });
         if (!req?.body?.sex)
             return res.status(400).json({ 'message': 'Nie podano płci.' });
+
+        var passwordRegExp = new RegExp(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/);
+        if (!passwordRegExp.test(req.body.password)) {
+            return res.status(400).json({ 'error': "Hasło nie spełnia zasad bezpieczeństwa." });
+        }
 
         var user = await User.findOne({ where: { email: req.body.email } });
         if (user)
@@ -224,6 +236,11 @@ module.exports = {
             return res.status(400).json({ 'error': 'Nie wysłano hasła.' });
         if (!req?.body?.newPassword)
             return res.status(400).json({ 'error': 'Nie wysłano nowego hasła.' });
+
+        var passwordRegExp = new RegExp(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/);
+        if (!passwordRegExp.test(req.body.newPassword)) {
+            return res.status(400).json({ 'error': "Nowe hasło nie spełnia zasad bezpieczeństwa." });
+        }
 
         if (!user) {
             res.status(400).json({ 'error': "Użytkownik nie istnieje" });
