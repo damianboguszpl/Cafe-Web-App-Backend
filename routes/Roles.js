@@ -5,22 +5,125 @@ const { verifyJWT } = require("../middlewares/verifyJWT")
 const verifyRole = require("../middlewares/verifyRole")
 const ROLE_LIST = require('../config/role_list')
 
-// Create new Role
+/**
+ * @openapi
+ * /roles:
+ *  post:
+ *      description: Endpoint for create new role
+ *      summary: Create role
+ *      tags:
+ *      - roles
+ *      parameters:
+ *          - name: name
+ *            in: body
+ *            required: true
+ *      responses:
+ *          201:
+ *              description: Created
+ *          400:
+ *              description: Bad request
+ */
 router.post("/", verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
 
-// Update Role
+/**
+ * @openapi
+ * /roles/update/{id}:
+ *  put:
+ *      description: Endpoint for update role
+ *      summary: Update role
+ *      tags:
+ *      - roles
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            required: true
+ *          - name: name
+ *            in: body
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          400:
+ *              description: Bad request
+ *          404:
+ *              description: Not found
+ */
 router.put("/update/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.update)
 
-// Delete Role 
+/**
+ * @openapi
+ * /roles/{id}:
+ *  delete:
+ *      description: Endpoint for delete role
+ *      summary: Delete role
+ *      tags:
+ *      - roles
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          404:
+ *              description: Not found
+ */
 router.delete(`/:id`, verifyJWT, verifyRole(ROLE_LIST.admin), controller.delete)
 
-// Get all Roles
+/**
+ * @openapi
+ * /roles:
+ *  get:
+ *      description: Endpoint for get all roles
+ *      summary: Get all roles
+ *      tags:
+ *      - roles
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          404:
+ *              description: Not found
+ */
 router.get("/", controller.getAll)
 
-// Get Role by id
+/**
+ * @openapi
+ * /roles/{id}:
+ *  get:
+ *      description: Endpoint for get role by id
+ *      summary: Get role by id
+ *      tags:
+ *      - roles
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          404:
+ *              description: Not found
+ */
 router.get("/:id", controller.getById)
 
-// Get Role by name
+/**
+ * @openapi
+ * /roles/name/{name}:
+ *  get:
+ *      description: Endpoint for get role by name
+ *      summary: Get role by name
+ *      tags:
+ *      - roles
+ *      parameters:
+ *          - name: name
+ *            in: path
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          404:
+ *              description: Not found
+ */
 router.get("/name/:name", controller.getByName)
 
 module.exports = router

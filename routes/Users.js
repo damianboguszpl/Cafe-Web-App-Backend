@@ -6,38 +6,292 @@ const verifyRole = require("../middlewares/verifyRole")
 const ROLE_LIST = require('../config/role_list')
 const { verifyUser } = require('../middlewares/verifyUser')
 
-// login
+/**
+ * @openapi
+ * /users/login:
+ *  post:
+ *      description: Endpoint for login
+ *      summary: Login
+ *      tags:
+ *      - users
+ *      parameters:
+ *          - name: email
+ *            in: body
+ *            required: true
+ *          - name: password
+ *            in: body
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          400:
+ *              description: Bad request
+ */
 router.post('/login', controller.login)
 
-// register
+/**
+ * @openapi
+ * /users/register:
+ *  post:
+ *      description: Endpoint for register
+ *      summary: Register
+ *      tags:
+ *      - users
+ *      parameters:
+ *          - name: email
+ *            in: body
+ *            required: true
+ *          - name: password
+ *            in: body
+ *            required: true
+ *          - name: firstname
+ *            in: body
+ *            required: true
+ *          - name: lastname
+ *            in: body
+ *            required: true
+ *          - name: phoneNumber
+ *            in: body
+ *            required: true
+ *          - name: sex
+ *            in: body
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          400:
+ *              description: Bad request
+ *          404:
+ *              description: Not found
+ */
 router.post('/register', controller.register)
 
-// create
+/**
+ * @openapi
+ * /users/create:
+ *  post:
+ *      description: Endpoint for create new user
+ *      summary: Create user e.g. Employee
+ *      tags:
+ *      - users
+ *      parameters:
+ *          - name: email
+ *            in: body
+ *            required: true
+ *          - name: password
+ *            in: body
+ *            required: true
+ *          - name: firstname
+ *            in: body
+ *            required: true
+ *          - name: lastname
+ *            in: body
+ *            required: true
+ *          - name: phoneNumber
+ *            in: body
+ *            required: true
+ *          - name: sex
+ *            in: body
+ *            required: true
+ *          - name: RoleId
+ *            in: body
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          400:
+ *              description: Bad request
+ *          404:
+ *              description: Not found
+ */
 router.post('/', verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
 
-// Update User
+/**
+ * @openapi
+ * /users/{id}:
+ *  put:
+ *      description: Endpoint for update existing user
+ *      summary: Update user by admin
+ *      tags:
+ *      - users
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            required: true
+ *          - name: firstname
+ *            in: body
+ *          - name: lastname
+ *            in: body
+ *          - name: phone
+ *            in: body
+ *          - name: sex
+ *            in: body
+ *          - name: RoleId
+ *            in: body
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          400:
+ *              description: Bad request
+ *          404:
+ *              description: Not found
+ */
 router.put("/:id", verifyJWT, verifyRole(ROLE_LIST.admin), controller.update)
 
-// Edit User
+/**
+ * @openapi
+ * /users/edit/{id}:
+ *  put:
+ *      description: Endpoint for update existing user
+ *      summary: Update user
+ *      tags:
+ *      - users
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            required: true
+ *          - name: firstname
+ *            in: body
+ *          - name: lastname
+ *            in: body
+ *          - name: phone
+ *            in: body
+ *          - name: sex
+ *            in: body
+ *          - name: RoleId
+ *            in: body
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          400:
+ *              description: Bad request
+ *          404:
+ *              description: Not found
+ */
 router.put("/edit/:id", verifyJWT, verifyUser, controller.edit)
 
-// Change User's Password
+/**
+ * @openapi
+ * /users/changepassword/{id}:
+ *  put:
+ *      description: Endpoint for change password
+ *      summary: Change password
+ *      tags:
+ *      - users
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            required: true
+ *          - name: password
+ *            in: body
+ *            required: true
+ *          - name: newPassword
+ *            in: body
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          400:
+ *              description: Bad request
+ */
 router.put("/changepassword/:id", verifyJWT, verifyUser, controller.changePassword)
 
-// get all Users
+/**
+ * @openapi
+ * /users:
+ *  get:
+ *      description: Endpoint for get all users
+ *      summary: Get all users
+ *      tags:
+ *      - users
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          400:
+ *              description: Bad request
+ *          404:
+ *              description: Not found
+ */
 router.get('/', verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getAll)
 
-// get User by id
+/**
+ * @openapi
+ * /users/{id}:
+ *  get:
+ *      description: Endpoint for get user by id
+ *      summary: Get user by id
+ *      tags:
+ *      - users
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          400:
+ *              description: Bad request
+ */
 router.get('/:id', verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee, ROLE_LIST.client), verifyUser, controller.getById)
 
-// get User by email
-// router.get('/email/:email', verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByEmail)
+/**
+ * @openapi
+ * /users/email/{email}:
+ *  get:
+ *      description: Endpoint for get user by email
+ *      summary: Get user by email
+ *      tags:
+ *      - users
+ *      parameters:
+ *          - name: email
+ *            in: path
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          400:
+ *              description: Bad request
+ */
 router.get('/email/:email', verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee, ROLE_LIST.client), verifyUser, controller.getByEmail)
 
-// get User by phone
+/**
+ * @openapi
+ * /users/phone/{phone}:
+ *  get:
+ *      description: Endpoint for get user by phone number
+ *      summary: Get user by phone
+ *      tags:
+ *      - users
+ *      parameters:
+ *          - name: phone
+ *            in: path
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          400:
+ *              description: Bad request
+ */
 router.get('/phone/:phone', verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByPhone)
 
-// get Users by RoleId
+/**
+ * @openapi
+ * /users/role/{roleid}:
+ *  get:
+ *      description: Endpoint for get user by phone number
+ *      summary: Get user by phone
+ *      tags:
+ *      - users
+ *      parameters:
+ *          - name: roleid
+ *            in: path
+ *            required: true
+ *      responses:
+ *          200:
+ *              description: Ok
+ *          400:
+ *              description: Bad request
+ */
 router.get('/role/:roleid', verifyJWT, verifyRole(ROLE_LIST.admin), controller.getByRoleId)
 
 module.exports = router

@@ -262,7 +262,7 @@ module.exports = {
                         // console..log(result)
                     } catch (err) {
                         // console.log(err)
-                        return res.status(400).json({ 'error': err});
+                        return res.status(400).json({ 'error': err });
                     }
                 }
             });

@@ -3,6 +3,7 @@ const cors = require('cors');
 const app = express()
 const port = 3001
 const db = require('./db/models')
+const swaggerOptions = require('./config/swagger_options')
 
 require('dotenv').config();
 
@@ -11,16 +12,21 @@ const cookieParser = require("cookie-parser")
 
 app.use(express.json());
 app.use(cors({
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3000", "http://localhost:3001/api-info"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }));
 
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// swagger
+const swaggerUi = require('swagger-ui-express')
+const swaggerJsdoc = require("swagger-jsdoc")
+const swaggerSpecs = swaggerJsdoc(swaggerOptions)
+app.use('/api-info', swaggerUi.serve, swaggerUi.setup(swaggerSpecs))
 
 // Routers
-
 const usersRouter = require('./routes/Users');
 app.use("/users", usersRouter);
 

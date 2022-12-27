@@ -30,7 +30,9 @@
     "nodemon": "^2.0.19",
     "randomstring": "^1.2.3",
     "sequelize": "^6.21.2",
-    "sequelize-cli": "^6.4.1"
+    "sequelize-cli": "^6.4.1",
+    "swagger-jsdoc": "^6.2.7",
+    "swagger-ui-express": "^4.6.0"
   },
   "description": ""
 }
