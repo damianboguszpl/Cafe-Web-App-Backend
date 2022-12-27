@@ -20,7 +20,7 @@ app.use(cors({
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// swagger
+// Swagger
 const swaggerUi = require('swagger-ui-express')
 const swaggerJsdoc = require("swagger-jsdoc")
 const swaggerSpecs = swaggerJsdoc(swaggerOptions)
@@ -80,6 +80,7 @@ app.use("/usercoupons", userCouponsRouter);
 
 const userCouponStatusesRouter = require('./routes/UserCouponStatuses');
 app.use("/usercouponstatuses", userCouponStatusesRouter);
+
 
 db.sequelize.sync().then(() => {
     app.listen(port, () => console.log(`Server listening on port ${port}!`))

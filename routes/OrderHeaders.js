@@ -3,8 +3,8 @@ const router = express.Router()
 const controller = require('../controllers/OrderHeaderController')
 const { verifyJWT } = require("../middlewares/verifyJWT")
 const verifyRole = require("../middlewares/verifyRole")
-const ROLE_LIST = require('../config/role_list')
 const { verifyUser } = require('../middlewares/verifyUser')
+const ROLE_LIST = require('../config/role_list')
 
 /**
  * @openapi
