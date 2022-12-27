@@ -8,9 +8,5 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'order_statuses'
     })
 
-    OrderStatus.associate = (models) => {
-        // OrderStatus.belongsTo(models.OrderHeader)
-    }
-
     return OrderStatus
 }

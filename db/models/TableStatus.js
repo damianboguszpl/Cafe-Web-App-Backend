@@ -1,5 +1,3 @@
-const Table = require("./Table")
-
 module.exports = (sequelize, DataTypes) => {
     const TableStatus = sequelize.define("TableStatus", {
         name: {

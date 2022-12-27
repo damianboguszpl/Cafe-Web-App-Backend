@@ -1,5 +1,3 @@
-const SpecialOffer = require("./SpecialOffer")
-
 module.exports = (sequelize, DataTypes) => {
     const Product = sequelize.define("Product", {
         name: {

@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     })
 
     UserCouponStatus.associate = (models) => {
-        UserCouponStatus.hasMany(models.UserCoupon, {onDelete: 'cascade'})
+        UserCouponStatus.hasMany(models.UserCoupon, { onDelete: 'cascade' })
     }
 
     return UserCouponStatus

@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     })
 
     ReservationStatus.associate = (models) => {
-        ReservationStatus.hasMany(models.Reservation, {onDelete: 'cascade'})
+        ReservationStatus.hasMany(models.Reservation, { onDelete: 'cascade' })
     }
 
     return ReservationStatus

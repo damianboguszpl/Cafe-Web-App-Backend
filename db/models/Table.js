@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
 
     Table.associate = (models) => {
         Table.belongsTo(models.TableStatus)
-        Table.hasMany(models.Reservation, {onDelete: 'cascade'})
+        Table.hasMany(models.Reservation, { onDelete: 'cascade' })
     }
 
     return Table
