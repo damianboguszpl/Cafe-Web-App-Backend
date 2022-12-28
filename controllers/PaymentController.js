@@ -22,7 +22,7 @@ module.exports = {
             { name: req.body.name }, 
             { where: { id: req.params.id } }
         );
-        res.json({'message': `Zaktualizowano Płatność.`});
+        return res.json({'message': `Zaktualizowano Płatność.`});
     },
     
     delete: async (req,res) => {
@@ -35,27 +35,27 @@ module.exports = {
         await Payment.destroy({
             where: { id: req.params.id } }
         );
-        res.json({'message': `Usunięto Płatność.`});
+        return res.json({'message': `Usunięto Płatność.`});
     },
     
     getAll: async (req, res) => {
         const payments = await Payment.findAll();
         if (!payments.length) 
             return res.status(404).json({ 'message': 'Nie znaleziono żadnych Płatności.' });
-        res.json(payments);
+        return res.json(payments);
     },
     
     getById: async (req, res) => {
         const payment = await Payment.findOne({ where: { id: req.params.id } });
         if(!payment)
             return res.status(404).json({ 'message': `Nie znaleziono Płatności o Id ${req.params.id}.` });
-        res.json(payment);
+        return res.json(payment);
     },
     
     getByName: async (req, res) => {
         const payment = await Payment.findOne({ where: { name: req.params.name } });
         if(!payment)
             return res.status(404).json({ 'message': `Nie znaleziono Płatności o nazwie '${req.params.name}'.` });
-        res.json(payment);
+        return res.json(payment);
     },
 }

@@ -21,8 +21,8 @@ module.exports = {
         await Role.update(
             { name: req.body.name }, 
             { where: { id: req.params.id } }
-            );
-        res.json({'message': `Zaktualizowano rolę.`});
+        );
+        return res.json({'message': `Zaktualizowano rolę.`});
     },
     
     delete: async (req,res) => {
@@ -35,27 +35,27 @@ module.exports = {
         await Role.destroy({
             where: { id: req.params.id } }
         );
-        res.json({'message': `Usunięto rolę.`});
+        return res.json({'message': `Usunięto rolę.`});
     },
     
     getAll: async (req, res) => {
         const roles = await Role.findAll();
         if (!roles.length) 
             return res.status(404).json({ 'message': 'Nie znaleziono żadnej Roli.' });
-        res.json(roles);
+        return res.json(roles);
     },
     
     getById: async (req, res) => {
         const role = await Role.findOne({ where: { id: req.params.id } });
         if(!role)
             return res.status(404).json({ 'message': `Nie znaleziono Roli o Id ${req.params.id}.` });
-        res.json(role);
+        return res.json(role);
     },
     
     getByName: async (req, res) => {
         const role = await Role.findOne({ where: { name: req.params.name } });
         if(!role)
             return res.status(404).json({ 'message': `Nie znaleziono Roli o nazwie '${req.params.name}'.` });
-        res.json(role);
+        return res.json(role);
     },
 }

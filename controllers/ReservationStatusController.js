@@ -22,7 +22,7 @@ module.exports = {
             { name: req.body.name }, 
             { where: { id: req.params.id } }
         );
-        res.json({'mesage': `Zaktualizowano Status Rezerwacji.`});
+        return res.json({'mesage': `Zaktualizowano Status Rezerwacji.`});
     },
     
     delete: async (req,res) => {
@@ -35,21 +35,21 @@ module.exports = {
         await ReservationStatus.destroy(
             { where: { id: req.params.id } }
         );
-        res.json({'message': 'Usunięto Status Rezerwacji.'});
+        return res.json({'message': 'Usunięto Status Rezerwacji.'});
     },
     
     getAll: async (req, res) => {
         const reservationStatuses = await ReservationStatus.findAll();
         if (!reservationStatuses.length)
             return res.status(404).json({ 'message': 'Nie znaleziono żadnych Statusów Rezerwacji.' });
-        res.json(reservationStatuses);
+        return res.json(reservationStatuses);
     },
     
     getById: async (req, res) => {
         const reservationStatus = await ReservationStatus.findOne({ where: { id: req.params.id } });
         if(!reservationStatus)
             return res.status(404).json({ 'message': `Nie znaleziono Statusu Rezerwacji o Id ${req.params.id}.` });
-        res.json(reservationStatus);
+        return res.json(reservationStatus);
     },
     
     getByName: async (req, res) => {
@@ -57,6 +57,6 @@ module.exports = {
         const reservationStatus = await ReservationStatus.findOne({ where: { name: name } });
         if(!reservationStatus)
             return res.status(404).json({ 'message': `Nie znaleziono Statusu Rezerwacji o nazwie '${req.params.name}'.` });
-        res.json(reservationStatus);
+        return res.json(reservationStatus);
     },
 }

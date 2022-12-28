@@ -9,7 +9,7 @@ module.exports = {
             return res.status(400).json({ 'message': 'Status Kuponów Użytkowników o podanej nazwie już istnieje.' });
 
         const newUserCouponStatus = await UserCouponStatus.create(req.body);
-        res.status(201).json({'message': `Dodano nowy Status Kuponów Użytkowników.`, 'data': newUserCouponStatus});
+        return res.status(201).json({'message': `Dodano nowy Status Kuponów Użytkowników.`, 'data': newUserCouponStatus});
     },
     
     update: async (req,res) => {
@@ -22,7 +22,7 @@ module.exports = {
             { name: req.body.name }, 
             { where: { id: req.params.id } }
         );
-        res.json({'message': `Zaktualizowano Status Kuponów Użytkowników.`});
+        return res.json({'message': `Zaktualizowano Status Kuponów Użytkowników.`});
     },
     
     delete: async (req,res) => {
@@ -35,21 +35,21 @@ module.exports = {
         await UserCouponStatus.destroy(
             { where: { id: req.params.id } }
         );
-        res.json({'message': `Usunięto Status Kuponów Użytkowników.`});
+        return res.json({'message': `Usunięto Status Kuponów Użytkowników.`});
     },
     
     getAll: async (req, res) => {
         const userCouponStatuses = await UserCouponStatus.findAll();
         if (!userCouponStatuses.length)
             return res.status(404).json({ 'message': 'Nie znaleziono żadnych Statusów Kuponów Użytkowników.' });
-        res.json(userCouponStatuses);
+        return res.json(userCouponStatuses);
     },
     
     getById: async (req, res) => {
         const userCouponStatus = await UserCouponStatus.findOne({ where: { id: req.params.id } });
         if(!userCouponStatus)
             return res.status(404).json({ 'message': `Nie znaleziono Statusu Kuponów Użytkowników o Id ${req.params.id}.` });
-        res.json(userCouponStatus);
+        return res.json(userCouponStatus);
     },
     
     getByName: async (req, res) => {
@@ -57,6 +57,6 @@ module.exports = {
         const userCouponStatus = await UserCouponStatus.findOne({ where: { name: name } });
         if(!userCouponStatus)
             return res.status(404).json({ 'message': `Nie znaleziono Statusu Kuponów Użytkowników o nazwie '${req.params.name}'.` });
-        res.json(userCouponStatus);
+        return res.json(userCouponStatus);
     },
 }

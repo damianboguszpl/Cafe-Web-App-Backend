@@ -3,14 +3,10 @@ const { updateOrderFinalPrice } = require("./utils/updateOrderFinalPrice")
 
 module.exports = {
     create: async (req, res) => {
-        if (!req?.body?.transaction_price)
-            return res.status(400).json({ 'message': 'Nie podano ceny.' });
-        if (!req?.body?.quantity)
-            return res.status(400).json({ 'message': 'Nie podano ilości.' });
-        if (!req?.body?.OrderHeaderId)
-            return res.status(400).json({ 'message': 'Nie podano Id Zamówienia.' });
-        if (!req?.body?.ProductId)
-            return res.status(400).json({ 'message': 'Nie podano Id Produktu.' });
+        if (!req?.body?.transaction_price) return res.status(400).json({ 'message': 'Nie podano ceny.' });
+        if (!req?.body?.quantity) return res.status(400).json({ 'message': 'Nie podano ilości.' });
+        if (!req?.body?.OrderHeaderId) return res.status(400).json({ 'message': 'Nie podano Id Zamówienia.' });
+        if (!req?.body?.ProductId) return res.status(400).json({ 'message': 'Nie podano Id Produktu.' });
 
         const orderHeader = await OrderHeader.findByPk(req?.body?.OrderHeaderId);
         if (!orderHeader)
@@ -25,7 +21,6 @@ module.exports = {
             where: { OrderHeaderId: orderDetail.OrderHeaderId, ProductId: orderDetail.ProductId, isCoupon: false }
         });
 
-        console.log(req?.body?.isCoupon)
         if (!existstingNotCouponItem || (req?.body?.isCoupon && req?.body?.isCoupon == true)) {
             if(req?.body?.UserCouponId != null) {
                 const existstingCouponItem = await OrderDetails.findOne({
@@ -60,7 +55,7 @@ module.exports = {
             );
         }
         updateOrderFinalPrice(req.body.OrderHeaderId);
-        res.json(orderDetail);
+        return res.json(orderDetail);
     },
 
     update: async (req, res) => {
@@ -83,7 +78,7 @@ module.exports = {
             );
             const orderDetails = await OrderDetails.findByPk(req.params.id);
             updateOrderFinalPrice(orderDetails.OrderHeaderId);
-            res.json({'mesage': `Zaktualizowano Składnik Zamówienia.`});
+            return res.json({'mesage': `Zaktualizowano Składnik Zamówienia.`});
         }
     },
 
@@ -100,12 +95,11 @@ module.exports = {
                     where: { id: orderDetail.UserCouponId }
                 });
             }
-            await OrderDetails.destroy({
-                where: { id: req.params.id }
-            }
+            await OrderDetails.destroy(
+                { where: { id: req.params.id } }
             );
             updateOrderFinalPrice(orderHeaderId);
-            res.json({'message': 'Usunięto Składnik Zamówienia.'});
+            return res.json({'message': 'Usunięto Składnik Zamówienia.'});
         }
     },
 
@@ -113,14 +107,14 @@ module.exports = {
         const orderDetails = await OrderDetails.findAll();
         if (!orderDetails.length)
             return res.status(404).json({ 'message': 'Nie znaleziono żadnych Składników Zamówień.' });
-        res.json(orderDetails);
+        return res.json(orderDetails);
     },
 
     getById: async (req, res) => {
         const orderDetails = await OrderDetails.findOne({ where: { id: req.params.id } });
         if (!orderDetails)
             return res.status(404).json({ 'message': `Nie znaleziono Składnika Zamówienia o Id ${req.params.id}.` });
-        res.json(orderDetails);
+        return res.json(orderDetails);
     },
 
     getByProductId: async (req, res) => {
@@ -128,7 +122,7 @@ module.exports = {
         const orderDetails = await OrderDetails.findAll({ where: { ProductId: id } });
         if (!orderDetails.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych Składników Zamówień na Produkt o Id ${req.params.id}.` });
-        res.json(orderDetails);
+        return res.json(orderDetails);
     },
 
     getByOrderHeaderId: async (req, res) => {
@@ -141,6 +135,6 @@ module.exports = {
             where: { OrderHeaderId: orderheaderid }
         }
         );
-        res.json(orderDetails);
+        return res.json(orderDetails);
     },
 }

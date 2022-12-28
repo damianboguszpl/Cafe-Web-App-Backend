@@ -33,34 +33,26 @@ module.exports = {
                     process.env.ACCESS_TOKEN_SECRET,
                     { expiresIn: '3600s' }
                 );
-                res.json({ user, accessToken, "isLogged": true })
+                return res.json({ user, accessToken, "isLogged": true })
             }
         );
     },
 
     logout: async (req, res) => {
-        // On client, also delete the accessToken
-    
         const cookies = req.cookies;
         if (!cookies?.jwt) {
-            console.log("cookie not set")
-            return res.sendStatus(204); //No content
+            return res.sendStatus(204);
         }
-            
         const refreshToken = cookies.jwt;
     
-        // Is refreshToken in db?
         const user = await User.findOne({ where: { refreshToken: refreshToken } });
         if (!user) {
             res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
-            // return res.sendStatus(204);
-            return res.status(200).json({ 'message': "Wylogowano" });
+            return res.sendStatus(204);
         }
     
-        // Delete refreshToken in db
         user.refreshToken = '';
-        const result = await user.save();
-        console.log(result);
+        await user.save();
     
         res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
         res.sendStatus(204);
@@ -137,7 +129,7 @@ module.exports = {
                 const now = new Date()
                 const codeValidTime = 5*60*1000;
                 if(!(codeValidTime > (now - createdAt))) {
-                    return res.status(400).json({ 'error': "Upłynął czas na zmianę hasła. Rozpocznij operację od początku." });
+                    return res.status(400).json({ 'error': "Upłynął czas na zmianę hasła. Rozpocznij proces od początku." });
                 }
                 else {
                     bcrypt.compare(req.body.resetCode, password_reset_code.resetCode).then( async (match) => {

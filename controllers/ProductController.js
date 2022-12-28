@@ -3,11 +3,11 @@ const { Product, SpecialOffer, Coupon } = require("../db/models");
 module.exports = {
     
     create: async (req,res) => {
-        if (!req?.body?.name) { return res.status(400).json({ 'error': 'Nie podano nazwy Produktu.' }); }
-        if (!req?.body?.size) { return res.status(400).json({ 'error': 'Nie podano rozmiaru Produktu.' }); }
-        if (!req?.body?.price) { return res.status(400).json({ 'error': 'Nie podano ceny Produktu.' }); }
-        if (!req?.body?.CategoryId) { return res.status(400).json({ 'error': 'Nie podano Kategorii Produktu.' }); }
-        if (!req?.body?.ProductStatusId) { return res.status(400).json({ 'error': 'Nie podano Statusu Produktu.' }); }
+        if (!req?.body?.name) return res.status(400).json({ 'error': 'Nie podano nazwy Produktu.' });
+        if (!req?.body?.size) return res.status(400).json({ 'error': 'Nie podano rozmiaru Produktu.' });
+        if (!req?.body?.price) return res.status(400).json({ 'error': 'Nie podano ceny Produktu.' });
+        if (!req?.body?.CategoryId) return res.status(400).json({ 'error': 'Nie podano Kategorii Produktu.' });
+        if (!req?.body?.ProductStatusId) return res.status(400).json({ 'error': 'Nie podano Statusu Produktu.' });
 
         const existingProduct = await Product.findOne({where:{name: req.body.name}})
         if (existingProduct) 
@@ -28,7 +28,7 @@ module.exports = {
                 return res.status(400).json({ 'error': 'Produkt o podanej nazwie już istnieje.' });
         }
 
-        const updated = await Product.update(
+        await Product.update(
             { 
                 name: req.body.name,
                 size: req.body.size,
@@ -86,22 +86,22 @@ module.exports = {
             return res.json(productsWithoutCoupons);
         }
         else 
-        return res.json(products)
+            return res.json(products)
     },
     
     getById: async (req, res) => {
         const id = req.params.id
         const product = await Product.findByPk(id);
         if(!product)
-            return res.status(400).json({ 'error': `Nie znaleziono Produktu o Id ${req.params.id}.` });
-            return res.json(product);
+            return res.status(404).json({ 'error': `Nie znaleziono Produktu o Id ${req.params.id}.` });
+        return res.json(product);
     },
     
     getByName: async (req, res) => {
         const name = req.params.name
         const product = await Product.findOne({ where: { name: name } });
         if(!product)
-            return res.status(400).json({ 'error': `Nie znaleziono Produktu o nazwie ${req.params.name}.` });
+            return res.status(404).json({ 'error': `Nie znaleziono Produktu o nazwie ${req.params.name}.` });
         return res.json(product);
     },
     

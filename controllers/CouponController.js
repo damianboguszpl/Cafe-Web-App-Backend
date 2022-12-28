@@ -3,8 +3,6 @@ var randomstring = require("randomstring");
 
 module.exports = {
     create: async (req,res) => {
-        const coupon = req.body;
-        
         if (!req?.body?.ProductId)
             return res.status(400).json({ 'error': 'Nie podano Id Produktu.' });
         const product = await Product.findByPk(req?.body?.ProductId);
@@ -76,7 +74,7 @@ module.exports = {
             { where: { id: req.params.id } }
         );
 
-        res.json({'message': `Zaktualizowano Kupon.`});
+        return res.json({'message': `Zaktualizowano Kupon.`});
     },
     
     delete: async (req,res) => {
@@ -88,28 +86,28 @@ module.exports = {
                 id: req.params.id
             }
         })
-        res.json({'message': 'Usunięto Kupon.'});
+        return res.json({'message': 'Usunięto Kupon.'});
     },
     
     getAll: async (req, res) => {
         const coupons = await Coupon.findAll();
         if (!coupons.length) 
             return res.status(404).json({ 'message': 'Nie znaleziono żadnego Kuponu.' });
-        res.json(coupons);
+        return res.json(coupons);
     },
     
     getById: async (req, res) => {
         const coupon = await Coupon.findByPk(req.params.id);
         if(!coupon)
             return res.status(404).json({ 'message': `Nie znaleziono Kuponu o Id ${req.params.id}.` });
-        res.json(coupon);
+        return res.json(coupon);
     },
     
     getByProductId: async (req, res) => {
         const coupons = await Coupon.findAll({ where: { ProductId: req.params.id } });
         if (!coupons.length)
             return res.status(404).json({ 'message': `Nie znaleziono Kuponu na Produkt o Id ${req.params.id}.` });
-        res.json(coupons);
+        return res.json(coupons);
     },
     
     getAvailable: async (req, res) => {
@@ -122,13 +120,13 @@ module.exports = {
         })
         if (!coupons.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych dostępnych Kuponów.` });
-        res.json(coupons)
+        return res.json(coupons)
     },
     
     getUnavailable: async (req, res) => {
         const coupons = await Coupon.findAll({where: { isAvailable: false }})
         if (!coupons.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych niedostępnych Kuponów.` });
-        res.json(coupons)
+        return res.json(coupons)
     }
 }

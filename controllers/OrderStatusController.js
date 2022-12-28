@@ -21,8 +21,8 @@ module.exports = {
         await OrderStatus.update(
             { name: req.body.name }, 
             { where: { id: req.params.id } }
-            );
-        res.json({'message': `Zaktualizowano Status Zamówień.`});
+        );
+        return res.json({'message': `Zaktualizowano Status Zamówień.`});
     },
     
     delete: async (req,res) => {
@@ -35,27 +35,27 @@ module.exports = {
         await OrderStatus.destroy({
             where: { id: req.params.id } }
         );
-        res.json({'message': 'Usunięto Status Zamówień.'});
+        return res.json({'message': 'Usunięto Status Zamówień.'});
     },
     
     getAll: async (req, res) => {
         const orderStatuses = await OrderStatus.findAll();
         if (!orderStatuses.length) 
             return res.status(404).json({ 'message': 'Nie znaleziono żadnych Statusów Zamówień.' });
-        res.json(orderStatuses);
+        return res.json(orderStatuses);
     },
     
     getById: async (req, res) => {
         const orderStatus = await OrderStatus.findOne({ where: { id: req.params.id } });
         if(!orderStatus)
             return res.status(404).json({ 'message': `Nie znaleziono Statusu Zamówień o Id ${req.params.id}.` });
-        res.json(orderStatus);
+        return res.json(orderStatus);
     },
     
     getByName: async (req, res) => {
         const orderStatus = await OrderStatus.findOne({ where: { name: req.params.name } });
         if(!orderStatus)
             return res.status(404).json({ 'message': `Nie znaleziono Statusu Zamówień o nazwie '${req.params.name}'.` });
-        res.json(orderStatus);
+        return res.json(orderStatus);
     },
 }

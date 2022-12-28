@@ -3,14 +3,10 @@ var randomstring = require("randomstring");
 
 module.exports = {
     create: async (req,res) => {
-        if (!req?.body?.CouponId)
-            return res.status(400).json({ 'message': 'Nie podano Id Kuponu.' });
-        if (!req?.body?.UserId)
-            return res.status(400).json({ 'message': 'Nie podano Id Użytkownika.' });
-        if (!req?.body?.UserCouponStatusId)
-            return res.status(400).json({ 'message': 'Nie podano Id Statusu Kuponów Użytkowników.' });
-        if (!req?.body?.expiration_date)
-            return res.status(400).json({ 'message': 'Nie podano daty wygaśnięcia.' });
+        if (!req?.body?.CouponId) return res.status(400).json({ 'message': 'Nie podano Id Kuponu.' });
+        if (!req?.body?.UserId) return res.status(400).json({ 'message': 'Nie podano Id Użytkownika.' });
+        if (!req?.body?.UserCouponStatusId) return res.status(400).json({ 'message': 'Nie podano Id Statusu Kuponów Użytkowników.' });
+        if (!req?.body?.expiration_date) return res.status(400).json({ 'message': 'Nie podano daty wygaśnięcia.' });
 
         const user = await User.findByPk(req?.body?.UserId);
         if (!user)
@@ -27,7 +23,7 @@ module.exports = {
         if(user.points >= coupon.pointPrice) {
             var codeOk = 0;
             var code = 0;
-            while (codeOk != 1) {   // generating unique code for a new Coupon
+            while (codeOk != 1) {
                 code = randomstring.generate({
                     length: 6,
                     charset: 'numeric'
@@ -88,24 +84,18 @@ module.exports = {
             { where: { id: req.params.id }}
         );
 
-        res.json({'mesage': `Zaktualizowano Kupon Użytkownika.`});
+        return res.json({'mesage': `Zaktualizowano Kupon Użytkownika.`});
     },
     
     delete: async (req,res) => {
-        // await UserCoupon.destroy({
-        //     where: {
-        //         id: req.params.id
-        //     }
-        // })
-        // res.json("Deleted successfully.");
-        res.status(400).json({'error': `Kupon Użytkownika nie może zostać usunięty.`})
+        return res.status(400).json({'error': `Kupon Użytkownika nie może zostać usunięty.`})
     },
-    // get all UserCoupons
+
     getAll: async (req, res) => {
         const userCoupons = await UserCoupon.findAll();
         if (!userCoupons.length)
             return res.status(404).json({ 'message': 'Nie znaleziono żadnych Kuponów Użytkowników.' });
-        res.json(userCoupons);
+        return res.json(userCoupons);
     },
     
     getById: async (req, res) => {
@@ -113,7 +103,6 @@ module.exports = {
         if(!userCoupon)
             return res.status(404).json({ 'message': `Nie znaleziono Kuponu Użytkownika o Id ${req.params.id}.` });
         
-        // Client can get only his own usercoupon's data
         if(req.RoleId === 1) {
             const client = await User.findOne({ where: { id: userCoupon.UserId }, attributes: ['id', 'email'] });
             if (client != null) {
@@ -130,7 +119,6 @@ module.exports = {
         if(!userCoupon)
             return res.status(404).json({ 'message': `Nie znaleziono Kuponu uzytkownika o kodzie '${req.params.code}'.` });
         
-            // Client can get only his own usercoupon's data
         if(req.RoleId === 1) {
             const client = await User.findOne({ where: { id: userCoupon.UserId }, attributes: ['id', 'email'] });
             if (client != null) {
@@ -146,20 +134,20 @@ module.exports = {
         const usercoupons = await UserCoupon.findAll({ where: { UserId: req.params.id } });
         if (!usercoupons.length)
             return res.status(404).json({ 'message': `Nie znaleziono Kuponów Użytkownika Użytkownika o Id ${req.params.UserId}.` });
-        res.json(usercoupons);
+        return res.json(usercoupons);
     },
     
     getByCouponId: async (req, res) => {
         const usercoupons = await UserCoupon.findAll({ where: { CouponId: req.params.id } });
         if (!usercoupons.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych Kuponów Użytkownika powiązanych z Kuponem o Id ${req.params.CouponId}.` });
-        res.json(usercoupons);
+        return res.json(usercoupons);
     },
     
     getByUserCouponStatusId: async (req, res) => {
         const usercoupons = await UserCoupon.findAll({ where: { UserCouponStatusId: req.params.id } });
         if (!usercoupons.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych Kuponów Użytkowników ze Statusem Kuponów Użytkowników o Id ${req.params.UserCouponStatusId}.` });
-        res.json(usercoupons);
+        return res.json(usercoupons);
     },
 }

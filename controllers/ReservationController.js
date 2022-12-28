@@ -3,10 +3,8 @@ const { Reservation, Table, ReservationStatus, User } = require("../db/models")
 
 module.exports = {
     create: async (req, res) => {
-        if (!req?.body?.date)
-            return res.status(400).json({ 'message': 'Nie podano daty.' });
-        if (!req?.body?.TableId)
-            return res.status(400).json({ 'message': 'Nie podano Id Stolika.' });
+        if (!req?.body?.date) return res.status(400).json({ 'message': 'Nie podano daty.' });
+        if (!req?.body?.TableId) return res.status(400).json({ 'message': 'Nie podano Id Stolika.' });
 
         const reservationStatus = await ReservationStatus.findByPk(req?.body?.ReservationStatusId);
         if (!reservationStatus)
@@ -26,7 +24,6 @@ module.exports = {
                         return res.status(404).json({ 'message': `Klient o Id ${req.body.ClientId} ma już aktywną Rezerwację.` });
                 }
             }
-
         }
 
         if (req?.body?.EmployeeId && req?.body?.EmployeeId != null) {
@@ -63,7 +60,6 @@ module.exports = {
                 return res.status(404).json({ 'message': `Nie znaleziono Stolika o Id ${req?.body?.TableId}.` });
         }
         
-        // Client can update only his own reservation
         if(req.RoleId === 1) {
             const client = await User.findOne({ where: { id: reservation.ClientId }, attributes: ['id', 'email'] });
             if (client != null) {
@@ -93,14 +89,14 @@ module.exports = {
             where: { id: req.params.id }
         }
         );
-        res.json({'message': `Usunięto Rezerwację.`});
+        return res.json({'message': `Usunięto Rezerwację.`});
     },
 
     getAll: async (req, res) => {
         const reservations = await Reservation.findAll();
         if (!reservations.length)
             return res.status(404).json({ 'message': 'Nie znaleziono żadnych Rezerwacji.' });
-        res.json(reservations);
+        return res.json(reservations);
     },
 
     getById: async (req, res) => {
@@ -108,7 +104,6 @@ module.exports = {
         if (!reservation)
             return res.status(404).json({ 'message': `Nie znaleziono Rezerwacji o Id ${req.params.id}.` });
 
-        // Client can get only his own reservation's data
         if(req.RoleId === 1) {
             const client = await User.findOne({ where: { id: reservation.ClientId }, attributes: ['id', 'email'] });
             if (client != null) {
@@ -117,21 +112,21 @@ module.exports = {
                 }
             }
         }
-        res.json(reservation);
+        return res.json(reservation);
     },
 
     getByClientId: async (req, res) => {
         const reservations = await Reservation.findAll({ where: { ClientId: req.params.id } });
         if (!reservations.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych Rezerwacji Klienta o Id ${req.params.id}.` });
-        res.json(reservations);
+        return res.json(reservations);
     },
 
     getByEmployeeId: async (req, res) => {
         const reservations = await Reservation.findAll({ where: { EmployeeId: req.params.id } });
         if (!reservations.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych Rezerwacji przypisanych do Pracownika o Id ${req.params.id}.` });
-        res.json(reservations);
+        return res.json(reservations);
     },
 
     getByReservationStatusId: async (req, res) => {
@@ -148,13 +143,13 @@ module.exports = {
             where: { ReservationStatusId: req.params.id } });
         if (!reservations.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych Rezerwacji ze Statusem Rezerwacji o Id ${req.params.id}.` });
-        res.json(reservations);
+        return res.json(reservations);
     },
 
     getByTableId: async (req, res) => {
         const reservations = await Reservation.findAll({ where: { TableId: req.params.id } });
         if (!reservations.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych Rezerwacji na Stolik o Id ${req.params.id}.` });
-        res.json(reservations);
+        return res.json(reservations);
     },
 }

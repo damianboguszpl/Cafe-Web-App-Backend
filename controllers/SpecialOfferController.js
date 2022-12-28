@@ -8,64 +8,67 @@ module.exports = {
         if (!req?.body?.ProductId) { return res.status(400).json({ 'error': 'Nie podano Id Produktu Promocyjnego.' }); }
 
         const newSpecialOffer = await SpecialOffer.create(req.body);
-        res.status(201).json({'message': `Dodano nową Promocję.`, 'data': newSpecialOffer});
+        return res.status(201).json({'message': `Dodano nową Promocję.`, 'data': newSpecialOffer});
     },
     
     update: async (req, res) => {
-        const id = req.params.id;
-        const updated = await SpecialOffer.update(
+        const specialOffer = await SpecialOffer.findByPk(req.params.id);
+        if(!specialOffer)
+            return res.status(404).json({ 'message': `Nie znaleziono Promocji o Id ${req.params.id}.` });
+        await SpecialOffer.update(
             {
                 value: req.body.value,
                 start_date: req.body.start_date,
                 end_date: req.body.end_date
             },
-            { where: { id: id } }
+            { where: { id: req.params.id } }
         );
 
-        res.json({'message': `Zaktualizowano Promocję.`});
+        return res.json({'message': `Zaktualizowano Promocję.`});
     },
     
     delete: async (req, res) => {
-        const id = req.params.id;
+        const specialOffer = await SpecialOffer.findByPk(req.params.id);
+        if(!specialOffer)
+            return res.status(404).json({ 'message': `Nie znaleziono Promocji o Id ${req.params.id}.` });
         await SpecialOffer.destroy(
-            { where: { id: id } }
+            { where: { id: req.params.id } }
         );
-        res.json({'message': `Usunięto Promocję.`});
+        return res.json({'message': `Usunięto Promocję.`});
     },
     
     getAll: async (req, res) => {
         const specialOffers = await SpecialOffer.findAll();
         if (!specialOffers.length) 
             return res.status(404).json({ 'message': 'Nie znaleziono żadnych Promocji.' });
-        res.json(specialOffers);
+        return res.json(specialOffers);
     },
     
     getById: async (req, res) => {
-        const id = req.params.id
-        const specialOffer = await SpecialOffer.findByPk(id);
+        const specialOffer = await SpecialOffer.findByPk(req.params.id);
         if(!specialOffer)
             return res.status(404).json({ 'message': `Nie znaleziono Promocji o Id ${req.params.id}.` });
-        res.json(specialOffer);
+        return res.json(specialOffer);
     },
     
     getByProductId: async (req, res) => {
         const specialOffers = await SpecialOffer.findAll({ where: { ProductId: req.params.id } });
         if (!specialOffers.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych Promocji na Produkt o Id ${req.params.id}.` });
-        res.json(specialOffers);
+        return res.json(specialOffers);
     },
     
     getAvailable: async (req, res) => {
         const specialOffers = await SpecialOffer.findAll({ where: { is_available: true } })
         if (!specialOffers.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych dostępnych Promocji.` });
-        res.json(specialOffers)
+        return res.json(specialOffers)
     },
     
     getUnavailable: async (req, res) => {
         const specialOffers = await SpecialOffer.findAll({ where: { is_available: false } })
         if (!specialOffers.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych niedostępnych Promocji.` });
-        res.json(specialOffers)
+        return res.json(specialOffers)
     },
 }

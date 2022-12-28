@@ -3,8 +3,31 @@ const { OrderHeader, OrderDetails, Payment, User, OrderStatus, Table, UserCoupon
 module.exports = {
     create: async (req,res) => {
         const orderHeader = req.body;
+
+        if (!req?.body?.ClientId) return res.status(400).json({ 'message': 'Nie podano Id Stolika.' });
+        if (!req?.body?.EmployeeId) return res.status(400).json({ 'message': 'Nie podano Id Stolika.' });
+        if (!req?.body?.PaymentId) return res.status(400).json({ 'message': 'Nie podano Id Płatności.' });
+        if (!req?.body?.OrderStatusId) return res.status(400).json({ 'message': 'Nie podano Id Statusu Zamówienia.' });
+        if (!req?.body?.TableId) return res.status(400).json({ 'message': 'Nie podano Id Stolika.' });
+        
+        const client = await User.findByPk(req?.body?.ClientId);
+        if(!client)
+            return res.status(404).json({ 'message': `Nie znaleziono Klienta o Id ${req?.body?.ClientId}.` });
+        const employee = await User.findByPk(req?.body?.EmployeeId);
+        if(!employee)
+            return res.status(404).json({ 'message': `Nie znaleziono Pracownika o Id ${req?.body?.EmployeeId}.` });
+        const payment = await Payment.findByPk(req?.body?.PaymentId);
+        if(!payment)
+            return res.status(404).json({ 'message': `Nie znaleziono Płatności o Id ${req?.body?.PaymentId}.` });
+        const orderStatus = await OrderStatus.findByPk(req?.body?.OrderStatusId);
+        if(!orderStatus)
+            return res.status(404).json({ 'message': `Nie znaleziono Statusu Zamówienia o Id ${req?.body?.OrderStatusId}.` });
+        const table = await Table.findByPk(req?.body?.TableId);
+        if(!table)
+            return res.status(404).json({ 'message': `Nie znaleziono Stolika o Id ${req?.body?.TableId}.` });
+
         await OrderHeader.create(orderHeader).then(result => {
-            res.json(result)
+            return res.json(result)
         });
     },
     
@@ -53,9 +76,7 @@ module.exports = {
         if(req?.body?.OrderStatusId === 3) {
             const details = await OrderDetails.findAll({ where: { OrderHeaderId: req.params.id, isCoupon: true } });
             if(details != null) {
-                console.log(details)
                 details.forEach( (orderDetail) => {
-                    console.log(orderDetail)
                     UserCoupon.update({
                         UserCouponStatusId: 1
                     }, {
@@ -68,7 +89,7 @@ module.exports = {
             }
         }
 
-        res.json({'message': `Zaktualizowano Zamówienie.`});
+        return res.json({'message': `Zaktualizowano Zamówienie.`});
     },
     
     delete: async (req, res) => {
@@ -82,7 +103,7 @@ module.exports = {
             await OrderHeader.destroy({
                 where: { id: req.params.id } }
             );
-            res.json({'message': `Usunięto Zamówienie.`});
+            return res.json({'message': `Usunięto Zamówienie.`});
         }
     },
     
@@ -90,7 +111,7 @@ module.exports = {
         const orderHeaders = await OrderHeader.findAll();
         if (!orderHeaders.length) 
             return res.status(404).json({ 'message': 'Nie znaleziono żadnych Zamówień.' });
-        res.json(orderHeaders);
+        return res.json(orderHeaders);
     },
     
     getById: async (req, res) => {
@@ -98,7 +119,6 @@ module.exports = {
         if(!orderHeader)
             return res.status(404).json({ 'message': `Nie znaleziono Zamówienia o Id ${req.params.id}.` });
             
-        // Client can get only his own ordeheaders' data
         if(req.RoleId === 1) {
             const client = await User.findOne({ where: { id: orderHeader.ClientId }, attributes: ['id', 'email'] });
             if (client != null) {
@@ -107,14 +127,14 @@ module.exports = {
                 }
             }
         }
-        res.json(orderHeader);
+        return res.json(orderHeader);
     },
     
     getByPaymentId: async (req, res) => {
         const orderHeaders = await OrderHeader.findAll({ where: { PaymentId: req.params.id } });
         if(!orderHeaders.length)
             return res.status(404).json({ 'message': `Nie znaleziono Zamówień z Płatnościa o Id ${req.params.id}.` });
-        res.json(orderHeaders);
+        return res.json(orderHeaders);
     },
     
     getByClientId: async (req, res) => {
@@ -131,27 +151,27 @@ module.exports = {
         });
         if(!orderHeaders.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych Zamówień Klienta o Id ${req.params.id}.` });
-        res.json(orderHeaders);
+        return res.json(orderHeaders);
     },
     
     getByEmployeeId: async (req, res) => {
         const orderHeaders = await OrderHeader.findAll({ where: { EmployeeId: req.params.id } });
         if(!orderHeaders.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych Zamówień dodanych przez Pracownika o Id ${req.params.id}.` });
-        res.json(orderHeaders);
+        return res.json(orderHeaders);
     },
     
     getByOrderStatusId: async (req, res) => {
         const orderHeaders = await OrderHeader.findAll({ where: { OrderStatusId: req.params.id } });
         if(!orderHeaders.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych Zamówień ze Statusem o Id ${req.params.id}.` });
-        res.json(orderHeaders);
+        return res.json(orderHeaders);
     },
     
     getByTableId: async (req, res) => {
         const orderHeaders = await OrderHeader.findAll({ where: { TableId: req.params.id } });
         if(!orderHeaders.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych Zamówień ze Stolikiem o Id ${req.params.id}.` });
-        res.json(orderHeaders);
+        return res.json(orderHeaders);
     }
 }

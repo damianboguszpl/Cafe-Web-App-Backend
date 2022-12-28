@@ -27,7 +27,7 @@ module.exports = {
             { name: req.body.name }, 
             { where: { id: req.params.id} }
         );
-        res.json({'message': `Zaktualizowano Kategorię.`});
+        return res.json({'message': `Zaktualizowano Kategorię.`});
     },
 
     delete: async (req,res) => {
@@ -41,14 +41,14 @@ module.exports = {
         await Category.destroy(
             { where: { id: req.params.id } }
         );
-        res.json({ 'message': "Usunięto Kategorię." });
+        return res.json({ 'message': "Usunięto Kategorię." });
     },
 
     getAll: async (req, res) => {
         const categories = await Category.findAll();
         if (!categories.length) 
-            return res.status(400).json({ 'error': 'Nie znaleziono żadnych Kategorii.' });
-        res.json(categories);
+            return res.status(404).json({ 'error': 'Nie znaleziono żadnych Kategorii.' });
+        return res.json(categories);
     },
     
     getAllNotEmpty: async (req, res) => {
@@ -59,7 +59,7 @@ module.exports = {
             }],
         });
         if (!categories.length) 
-            return res.status(400).json({ 'error': 'Nie znaleziono żadnych Kategorii.' });
+            return res.status(404).json({ 'error': 'Nie znaleziono żadnych Kategorii.' });
         var filteredCategories = categories.filter((category) => {
             return category.Products.length > 0
         })
@@ -69,7 +69,7 @@ module.exports = {
               'name':category.name
             }
           });
-        res.json(categoriesToReturn);
+        return res.json(categoriesToReturn);
     },
 
     getById: async (req, res) => {
@@ -77,14 +77,14 @@ module.exports = {
             return res.status(400).json({ 'error': 'Id Kategorii jest wymagany.' });
         const category = await Category.findOne({ where: { id: req.params.id } });
         if(!category)
-            return res.status(400).json({ 'error': `Nie znaleziono Kategorii o Id ${req.params.id}.` });
-        res.json(category);
+            return res.status(404).json({ 'error': `Nie znaleziono Kategorii o Id ${req.params.id}.` });
+        return res.json(category);
     },
 
     getByName: async (req, res) => {
         const category = await Category.findOne({ where: { name: req.params.name } });
         if(!category)
-            return res.status(400).json({ 'error': `Nie znaleziono Kategorii o nazwie '${req.params.name}'.` });
-        res.json(category);
+            return res.status(404).json({ 'error': `Nie znaleziono Kategorii o nazwie '${req.params.name}'.` });
+        return res.json(category);
     },
 }

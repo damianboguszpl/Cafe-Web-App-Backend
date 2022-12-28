@@ -9,7 +9,7 @@ module.exports = {
             return res.status(400).json({ 'message': 'Status Stolików o podanej nazwie już istnieje.' });
         
         const newTableStatus = await TableStatus.create(req.body);
-        res.status(201).json({'message': `Dodano nowy Status Stolików.`, 'data': newTableStatus});
+        return res.status(201).json({'message': `Dodano nowy Status Stolików.`, 'data': newTableStatus});
     },
     
     update: async (req,res) => {
@@ -22,7 +22,7 @@ module.exports = {
             { name: req.body.name }, 
             { where: { id: req.params.id } }
         );
-        res.json({'message': `Zaktualizowano Status Stolików.`});
+        return res.json({'message': `Zaktualizowano Status Stolików.`});
     },
     
     delete: async (req,res) => {
@@ -35,28 +35,27 @@ module.exports = {
         await TableStatus.destroy(
             { where: { id: req.params.id } }
         );
-        res.json({'message': `Usunięto Status Stolików.`});
+        return res.json({'message': `Usunięto Status Stolików.`});
     },
     
     getAll: async (req, res) => {
         const tableStatuses = await TableStatus.findAll();
         if (!tableStatuses.length)
             return res.status(404).json({ 'message': 'Nie znaleziono żadnych Statusów Stolików.' });
-        res.json(tableStatuses);
+        return res.json(tableStatuses);
     },
     
     getById: async (req, res) => {
         const tableStatus = await TableStatus.findOne({ where: { id: req.params.id } });
         if(!tableStatus)
             return res.status(404).json({ 'message': `Nie znaleziono Statusu Stolików o Id ${req.params.id}.` });
-        res.json(tableStatus);
+        return res.json(tableStatus);
     },
     
     getByName: async (req, res) => {
-        const name = req.params.name
-        const tableStatus = await TableStatus.findOne({ where: { name: name } });
+        const tableStatus = await TableStatus.findOne({ where: { name: req.params.name } });
         if(!tableStatus)
             return res.status(404).json({ 'message': `Nie znaleziono Statusu Stolików o nazwie '${req.params.name}'.` });
-        res.json(tableStatus);
+        return res.json(tableStatus);
     },
 }

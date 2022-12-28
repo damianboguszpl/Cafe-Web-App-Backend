@@ -58,20 +58,13 @@ module.exports = {
     },
 
     create: async (req, res) => {
-        if (!req?.body?.email)
-            return res.status(400).json({ 'message': 'Nie podano adresu e-mail.' });
-        if (!req?.body?.password)
-            return res.status(400).json({ 'message': 'Nie podano hasła.' });
-        if (!req?.body?.phoneNumber)
-            return res.status(400).json({ 'message': 'Nie podano numeru telefonu.' });
-        if (!req?.body?.RoleId)
-            return res.status(400).json({ 'message': 'Nie podano Id Roli.' });
-        if (!req?.body?.firstname)
-            return res.status(400).json({ 'message': 'Nie podano imienia.' });
-        if (!req?.body?.lastname)
-            return res.status(400).json({ 'message': 'Nie podano nazwiska.' });
-        if (!req?.body?.sex)
-            return res.status(400).json({ 'message': 'Nie podano płci.' });
+        if (!req?.body?.email) return res.status(400).json({ 'message': 'Nie podano adresu e-mail.' });
+        if (!req?.body?.password) return res.status(400).json({ 'message': 'Nie podano hasła.' });
+        if (!req?.body?.phoneNumber) return res.status(400).json({ 'message': 'Nie podano numeru telefonu.' });
+        if (!req?.body?.RoleId) return res.status(400).json({ 'message': 'Nie podano Id Roli.' });
+        if (!req?.body?.firstname) return res.status(400).json({ 'message': 'Nie podano imienia.' });
+        if (!req?.body?.lastname) return res.status(400).json({ 'message': 'Nie podano nazwiska.' });
+        if (!req?.body?.sex) return res.status(400).json({ 'message': 'Nie podano płci.' });
 
         var passwordRegExp = new RegExp(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/);
         if (!passwordRegExp.test(req.body.password)) {
@@ -135,7 +128,7 @@ module.exports = {
                 },
                 { where: { id: req.params.id } }
             ).then((result) => {
-                res.json({'message': `Zaktualizowano dane Użytkownika.`});
+                return res.json({'message': `Zaktualizowano dane Użytkownika.`});
             });
         }
     },
@@ -169,22 +162,21 @@ module.exports = {
                 },
                 { where: { id: req.params.id } }
             ).then((result) => {
-                res.json({'message': `Zaktualizowano dane Użytkownika.`});
+                return res.json({'message': `Zaktualizowano dane Użytkownika.`});
             });
         }
     },
 
     login: async (req, res) => {
-        const { email, password } = req.body;
-        const user = await User.findOne({ where: { email: email } });
+        const user = await User.findOne({ where: { email: req.body.email } });
 
         if (!user) {
-            res.status(400).json({ 'error': "Użytkownik nie istnieje." });
+            return res.status(400).json({ 'error': "Użytkownik nie istnieje." });
         }
         else {
-            bcrypt.compare(password, user.password).then(async (match) => {
+            bcrypt.compare(req.body.password, user.password).then(async (match) => {
                 if (!match) {
-                    res.status(400).json({ 'error': "Hasło jest niepoprawne." });
+                    return res.status(400).json({ 'error': "Hasło jest niepoprawne." });
                 }
                 else {
 
@@ -208,20 +200,16 @@ module.exports = {
                     );
 
                     try {
-                        const result = await User.update(
+                        await User.update(
                             { refreshToken: refreshToken },
                             { where: { id: user.id } }
                         )
-                        // console..log(result)
                     } catch (err) {
-                        // console.log(err)
+                        console.log(err)
                     }
-
-                    // Creates Secure Cookie with refresh token
-                    // secure na true jeśli będzie https                    WAŻNE
                     res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
 
-                    res.json({ RoleId: user.RoleId, accessToken });
+                    return res.json({ RoleId: user.RoleId, accessToken });
                 }
 
             });
@@ -229,13 +217,10 @@ module.exports = {
     },
 
     changePassword: async (req,res) => {
-        const { password, newPassword } = req.body;
         const user = await User.findOne({ where: { id: req.params.id } });
 
-        if (!req?.body?.password)
-            return res.status(400).json({ 'error': 'Nie wysłano hasła.' });
-        if (!req?.body?.newPassword)
-            return res.status(400).json({ 'error': 'Nie wysłano nowego hasła.' });
+        if (!req?.body?.password) return res.status(400).json({ 'error': 'Nie podano hasła.' });
+        if (!req?.body?.newPassword) return res.status(400).json({ 'error': 'Nie podano nowego hasła.' });
 
         var passwordRegExp = new RegExp(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{8,}$/);
         if (!passwordRegExp.test(req.body.newPassword)) {
@@ -243,25 +228,23 @@ module.exports = {
         }
 
         if (!user) {
-            res.status(400).json({ 'error': "Użytkownik nie istnieje" });
+            return res.status(400).json({ 'error': "Użytkownik nie istnieje" });
         }
         else {
-            bcrypt.compare(password, user.password).then(async (match) => {
+            bcrypt.compare(req.body.password, user.password).then(async (match) => {
                 if (!match) {
                     return res.status(400).json({ 'error': "Stare hasło jest niepoprawne" });
                 }
                 else {
                     try {
-                        bcrypt.hash(newPassword, saltRounds).then((hash) => {
+                        bcrypt.hash(req.body.newPassword, saltRounds).then((hash) => {
                             User.update(
                                 { password: hash },
                                 { where: { id: user.id } }
                             )
                         })
                         return res.status(200).json({ 'message': "Hasło zostało zmienione" });
-                        // console..log(result)
                     } catch (err) {
-                        // console.log(err)
                         return res.status(400).json({ 'error': err });
                     }
                 }
@@ -270,26 +253,23 @@ module.exports = {
     },
 
     getByEmail: async (req, res) => {
-        const email = req.params.email
-        const user = await User.findOne({ where: { email: email }, attributes: { exclude: ['password', 'refreshToken'] } });
+        const user = await User.findOne({ where: { email: req.params.email }, attributes: { exclude: ['password', 'refreshToken'] } });
         if(!user)
             return res.status(404).json({ 'message': `Nie znaleziono Użytkownika o adresie e-mail ${req.params.email}.` });
-        res.json(user);
+        return res.json(user);
     },
 
     getByPhone: async (req, res) => {
-        const phone = req.params.phone
-        const user = await User.findOne({ where: { phone: phone }, attributes: { exclude: ['password', 'refreshToken'] } });
+        const user = await User.findOne({ where: { phone: req.params.phone }, attributes: { exclude: ['password', 'refreshToken'] } });
         if(!user)
             return res.status(404).json({ 'message': `Nie znaleziono Użytkownika o numerze telefonu ${req.params.phone}.` });
-        res.json(user);
+        return res.json(user);
     },
 
     getByRoleId: async (req, res) => {
-        const roleid = req.params.roleid
-        const users = await User.findAll({ where: { RoleId: roleid }, attributes: { exclude: ['password', 'refreshToken'] } });
+        const users = await User.findAll({ where: { RoleId: req.params.roleid }, attributes: { exclude: ['password', 'refreshToken'] } });
         if(!users.length)
             return res.status(404).json({ 'message': `Nie znaleziono żadnych Użytkowników z Rolą o Id ${req.params.roleid}.` });
-        res.json(users);
+        return res.json(users);
     }
 }

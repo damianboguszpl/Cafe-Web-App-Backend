@@ -20,9 +20,10 @@ module.exports = {
             return res.status(404).json({ 'message': `Nie znaleziono Statusu Produktów o Id ${req.params.id}.` });
         await ProductStatus.update(
             { name: req.body.name }, 
-            { where: { id: req.params.id } });
+            { where: { id: req.params.id } }
+        );
 
-            res.json({'mesage': `Zaktualizowano Status Produktów.`});
+        return res.json({'mesage': `Zaktualizowano Status Produktów.`});
     },
     
     delete: async (req,res) => {
@@ -33,29 +34,29 @@ module.exports = {
         if(anyProduct)
             return res.status(400).json({ 'message': 'Status Produktów, który chcesz usunąć, przypisany jest do co najmniej 1 Produktu.' });
         await ProductStatus.destroy(
-                { where: { id: req.params.id } }
-            );
-        res.json({'message': `Usunięto Status Produktów.`});
+            { where: { id: req.params.id } }
+        );
+        return res.json({'message': `Usunięto Status Produktów.`});
     },
     
     getAll: async (req, res) => {
         const productStatuses = await ProductStatus.findAll();
         if (!productStatuses.length) 
             return res.status(404).json({ 'message': 'Nie znaleziono żadnych Statusów Produktów.' });
-        res.json(productStatuses);
+        return res.json(productStatuses);
     },
     
     getById: async (req, res) => {
         const productStatus = await ProductStatus.findOne({ where: { id: req.params.id } });
         if(!productStatus)
             return res.status(404).json({ 'message': `Nie znaleziono Statusu Produktów o Id ${req.params.id}.` });
-        res.json(productStatus);
+        return res.json(productStatus);
     },
     
     getByName: async (req, res) => {
         const productStatus = await ProductStatus.findOne({ where: { name: req.params.name } });
         if(!productStatus)
             return res.status(404).json({ 'message': `Nie znaleziono Statusu Produktów o nazwie '${req.params.name}'.` });
-        res.json(productStatus);
+        return res.json(productStatus);
     },
 }
