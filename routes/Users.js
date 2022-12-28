@@ -10,22 +10,29 @@ const ROLE_LIST = require('../config/role_list')
  * @openapi
  * /users/login:
  *  post:
- *      description: Endpoint for login
- *      summary: Login
- *      tags:
+ *    description: Endpoint for login
+ *    summary: Login
+ *    tags:
  *      - users
- *      parameters:
- *          - name: email
- *            in: body
- *            required: true
- *          - name: password
- *            in: body
- *            required: true
- *      responses:
- *          200:
- *              description: Ok
- *          400:
- *              description: Bad request
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object 
+ *            required:
+ *              - email
+ *              - password
+ *            properties:
+ *              email:
+ *                type: string
+ *              password:
+ *                type: string
+ *    responses:
+ *        200:
+ *            description: Ok
+ *        400:
+ *            description: Bad request
  */
 router.post('/login', controller.login)
 
@@ -33,76 +40,90 @@ router.post('/login', controller.login)
  * @openapi
  * /users/register:
  *  post:
- *      description: Endpoint for register
- *      summary: Register
- *      tags:
+ *    description: Endpoint for register
+ *    summary: Register
+ *    tags:
  *      - users
- *      parameters:
- *          - name: email
- *            in: body
- *            required: true
- *          - name: password
- *            in: body
- *            required: true
- *          - name: firstname
- *            in: body
- *            required: true
- *          - name: lastname
- *            in: body
- *            required: true
- *          - name: phoneNumber
- *            in: body
- *            required: true
- *          - name: sex
- *            in: body
- *            required: true
- *      responses:
- *          200:
- *              description: Ok
- *          400:
- *              description: Bad request
- *          404:
- *              description: Not found
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object 
+ *            required:
+ *              - email
+ *              - password
+ *              - firstname
+ *              - lastname
+ *              - phoneNumber
+ *              - sex
+ *            properties:   
+ *              email:
+ *                type: string
+ *              firstname:
+ *                type: string
+ *              password:
+ *                type: string
+ *              lastname:
+ *                type: string
+ *              phoneNumber:
+ *                type: integer
+ *              sex:
+ *                type: string
+ *    responses:
+ *        200:
+ *            description: Ok
+ *        400:
+ *            description: Bad request
+ *        404:
+ *            description: Not found
  */
 router.post('/register', controller.register)
 
 /**
  * @openapi
- * /users/create:
+ * /users:
  *  post:
- *      description: Endpoint for create new user
- *      summary: Create user e.g. Employee
- *      tags:
+ *    description: Endpoint for create new user
+ *    summary: Create user e.g. Employee
+ *    tags:
  *      - users
- *      parameters:
- *          - name: email
- *            in: body
- *            required: true
- *          - name: password
- *            in: body
- *            required: true
- *          - name: firstname
- *            in: body
- *            required: true
- *          - name: lastname
- *            in: body
- *            required: true
- *          - name: phoneNumber
- *            in: body
- *            required: true
- *          - name: sex
- *            in: body
- *            required: true
- *          - name: RoleId
- *            in: body
- *            required: true
- *      responses:
- *          200:
- *              description: Ok
- *          400:
- *              description: Bad request
- *          404:
- *              description: Not found
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object 
+ *            required:
+ *              - email
+ *              - password
+ *              - firstname
+ *              - lastname
+ *              - phoneNumber
+ *              - sex
+ *              - RoleId
+ *            properties:   
+ *              email:
+ *                type: string
+ *              firstname:
+ *                type: string
+ *              password:
+ *                type: string
+ *              lastname:
+ *                type: string
+ *              phoneNumber:
+ *                type: integer
+ *              sex:
+ *                type: string
+ *              RoleId:
+ *                type: integer
+ *    responses:
+ *        200:
+ *            description: Ok
+ *        400:
+ *            description: Bad request
+ *        404:
+ *            description: Not found
  */
 router.post('/', verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
 
