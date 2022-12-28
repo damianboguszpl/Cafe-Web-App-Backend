@@ -6,7 +6,7 @@ const verifyUser = async (req, res, next) => {
     if (!req?.RoleId)
         return res.sendStatus(401);
     
-    if ( req.RoleId === 1 ) {  // check if user accessing endpoint is "just" a Client
+    if ( req.RoleId === 1 ) {
         if(req?.params) {
             if(req?.params?.email) {
                 if(req.params.email === req.user) {
