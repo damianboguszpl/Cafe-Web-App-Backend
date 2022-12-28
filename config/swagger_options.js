@@ -13,6 +13,21 @@ const options = {
                 description: 'Development server',
             },
         ],
+        components: {
+            securitySchemes: {
+              bearerAuth: {
+                type: "http",
+                name: "x-auth-token",
+                scheme: "bearer",
+                in: "header",
+              },
+            },
+          },
+          security: [
+            {
+              bearerAuth: [],
+            },
+          ],
     },
     apis: ['./routes/*.js'],
 }
