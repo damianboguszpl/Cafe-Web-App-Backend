@@ -6,7 +6,7 @@ module.exports = {
 
         if (!req?.body?.ClientId) return res.status(400).json({ 'message': 'Nie podano Id Stolika.' });
         if (!req?.body?.EmployeeId) return res.status(400).json({ 'message': 'Nie podano Id Stolika.' });
-        if (!req?.body?.PaymentId) return res.status(400).json({ 'message': 'Nie podano Id Płatności.' });
+        // if (!req?.body?.PaymentId) return res.status(400).json({ 'message': 'Nie podano Id Płatności.' });
         if (!req?.body?.OrderStatusId) return res.status(400).json({ 'message': 'Nie podano Id Statusu Zamówienia.' });
         if (!req?.body?.TableId) return res.status(400).json({ 'message': 'Nie podano Id Stolika.' });
         
@@ -16,9 +16,9 @@ module.exports = {
         const employee = await User.findByPk(req?.body?.EmployeeId);
         if(!employee)
             return res.status(404).json({ 'message': `Nie znaleziono Pracownika o Id ${req?.body?.EmployeeId}.` });
-        const payment = await Payment.findByPk(req?.body?.PaymentId);
-        if(!payment)
-            return res.status(404).json({ 'message': `Nie znaleziono Płatności o Id ${req?.body?.PaymentId}.` });
+        // const payment = await Payment.findByPk(req?.body?.PaymentId);
+        // if(!payment)
+        //     return res.status(404).json({ 'message': `Nie znaleziono Płatności o Id ${req?.body?.PaymentId}.` });
         const orderStatus = await OrderStatus.findByPk(req?.body?.OrderStatusId);
         if(!orderStatus)
             return res.status(404).json({ 'message': `Nie znaleziono Statusu Zamówienia o Id ${req?.body?.OrderStatusId}.` });
@@ -35,7 +35,7 @@ module.exports = {
         const orderHeader = await OrderHeader.findByPk(req.params.id);
         if(!orderHeader)
             return res.status(404).json({ 'message': `Nie znaleziono Zamówienia o Id ${req.params.id}.` });
-        
+
         if(req?.body?.ClientId && req?.body?.ClientId != null) {
             const client = await User.findByPk(req?.body?.ClientId);
             if(!client)
@@ -85,6 +85,28 @@ module.exports = {
                     OrderDetails.destroy({
                         where: { id: orderDetail.id }
                     })
+                });
+            }
+        }
+        const client = await User.findByPk(orderHeader.ClientId);
+        if(client != null && req?.body?.OrderStatusId === 2) {
+            const details = await OrderDetails.findAll({ 
+                include: [{
+                    model: Product,
+                    attributes: ['name', 'price']
+                }],
+                where: { OrderHeaderId: req.params.id } 
+            });
+
+            if(details != null) {
+                var earnedPoints = 0;
+                details.forEach( (orderDetail) => {
+                    earnedPoints += parseInt(orderDetail.Product.price * orderDetail.quantity * 15);
+                });
+                User.update({
+                    points: client.points + earnedPoints
+                }, {
+                    where: { id: client.id }
                 });
             }
         }
