@@ -16,7 +16,7 @@ module.exports = {
                 return res.status(404).json({ 'message': `Nie znaleziono Klienta o Id ${req.body.ClientId}.` });
             }
             else {
-                const existingReservation = await Reservation.findOne({ where: { ClientId: req.body.ClientId } });
+                const existingReservation = await Reservation.findOne({ where: { ClientId: req.body.ClientId, ReservationStatusId: 1} });
 
                 if (existingReservation != null) {
                     const existingReservationStatus = await ReservationStatus.findOne({ where: { id: existingReservation.ReservationStatusId } });
