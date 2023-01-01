@@ -34,7 +34,6 @@ module.exports = {
                 size: req.body.size,
                 price: req.body.price,
                 is_available: req.body.is_available,
-                allergen: req.body.allergen,
                 CategoryId: req.body.CategoryId,
                 ProductStatusId: req.body.ProductStatusId
             }, 

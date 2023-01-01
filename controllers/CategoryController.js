@@ -55,7 +55,7 @@ module.exports = {
         const categories = await Category.findAll({
             include: [{
                 model: Product,
-                attributes: ['id', 'name', 'size', 'price', 'allergen', 'CategoryId', 'ProductStatusId']
+                attributes: ['id', 'name', 'size', 'price', 'CategoryId', 'ProductStatusId']
             }],
         });
         if (!categories.length) 

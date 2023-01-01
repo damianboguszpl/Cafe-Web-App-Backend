@@ -159,7 +159,7 @@ module.exports = {
                 attributes: ['id', 'transaction_price', 'quantity', 'isCoupon', 'ProductId', 'UserCouponId'],
                 include: [{
                     model: Product,
-                    attributes: ['id', 'name', 'size', 'price', 'allergen', 'CategoryId', 'ProductStatusId']
+                    attributes: ['id', 'name', 'size', 'price', 'CategoryId', 'ProductStatusId']
                 }],
             }],
         });

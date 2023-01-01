@@ -23,8 +23,6 @@ const ROLE_LIST = require('../config/role_list')
  *          - name: price
  *            in: body
  *            required: true
- *          - name: allergen
- *            in: body
  *          - name: CategoryId
  *            in: body
  *            required: true
@@ -56,8 +54,6 @@ router.post("/", verifyJWT, verifyRole(ROLE_LIST.admin), controller.create)
  *          - name: size
  *            in: body
  *          - name: price
- *            in: body
- *          - name: allergen
  *            in: body
  *          - name: CategoryId
  *            in: body

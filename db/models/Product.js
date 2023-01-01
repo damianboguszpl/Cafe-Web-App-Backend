@@ -11,10 +11,6 @@ module.exports = (sequelize, DataTypes) => {
         price: {
             type: DataTypes.DOUBLE,
             allowNull: false,
-        },
-        allergen: {
-            type: DataTypes.STRING,
-            allowNull: false,
         }
     }, {
         tableName: 'products'
