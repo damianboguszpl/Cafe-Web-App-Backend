@@ -65,7 +65,7 @@ router.post("/", verifyJWT, controller.create)
  *          404:
  *              description: Not found
  */
-router.put("/:id", verifyJWT, verifyRole(ROLE_LIST.employee, ROLE_LIST.admin), controller.update)
+router.put("/:id", verifyJWT, verifyRole(ROLE_LIST.employee, ROLE_LIST.admin, ROLE_LIST.client), verifyUser, controller.update)
 
 /**
  * @openapi

@@ -58,11 +58,20 @@ module.exports = {
         if (!req?.body?.expiration_date && !req?.body?.CouponId && !req?.body?.UserId && !req?.body?.UserCouponStatusId)
             return res.status(400).json({ 'message': 'Nie podano wymaganych danych.' });
         
-        if(req?.body?.CouponId && req?.body?.CouponId != null) {
-            const coupon = await Coupon.findByPk(req?.body?.CouponId);
-            if(!coupon)
-                return res.status(404).json({ 'message': `Nie znaleziono Kuponu o Id ${req?.body?.CouponId}.` });
+        const coupon = await Coupon.findByPk(req.body.CouponId);
+        if(!coupon)
+            return res.status(404).json({ 'message': `Nie znaleziono Kuponu o Id ${req?.body?.CouponId}.` });
+        else {
+            if(req.RoleId === 1) {
+                const client = await User.findOne({ where: { id: coupon.ClientId }, attributes: ['id', 'email'] });
+                if (client != null) {
+                    if (client.email !== req.user) {
+                        return res.status(401).json({ 'error': `Unauthorized`});
+                    }
+                }
+            }
         }
+        
         if(req?.body?.UserId && req?.body?.UserId != null) {
             const user = await User.findByPk(req?.body?.UserId);
             if(!user)
@@ -73,6 +82,8 @@ module.exports = {
             if(!userCouponStatus)
                 return res.status(404).json({ 'message': `Nie znaleziono Statusu Kuponów Użytkowników o Id ${req?.body?.UserCouponStatusId}.` });
         }
+
+        
 
         await UserCoupon.update(
             {
