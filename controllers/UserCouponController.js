@@ -55,15 +55,15 @@ module.exports = {
     },
     
     update: async (req,res) => {
-        if (!req?.body?.expiration_date && !req?.body?.CouponId && !req?.body?.UserId && !req?.body?.UserCouponStatusId)
+        if (!req?.body?.expiration_date && !req?.body?.UserId && !req?.body?.UserCouponStatusId)
             return res.status(400).json({ 'message': 'Nie podano wymaganych danych.' });
-        
-        const coupon = await Coupon.findByPk(req.body.CouponId);
-        if(!coupon)
-            return res.status(404).json({ 'message': `Nie znaleziono Kuponu o Id ${req?.body?.CouponId}.` });
+        const userCoupon = await UserCoupon.findOne({ where: { id: req.params.id } });
+        if(!userCoupon) {
+            return res.status(404).json({ 'message': `Nie znaleziono Kuponu Użytkownika o Id ${req.params.id}.` });
+        }
         else {
             if(req.RoleId === 1) {
-                const client = await User.findOne({ where: { id: coupon.ClientId }, attributes: ['id', 'email'] });
+                const client = await User.findOne({ where: { id: userCoupon.UserId }, attributes: ['id', 'email'] });
                 if (client != null) {
                     if (client.email !== req.user) {
                         return res.status(401).json({ 'error': `Unauthorized`});
@@ -88,7 +88,7 @@ module.exports = {
         await UserCoupon.update(
             {
                 expiration_date: req?.body?.expiration_date ? req.body.expiration_date : this.expiration_date,
-                CouponId: req?.body?.CouponId ? req.body.CouponId : this.CouponId,
+                // CouponId: req?.body?.CouponId ? req.body.CouponId : this.CouponId,
                 UserId: req?.body?.UserId ? req.body.UserId : this.UserId,
                 UserCouponStatusId: req?.body?.UserCouponStatusId ? req.body.UserCouponStatusId : this.UserCouponStatusId
             }, 
