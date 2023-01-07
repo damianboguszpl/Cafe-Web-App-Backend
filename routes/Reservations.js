@@ -187,7 +187,7 @@ router.get("/employee/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.emp
  *          404:
  *              description: Not found
  */
-router.get("/reservationstatus/:id", verifyJWT, verifyRole(ROLE_LIST.admin, ROLE_LIST.employee), controller.getByReservationStatusId)
+router.get("/reservationstatus/:id", verifyJWT, controller.getByReservationStatusId)
 
 /**
  * @openapi
