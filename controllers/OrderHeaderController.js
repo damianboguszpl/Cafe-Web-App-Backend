@@ -8,9 +8,12 @@ module.exports = {
         if (!req?.body?.OrderStatusId) return res.status(400).json({ 'message': 'Nie podano Id Statusu Zamówienia.' });
         if (!req?.body?.TableId) return res.status(400).json({ 'message': 'Nie podano Id Stolika.' });
         
-        const client = await User.findByPk(req?.body?.ClientId);
-        if(!client)
-            return res.status(404).json({ 'message': `Nie znaleziono Klienta o Id ${req?.body?.ClientId}.` });
+        if(req?.body?.ClientId != null) {
+            const client = await User.findByPk(req?.body?.ClientId);
+            if(!client)
+                return res.status(404).json({ 'message': `Nie znaleziono Klienta o Id ${req?.body?.ClientId}.` });
+        }
+        
         const employee = await User.findByPk(req?.body?.EmployeeId);
         if(!employee)
             return res.status(404).json({ 'message': `Nie znaleziono Pracownika o Id ${req?.body?.EmployeeId}.` });
