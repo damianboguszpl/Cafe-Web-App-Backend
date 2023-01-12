@@ -4,8 +4,7 @@ module.exports = {
     create: async (req,res) => {
         const orderHeader = req.body;
 
-        if (!req?.body?.ClientId) return res.status(400).json({ 'message': 'Nie podano Id Stolika.' });
-        if (!req?.body?.EmployeeId) return res.status(400).json({ 'message': 'Nie podano Id Stolika.' });
+        if (!req?.body?.EmployeeId) return res.status(400).json({ 'message': 'Nie podano Id Pracownika.' });
         if (!req?.body?.OrderStatusId) return res.status(400).json({ 'message': 'Nie podano Id Statusu Zamówienia.' });
         if (!req?.body?.TableId) return res.status(400).json({ 'message': 'Nie podano Id Stolika.' });
         
